@@ -1,17 +1,18 @@
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import UserInformationScreen from './user-information';
+import MapScreen from './map';
 import SplashScreen from 'react-native-splash-screen';
 
 // Define the root stack parameter list
 export type RootStackParamList = {
   UserInformation: undefined;
+  Map: undefined;
   Tabs: undefined;
   NotFound: undefined;
 };
@@ -19,22 +20,12 @@ export type RootStackParamList = {
 // Create the stack navigator
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-
 export default function AppNavigation() {
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hide();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
+    SplashScreen.hide();
+  }, []);
 
   return (
     <NavigationContainer
@@ -44,6 +35,11 @@ export default function AppNavigation() {
         <Stack.Screen 
           name="UserInformation" 
           component={UserInformationScreen} 
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="Map" 
+          component={MapScreen} 
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

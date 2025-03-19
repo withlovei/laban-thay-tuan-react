@@ -95,12 +95,12 @@ export default function UserInformationScreen({
             <View style={styles.content}>
               <View style={styles.logoContainer}>
                 <Image
-                  source={require("@/assets/images/user-information/avatar.png")}
+                  source={require("@/assets/images/user-information/avatar_shadow.png")}
                   style={styles.logo}
                   resizeMode="contain"
                 />
-                <Text style={[styles.title, TextStyles.headlineMedium]}>
-                  LA BAN THAY TUAN
+                <Text style={styles.title}>
+                  LA BÀN THẦY TUẤN
                 </Text>
               </View>
 
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     width: "100%",
-    height: 810,
+    // height: 810,
   },
   backgroundImageStyle: {
     opacity: 1,
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingTop: 50,
+    paddingTop: 93,
     alignItems: "center",
   },
   logoContainer: {
@@ -183,14 +183,14 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   logo: {
-    height: 220,
-    width: 220,
-    marginBottom: 15,
+    height: 248,
+    width: 248,
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: "bold",
     color: "#FAFAC3",
+    fontFamily: "IronGothic"
   },
   inputsContainer: {
     width: "80%",
