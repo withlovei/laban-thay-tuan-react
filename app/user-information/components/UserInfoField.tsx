@@ -7,9 +7,6 @@ import {
   Text,
   KeyboardTypeOptions,
 } from "react-native";
-import { ThemedText } from "@/components/ThemedText";
-import { Ionicons } from "@expo/vector-icons";
-import { TextStyles } from "../../../constants/TextStyles";
 
 interface UserInfoFieldProps {
   title: string;
@@ -32,67 +29,59 @@ export function UserInfoField({
   isDropdown = false,
   editable = true,
 }: UserInfoFieldProps) {
+  const Container = isDropdown ? TouchableOpacity : View;
   const renderInput = () => {
     if (isDropdown) {
       return (
-        <TouchableOpacity
-          style={[styles.input, styles.dropdownInput]}
-          onPress={onPress}
-          activeOpacity={0.7}
-        >
-          <Text style={[styles.inputText, !value && styles.placeholderText]}>
-            {value || "Select year"}
-          </Text>
-          <Ionicons name="chevron-down" size={20} color="white" />
-        </TouchableOpacity>
+        <Text style={[styles.inputText, !value && styles.placeholderText]}>
+          {value || "Chọn năm sinh"}
+        </Text>
       );
     }
 
     return (
       <TextInput
-        style={[styles.input, { color: "black" }]}
+        style={styles.input}
         value={value}
         onChangeText={onChangeText}
         keyboardType={keyboardType}
         maxLength={maxLength}
         placeholderTextColor="grey"
         editable={editable}
+        scrollEnabled={false}
       />
     );
   };
 
   return (
-    <View>
-      <ThemedText style={[styles.label, TextStyles.bodyMedium]}>
-        {title}
-      </ThemedText>
+    <Container style={styles.container} activeOpacity={0.7} onPress={onPress}>
+      <Text style={styles.label}>{title}</Text>
       {renderInput()}
-    </View>
+    </Container>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#D69C66",
+  },
   label: {
-    color: "white",
-    marginBottom: 5,
+    fontFamily: "Voltaire Regular",
+    color: "#EAD196",
   },
   input: {
-    borderRadius: 30,
-    backgroundColor: "white",
-    height: 40,
-    // borderWidth: 1,
-    // borderColor: "white",
-    paddingHorizontal: 12,
-    fontSize: 16,
-  },
-  dropdownInput: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    fontSize: 14,
+    color: "#FEC41F",
+    fontFamily: "Voltaire Regular",
   },
   inputText: {
-    fontSize: 16,
-    color: "white",
+    fontSize: 14,
+    fontFamily: "Voltaire Regular",
+    color: "#FEC41F",
   },
   placeholderText: {
     color: "rgba(255, 255, 255, 0.5)",

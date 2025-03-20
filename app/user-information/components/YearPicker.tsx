@@ -1,6 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Modal, TouchableOpacity, FlatList, Text } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  View,
+  Modal,
+  TouchableOpacity,
+  Text,
+  FlatList,
+} from "react-native";
+import { ThemedText } from "@/components/ThemedText";
 
 interface YearPickerProps {
   initialValue: number | null;
@@ -8,61 +15,89 @@ interface YearPickerProps {
   onClose: () => void;
 }
 
-export function YearPicker({ initialValue, onSelectYear, onClose }: YearPickerProps) {
-  // Generate years from 1900 to current year
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: currentYear - 1900 + 1 }, (_, i) => currentYear - i);
-  
-  const [selectedYear, setSelectedYear] = useState<number | null>(initialValue);
+const currentYear = new Date().getFullYear();
+const YEARS = Array.from(
+  { length: currentYear - 1900 + 1 },
+  (_, i) => currentYear - i
+);
+export function YearPicker({
+  initialValue,
+  onSelectYear,
+  onClose,
+}: YearPickerProps) {
+  const [selectedYear, setSelectedYear] = useState<number | null>(
+    initialValue || currentYear
+  );
 
   const handleYearSelect = (year: number) => {
     setSelectedYear(year);
-    onSelectYear(year);
+  };
+
+  const handleDone = () => {
+    if (selectedYear) {
+      onSelectYear(selectedYear);
+    }
+    onClose();
   };
 
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={true}
       onRequestClose={onClose}
     >
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
+      <TouchableOpacity
+        style={styles.modalOverlay}
+        activeOpacity={1}
+        onPress={onClose}
+      >
+        <TouchableOpacity
+          activeOpacity={1}
+          style={styles.modalContent}
+          onPress={(e) => e.stopPropagation()}
+        >
           <View style={styles.header}>
-            <ThemedText style={styles.title}>Select Year of Birth</ThemedText>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>✕</Text>
+            <TouchableOpacity onPress={onClose}>
+              <Text style={styles.cancelButton}>Hủy</Text>
+            </TouchableOpacity>
+            <ThemedText style={styles.title}>Năm sinh</ThemedText>
+            <TouchableOpacity onPress={handleDone}>
+              <Text style={styles.doneButton}>Chọn</Text>
             </TouchableOpacity>
           </View>
-          
+
           <FlatList
-            data={years}
+            data={YEARS}
             keyExtractor={(item) => item.toString()}
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={[
                   styles.yearItem,
-                  selectedYear === item && styles.selectedYearItem
+                  selectedYear === item && styles.selectedYearItem,
                 ]}
                 onPress={() => handleYearSelect(item)}
               >
-                <Text style={[
-                  styles.yearText,
-                  selectedYear === item && styles.selectedYearText
-                ]}>
+                <Text
+                  style={[
+                    styles.yearText,
+                    selectedYear === item && styles.selectedYearText,
+                  ]}
+                >
                   {item}
                 </Text>
               </TouchableOpacity>
             )}
             showsVerticalScrollIndicator={true}
-            initialScrollIndex={initialValue ? years.indexOf(initialValue) : 0}
-            getItemLayout={(data, index) => (
-              { length: 50, offset: 50 * index, index }
-            )}
+            initialScrollIndex={initialValue ? YEARS.indexOf(initialValue) : 0}
+            getItemLayout={(_data, index) => ({
+              length: 50,
+              offset: 50 * index,
+              index,
+            })}
           />
-        </View>
-      </View>
+        </TouchableOpacity>
+      </TouchableOpacity>
     </Modal>
   );
 }
@@ -70,49 +105,57 @@ export function YearPicker({ initialValue, onSelectYear, onClose }: YearPickerPr
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    height: '60%',
-    padding: 20,
+    padding: 10,
+    height: "60%",
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#EEEEEE",
+    paddingVertical: 15,
+    paddingHorizontal: 10,
   },
   title: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  cancelButton: {
+    color: "#007AFF",
+    fontSize: 16,
+  },
+  doneButton: {
+    color: "#007AFF",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  pickerItem: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#D4001D',
-  },
-  closeButton: {
-    padding: 5,
-  },
-  closeButtonText: {
-    fontSize: 20,
-    color: '#D4001D',
+    height: 150,
   },
   yearItem: {
     paddingVertical: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#EEEEEE',
+    borderBottomColor: "#EEEEEE",
   },
   selectedYearItem: {
-    backgroundColor: 'rgba(212, 0, 29, 0.1)',
+    backgroundColor: "rgba(212, 0, 29, 0.1)",
   },
   yearText: {
     fontSize: 16,
-    color: '#333333',
-    textAlign: 'center',
+    color: "#333333",
+    textAlign: "center",
   },
   selectedYearText: {
-    color: '#D4001D',
-    fontWeight: 'bold',
+    color: "#D4001D",
+    fontWeight: "bold",
   },
-}); 
+});

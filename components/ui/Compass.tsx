@@ -1,4 +1,4 @@
-import Svg, { Circle, ClipPath, Defs, G, Path, Polygon, Rect, SvgProps } from "react-native-svg";
+import Svg, { Circle, G, Path, Polygon, Rect, SvgProps } from "react-native-svg";
 
 export default function Compass(props: SvgProps) {
   return (

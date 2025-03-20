@@ -61,8 +61,8 @@ export default function UserInformationScreen({
     // Validate inputs
     if (!gender || !phoneNumber || !fullName || !birthYear) {
       // Show error message
-      alert("Please fill in all information.");
-      return;
+      // alert("Please fill in all information.");
+      // return;
     }
 
     // Create user object
@@ -77,7 +77,7 @@ export default function UserInformationScreen({
     console.log("User data:", user);
 
     // Navigate to home screen using react-navigation
-    navigation.navigate("Tabs");
+    navigation.navigate("Map");
   };
 
   return (
@@ -99,14 +99,12 @@ export default function UserInformationScreen({
                   style={styles.logo}
                   resizeMode="contain"
                 />
-                <Text style={styles.title}>
-                  LA BÀN THẦY TUẤN
-                </Text>
+                <Text style={styles.title}>LA BÀN THẦY TUẤN</Text>
               </View>
 
               <View style={styles.inputsContainer}>
                 <UserInfoField
-                  title="Phone Number"
+                  title="Số điện thoại"
                   value={phoneNumber}
                   onChangeText={setPhoneNumber}
                   keyboardType="phone-pad"
@@ -114,19 +112,19 @@ export default function UserInformationScreen({
                 />
 
                 <UserInfoField
-                  title="Full Name"
+                  title="Họ và tên"
                   value={fullName}
                   onChangeText={setFullName}
                   maxLength={30}
                 />
-
+                {/* 
                 <GenderCheckBox
                   selectedGender={gender}
                   onSelectGender={setGender}
-                />
+                /> */}
 
                 <UserInfoField
-                  title="Year of Birth"
+                  title="Năm sinh"
                   value={birthYear ? birthYear.toString() : ""}
                   onPress={() => setShowYearPicker(true)}
                   isDropdown
@@ -139,7 +137,7 @@ export default function UserInformationScreen({
                 onPress={handleWatchCompass}
                 activeOpacity={0.8}
               >
-                <Text style={styles.buttonText}>COMPASS</Text>
+                <Text style={styles.buttonText}>XEM LA BÀN</Text>
               </TouchableOpacity>
             </View>
 
@@ -160,11 +158,9 @@ export default function UserInformationScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#D4001D",
   },
   backgroundImage: {
     width: "100%",
-    // height: 810,
   },
   backgroundImageStyle: {
     opacity: 1,
@@ -180,7 +176,7 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: "center",
-    marginBottom: 50,
+    marginBottom: 18,
   },
   logo: {
     height: 248,
@@ -188,28 +184,27 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: "bold",
-    color: "#FAFAC3",
-    fontFamily: "IronGothic"
+    fontFamily: "UTM Iron Gothic",
+    color: "#FEC41F",
+    marginTop: -5,
   },
   inputsContainer: {
     width: "80%",
-    marginBottom: 50,
-    gap: 20,
+    marginBottom: 16,
+    gap: 12,
   },
   button: {
-    backgroundColor: "white",
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 30,
-    borderWidth: 1,
-    borderColor: "#D4001D",
-    // marginBottom: 50,
-    width: 150,
+    backgroundColor: "#FEC41F",
+    paddingVertical: 16,
+    borderRadius: 100,
+    width: "80%",
+    marginBottom: 150,
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonText: {
-    color: "#D4001D",
-    fontWeight: "bold",
+    color: "#7B5C26",
     fontSize: 16,
+    fontFamily: "Voltaire Regular",
   },
 });

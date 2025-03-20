@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/UTM Iron Gothic.ttf",
+      "sha1": "bbc7941cb5ea4fb491c6543ebc47b88212731db0"
+    },
+    {
+      "path": "assets/fonts/Voltaire Regular.ttf",
+      "sha1": "5cebf0941fd43ece9be23968d1260723f7ee0c9a"
+    }
+  ]
+}
