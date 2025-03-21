@@ -3,17 +3,22 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { screen } from "../constants/Dimensions";
 import { IconBar } from "./ui/icons/IconBar";
+import { useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "@/app/AppNavigation";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 interface NavigationBarProps {}
 
 export const NavigationBar: FC<NavigationBarProps> = () => {
+  const navigation = useNavigation<NavigationProp>();
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.iconBar}
-        onPress={() => {
-          console.log("onpress");
-        }}
+        // onPress={() => navigation.navigate('Sidebar')}
       >
         <IconBar />
       </TouchableOpacity>

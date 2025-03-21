@@ -4,24 +4,28 @@ import {
   View,
   PermissionsAndroid,
   Platform,
-  Text,
   TextInput,
+  Text,
 } from "react-native";
-import MapView, { PROVIDER_GOOGLE, Region } from "react-native-maps";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import Geolocation from "react-native-geolocation-service";
 import CompassHeading from "react-native-compass-heading";
-import Compass from "../../components/ui/Compass";
-import CompassHeadingUI from "../../components/ui/CompassHeading";
-import { screen } from "../../constants/Dimensions";
-import { NavigationBar } from "../../components/NavigationBar";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { IconContainer } from "../../components/ui/IconContainer";
-import { IconEyeSlash } from "../../components/ui/icons/IconEyeSlash";
-import { IconDoubleArrow } from "../../components/ui/icons/IconDoubleArrow";
-import { IconFlexStart } from "../../components/ui/icons/IconFlexStart";
-import { IconPinDrop } from "../../components/ui/icons/IconPinDrop";
-import { IconEditDocument } from "../../components/ui/icons/IconEditDocument";
-import { IconLockOpenRight } from "../../components/ui/icons/IconLockOpenRight";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
+import { useToggle } from "@/hooks/useToggle";
+import { IconLock } from "@/components/ui/icons/IconLock";
+import { screen } from "@/constants/Dimensions";
+import { NavigationBar } from "@/components/NavigationBar";
+import { IconContainer } from "@/components/ui/IconContainer";
+import { IconEyeSlash } from "@/components/ui/icons/IconEyeSlash";
+import { IconDoubleArrow } from "@/components/ui/icons/IconDoubleArrow";
+import { IconFlexStart } from "@/components/ui/icons/IconFlexStart";
+import { IconPinDrop } from "@/components/ui/icons/IconPinDrop";
+import { IconEditDocument } from "@/components/ui/icons/IconEditDocument";
+import { IconLockOpenRight } from "@/components/ui/icons/IconLockOpenRight";
+import CompassHeadingUI from "@/components/ui/CompassHeading";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -29,13 +33,16 @@ import Animated, {
   useAnimatedReaction,
   runOnJS,
 } from "react-native-reanimated";
-import { useToggle } from "../../hooks/useToggle";
-import { IconLock } from "../../components/ui/icons/IconLock";
-import { DoaiFull } from "../../components/ui/compass/doai_full";
-// import Geocoding from 'react-native-geocoding';
+import { useUserStore } from "@/stores/useUserStore";
+import { Compass } from "@/components/Compass";
+import { isNumberFinite } from "@/shared/validation";
+import {
+  getSpecialDirectionByCompassHeading,
+  normalizeHeading,
+} from "@/shared/compass";
+import { getDirectionByCompassHeading } from "@/shared/compass";
+import { mapGenderToText } from "@/shared/transform";
 
-// Initialize Geocoding with your Google Maps API key
-// Geocoding.init("YOUR_GOOGLE_MAPS_API_KEY");
 const COMPASS_SIZE = screen.width - 26;
 const COMPASS_HEADING_SIZE = screen.width;
 
@@ -45,22 +52,31 @@ interface Location {
 }
 
 export default function MapScreen() {
+  const user = useUserStore((state) => state.user);
   const [location, setLocation] = useState<Location>();
-  const { top } = useSafeAreaInsets();
+  const [searchLocation, setSearchLocation] = useState<Location>();
   const compassHeading = useSharedValue(0);
   const mapRef = useRef<MapView>(null);
   const compassOpacity = useSharedValue(1);
-
+  const {
+    top: paddingTop,
+    bottom: paddingBottom,
+    left: paddingLeft,
+    right: paddingRight,
+  } = useSafeAreaInsets();
   const compassStyle = useAnimatedStyle(() => ({
     opacity: compassOpacity.value,
     transform: [{ rotate: `${-compassHeading.value}deg` }],
   }));
   const updateCompassHeadingFnRef = useRef<(heading: number) => void>(() => {});
-  
+  const compassHeadingTextRef = useRef<TextInput>(null);
+  const backCompassHeadingTextRef = useRef<TextInput>(null);
+
   const compassHeadingStyle = useAnimatedStyle(() => ({
     opacity: compassOpacity.value,
   }));
   const [isLockCompass, toggleLockCompass] = useToggle(false);
+  const [isFullCompass, toggleFullCompass] = useToggle(false);
 
   useEffect(() => {
     requestLocationPermission();
@@ -104,9 +120,56 @@ export default function MapScreen() {
     }
   );
   const updateCompassHeading = (heading: number) => {
+    const direction = getDirectionByCompassHeading(heading);
+    const specialDirection = getSpecialDirectionByCompassHeading(heading);
+    compassHeadingTextRef.current?.setNativeProps({
+      text: `Hướng ${specialDirection} ${heading.toFixed(3)}° ${direction}`,
+    });
+
+    const backHeading = normalizeHeading(heading + 180);
+    const backDirection = getDirectionByCompassHeading(backHeading);
+    const backSpecialDirection =
+      getSpecialDirectionByCompassHeading(backHeading);
+    const genderText = mapGenderToText(user?.gender);
+    backCompassHeadingTextRef.current?.setNativeProps({
+      text: `${genderText} - ${
+        user?.birthYear
+      }\nHướng ${backSpecialDirection} ${backHeading.toFixed(
+        3
+      )}° ${backDirection}`,
+    });
+
     const remapHeading = heading > 180 ? heading - 360 : heading;
     const roundedHeading = Number(remapHeading.toFixed(3));
     compassHeading.value = roundedHeading;
+  };
+
+  const handleSearchLocationTextChange = (text: string) => {
+    const [latitude, longitude] = text.split(",");
+    if (
+      latitude &&
+      longitude &&
+      isNumberFinite(latitude) &&
+      isNumberFinite(longitude)
+    ) {
+      setSearchLocation({
+        latitude: Number(latitude),
+        longitude: Number(longitude),
+      });
+    }
+  };
+
+  const goToSearchLocation = () => {
+    if (mapRef.current && searchLocation) {
+      mapRef.current.setCamera({
+        center: searchLocation,
+        zoom: 17,
+        pitch: 0,
+      });
+    }
+    if (!searchLocation) {
+      alert("Please enter a valid latitude and longitude");
+    }
   };
 
   const goToMyLocation = () => {
@@ -162,6 +225,7 @@ export default function MapScreen() {
       { enableHighAccuracy: true, timeout: 10000 }
     );
   };
+  if (user === null || location === undefined) return null;
 
   return (
     <View style={styles.container}>
@@ -176,18 +240,14 @@ export default function MapScreen() {
         showsMyLocationButton={false}
       />
       <View
-        style={{
-          backgroundColor: "transparent",
-          position: "absolute",
-          left: 0,
-          top: 0,
-          width: screen.width,
-          height: screen.height,
-          marginTop: top,
-        }}
+        style={[
+          styles.safeAreaView,
+          { paddingTop, paddingLeft, paddingRight, paddingBottom },
+        ]}
         pointerEvents="box-none"
       >
         <NavigationBar />
+        {/* tool bar */}
         <View style={styles.toolBar}>
           <IconContainer
             onPress={() => {
@@ -199,14 +259,35 @@ export default function MapScreen() {
           >
             <IconEyeSlash />
           </IconContainer>
-          <TextInput style={styles.textInput} />
-          <IconContainer>
+          <TextInput
+            style={styles.textInput}
+            placeholderTextColor={"rgba(123, 92, 38, 0.2)"}
+            placeholder={`${location.latitude}, ${location?.longitude}`}
+            onChangeText={(text) => handleSearchLocationTextChange(text)}
+          />
+          <IconContainer onPress={goToSearchLocation}>
             <IconDoubleArrow />
           </IconContainer>
-          <IconContainer>
+          <IconContainer onPress={toggleFullCompass}>
             <IconFlexStart />
           </IconContainer>
         </View>
+        {/* compass description */}
+        <View style={styles.topCompassDescription}>
+          <TextInput
+            ref={compassHeadingTextRef}
+            style={styles.compassDescriptionText}
+          />
+        </View>
+        {/* back compass description */}
+        <View style={styles.bottomCompassDescription}>
+          <TextInput
+            ref={backCompassHeadingTextRef}
+            style={styles.compassDescriptionText}
+            multiline
+          />
+        </View>
+        {/* footer bar */}
         <View style={styles.footerBar}>
           <IconContainer onPress={toggleLockCompass}>
             {isLockCompass ? <IconLock /> : <IconLockOpenRight />}
@@ -218,19 +299,25 @@ export default function MapScreen() {
             <IconEditDocument />
           </IconContainer>
         </View>
-        <Animated.View
-          style={[styles.compass, compassStyle]}
-          pointerEvents="none"
-        >
-          <DoaiFull />
-        </Animated.View>
-        <Animated.View
-          pointerEvents="none"
-          style={[styles.compassHeading, compassHeadingStyle]}
-        >
-          <CompassHeadingUI />
-        </Animated.View>
       </View>
+      {/* compass */}
+      <Animated.View
+        style={[styles.compass, compassStyle]}
+        pointerEvents="none"
+      >
+        <Compass
+          gender={user.gender}
+          birthYear={user.birthYear}
+          full={isFullCompass}
+        />
+      </Animated.View>
+      {/* compass heading */}
+      <Animated.View
+        pointerEvents="none"
+        style={[styles.compassHeading, compassHeadingStyle]}
+      >
+        <CompassHeadingUI />
+      </Animated.View>
     </View>
   );
 }
@@ -241,6 +328,11 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   compass: {
     position: "absolute",
@@ -273,7 +365,7 @@ const styles = StyleSheet.create({
     left: screen.width / 4,
   },
   toolBar: {
-    marginTop: 8,
+    marginVertical: 8,
     marginHorizontal: 16,
     gap: 8,
     flexDirection: "row",
@@ -289,12 +381,33 @@ const styles = StyleSheet.create({
   },
   footerBar: {
     position: "absolute",
-    bottom: 32,
     width: screen.width,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
     paddingVertical: 8,
+    bottom: 32,
+  },
+  topCompassDescription: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  compassDescriptionText: {
+    color: "white",
+    fontSize: 18,
+    fontFamily: "Voltaire Regular",
+    textAlign: "center",
+  },
+  safeAreaView: {
+    flex: 1,
+    backgroundColor: "transparent",
+  },
+  bottomCompassDescription: {
+    alignItems: "center",
+    justifyContent: "center",
+    bottom: 80,
+    position: "absolute",
+    width: screen.width,
   },
 });

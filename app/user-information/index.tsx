@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   ScrollView,
@@ -10,48 +10,41 @@ import {
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import * as Haptics from "expo-haptics";
-import { GenderCheckBox } from "@/app/user-information/components/GenderCheckBox";
-import { UserInfoField } from "@/app/user-information/components/UserInfoField";
-import { YearPicker } from "@/app/user-information/components/YearPicker";
+import { UserInfoField } from "@/components/UserInfoField";
+import { Picker } from "@/components/Picker";
 import { RootStackParamList } from "../AppNavigation";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { TextStyles } from "../../constants/TextStyles";
+import { User } from "@/types/user";
+import { useUserStore } from "@/stores/useUserStore";
+import { GenderCheckBox } from "@/components/GenderCheckBox";
 
-// Define the navigation prop type
+// Temporary type definition for User
+const currentYear = new Date().getFullYear();
+const YEARS = Array.from({ length: currentYear - 1900 + 1 }, (_, i) =>
+  (currentYear - i).toString()
+);
+
 type UserInformationScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   "UserInformation"
 >;
 
-// Props interface
 interface UserInformationScreenProps {
   navigation: UserInformationScreenNavigationProp;
-}
-
-// Temporary type definition for User
-interface User {
-  gender: "MALE" | "FEMALE" | null;
-  phoneNumber: string;
-  fullName: string;
-  birthYear: number | null;
 }
 
 export default function UserInformationScreen({
   navigation,
 }: UserInformationScreenProps) {
+  const setUser = useUserStore((state) => state.setUser);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [fullName, setFullName] = useState("");
   const [birthYear, setBirthYear] = useState<number | null>(null);
   const [gender, setGender] = useState<"MALE" | "FEMALE" | null>(null);
   const [showYearPicker, setShowYearPicker] = useState(false);
 
-  // Hide header on component mount
-  useEffect(() => {
-    // Additional setup if needed
-  }, []);
-
-  const handleYearSelect = (year: number) => {
-    setBirthYear(year);
+  const handleYearSelect = (year: string) => {
+    setBirthYear(Number(year));
     setShowYearPicker(false);
   };
 
@@ -61,8 +54,15 @@ export default function UserInformationScreen({
     // Validate inputs
     if (!gender || !phoneNumber || !fullName || !birthYear) {
       // Show error message
-      // alert("Please fill in all information.");
-      // return;
+      alert("Please fill in all information.");
+      // setUser({
+      //   gender: "MALE",
+      //   phoneNumber: "0987654321",
+      //   fullName: "Nguyễn Văn A",
+      //   birthYear: 1990,
+      // });
+      // navigation.navigate("Map");
+      return;
     }
 
     // Create user object
@@ -73,91 +73,92 @@ export default function UserInformationScreen({
       birthYear,
     };
 
-    // Save user data (would typically use a state management solution)
-    console.log("User data:", user);
+    // Save user data to Zustand store
+    setUser(user);
 
-    // Navigate to home screen using react-navigation
     navigation.navigate("Map");
   };
 
   return (
-    <>
-      <SafeAreaView style={styles.container}>
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <ImageBackground
+          source={require("@/assets/images/user-information/background.png")}
+          style={styles.backgroundImage}
+          imageStyle={styles.backgroundImageStyle}
         >
-          <ImageBackground
-            source={require("@/assets/images/user-information/background.png")}
-            style={styles.backgroundImage}
-            imageStyle={styles.backgroundImageStyle}
-          >
-            <View style={styles.content}>
-              <View style={styles.logoContainer}>
-                <Image
-                  source={require("@/assets/images/user-information/avatar_shadow.png")}
-                  style={styles.logo}
-                  resizeMode="contain"
-                />
-                <Text style={styles.title}>LA BÀN THẦY TUẤN</Text>
-              </View>
-
-              <View style={styles.inputsContainer}>
-                <UserInfoField
-                  title="Số điện thoại"
-                  value={phoneNumber}
-                  onChangeText={setPhoneNumber}
-                  keyboardType="phone-pad"
-                  maxLength={13}
-                />
-
-                <UserInfoField
-                  title="Họ và tên"
-                  value={fullName}
-                  onChangeText={setFullName}
-                  maxLength={30}
-                />
-                {/* 
-                <GenderCheckBox
-                  selectedGender={gender}
-                  onSelectGender={setGender}
-                /> */}
-
-                <UserInfoField
-                  title="Năm sinh"
-                  value={birthYear ? birthYear.toString() : ""}
-                  onPress={() => setShowYearPicker(true)}
-                  isDropdown
-                  editable={false}
-                />
-              </View>
-
-              <TouchableOpacity
-                style={styles.button}
-                onPress={handleWatchCompass}
-                activeOpacity={0.8}
-              >
-                <Text style={styles.buttonText}>XEM LA BÀN</Text>
-              </TouchableOpacity>
+          <View style={styles.content}>
+            <View style={styles.logoContainer}>
+              <Image
+                source={require("@/assets/images/user-information/avatar_shadow.png")}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+              <Text style={styles.title}>LA BÀN THẦY TUẤN</Text>
             </View>
 
-            {showYearPicker && (
-              <YearPicker
-                initialValue={birthYear}
-                onSelectYear={handleYearSelect}
-                onClose={() => setShowYearPicker(false)}
+            <View style={styles.inputsContainer}>
+              <UserInfoField
+                title="Số điện thoại"
+                value={phoneNumber}
+                onChangeText={setPhoneNumber}
+                keyboardType="phone-pad"
+                maxLength={13}
               />
-            )}
-          </ImageBackground>
-        </ScrollView>
-      </SafeAreaView>
-    </>
+
+              <UserInfoField
+                title="Họ và tên"
+                value={fullName}
+                onChangeText={setFullName}
+                maxLength={30}
+              />
+
+              <UserInfoField
+                title="Năm sinh"
+                placeholder="Chọn năm sinh"
+                value={birthYear ? birthYear.toString() : ""}
+                onPress={() => setShowYearPicker(true)}
+                isDropdown
+                editable={false}
+              />
+
+              <GenderCheckBox
+                selectedGender={gender}
+                onSelectGender={setGender}
+              />
+            </View>
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handleWatchCompass}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.buttonText}>XEM LA BÀN</Text>
+            </TouchableOpacity>
+          </View>
+
+          {showYearPicker && (
+            <Picker
+              initialValue={birthYear?.toString()}
+              onSelectValue={handleYearSelect}
+              onClose={() => setShowYearPicker(false)}
+              data={YEARS}
+              title="Năm sinh"
+            />
+          )}
+        </ImageBackground>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#C81B22",
   },
   backgroundImage: {
     width: "100%",

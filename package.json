@@ -23,10 +23,8 @@
     "expo-blur": "~14.0.3",
     "expo-constants": "~17.0.8",
     "expo-dev-client": "~5.0.13",
-    "expo-font": "~13.0.4",
     "expo-haptics": "~14.0.1",
     "expo-linking": "~7.0.5",
-    "expo-router": "~4.0.18",
     "expo-splash-screen": "~0.29.22",
     "expo-status-bar": "~2.0.1",
     "expo-symbols": "~0.2.2",
@@ -46,7 +44,8 @@
     "react-native-splash-screen": "^3.3.0",
     "react-native-svg": "^15.11.2",
     "react-native-web": "~0.19.13",
-    "react-native-webview": "13.12.5"
+    "react-native-webview": "13.12.5",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

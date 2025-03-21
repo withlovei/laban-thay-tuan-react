@@ -84,5 +84,7 @@
 		<string>UTM Iron Gothic.ttf</string>
 		<string>Voltaire Regular.ttf</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Chúng tôi cần quyền truy cập vị trí của bạn để sử dụng la bàn.</string>
 </dict>
 </plist>
