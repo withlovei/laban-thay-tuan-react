@@ -5,15 +5,11 @@ import {
   PermissionsAndroid,
   Platform,
   TextInput,
-  Text,
 } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import Geolocation from "react-native-geolocation-service";
 import CompassHeading from "react-native-compass-heading";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useToggle } from "@/hooks/useToggle";
 import { IconLock } from "@/components/ui/icons/IconLock";
 import { screen } from "@/constants/Dimensions";
@@ -33,6 +29,7 @@ import Animated, {
   useAnimatedReaction,
   runOnJS,
 } from "react-native-reanimated";
+import Slider from "@react-native-community/slider";
 import { useUserStore } from "@/stores/useUserStore";
 import { Compass } from "@/components/Compass";
 import { isNumberFinite } from "@/shared/validation";
@@ -42,20 +39,34 @@ import {
 } from "@/shared/compass";
 import { getDirectionByCompassHeading } from "@/shared/compass";
 import { mapGenderToText } from "@/shared/transform";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "@/types/navigation";
+
+type MapScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "Map"
+>;
+
+interface MapScreenProps {
+  navigation: MapScreenNavigationProp;
+}
 
 const COMPASS_SIZE = screen.width - 26;
 const COMPASS_HEADING_SIZE = screen.width;
+const MIN_SCALE = 0.5;
+const MAX_SCALE = 2;
 
 interface Location {
   latitude: number;
   longitude: number;
 }
 
-export default function MapScreen() {
+export default function MapScreen({ navigation }: MapScreenProps) {
   const user = useUserStore((state) => state.user);
   const [location, setLocation] = useState<Location>();
   const [searchLocation, setSearchLocation] = useState<Location>();
   const compassHeading = useSharedValue(0);
+  const compassScale = useSharedValue(1);
   const mapRef = useRef<MapView>(null);
   const compassOpacity = useSharedValue(1);
   const {
@@ -66,7 +77,10 @@ export default function MapScreen() {
   } = useSafeAreaInsets();
   const compassStyle = useAnimatedStyle(() => ({
     opacity: compassOpacity.value,
-    transform: [{ rotate: `${-compassHeading.value}deg` }],
+    transform: [
+      { rotate: `${-compassHeading.value}deg` },
+      { scale: compassScale.value },
+    ],
   }));
   const updateCompassHeadingFnRef = useRef<(heading: number) => void>(() => {});
   const compassHeadingTextRef = useRef<TextInput>(null);
@@ -74,6 +88,7 @@ export default function MapScreen() {
 
   const compassHeadingStyle = useAnimatedStyle(() => ({
     opacity: compassOpacity.value,
+    transform: [{ scale: compassScale.value }],
   }));
   const [isLockCompass, toggleLockCompass] = useToggle(false);
   const [isFullCompass, toggleFullCompass] = useToggle(false);
@@ -225,6 +240,7 @@ export default function MapScreen() {
       { enableHighAccuracy: true, timeout: 10000 }
     );
   };
+
   if (user === null || location === undefined) return null;
 
   return (
@@ -262,7 +278,7 @@ export default function MapScreen() {
           <TextInput
             style={styles.textInput}
             placeholderTextColor={"rgba(123, 92, 38, 0.2)"}
-            placeholder={`${location.latitude}, ${location?.longitude}`}
+            placeholder={`${location?.latitude}, ${location?.longitude}`}
             onChangeText={(text) => handleSearchLocationTextChange(text)}
           />
           <IconContainer onPress={goToSearchLocation}>
@@ -273,18 +289,20 @@ export default function MapScreen() {
           </IconContainer>
         </View>
         {/* compass description */}
-        <View style={styles.topCompassDescription}>
+        <View style={styles.topCompassDescription} pointerEvents="none">
           <TextInput
             ref={compassHeadingTextRef}
             style={styles.compassDescriptionText}
+            editable={false}
           />
         </View>
         {/* back compass description */}
-        <View style={styles.bottomCompassDescription}>
+        <View style={styles.bottomCompassDescription} pointerEvents="none">
           <TextInput
             ref={backCompassHeadingTextRef}
             style={styles.compassDescriptionText}
             multiline
+            editable={false}
           />
         </View>
         {/* footer bar */}
@@ -295,9 +313,24 @@ export default function MapScreen() {
           <IconContainer onPress={goToMyLocation}>
             <IconPinDrop />
           </IconContainer>
-          <IconContainer>
+          <IconContainer onPress={() => navigation.navigate("EditUserModal")}>
             <IconEditDocument />
           </IconContainer>
+        </View>
+        {/* compass scale slider */}
+        <View style={styles.sliderContainer}>
+          <Slider
+            style={styles.slider}
+            minimumValue={MIN_SCALE}
+            maximumValue={MAX_SCALE}
+            value={1}
+            onValueChange={(value: number) => {
+              compassScale.value = value;
+            }}
+            minimumTrackTintColor="#FEC41F"
+            maximumTrackTintColor="#FFFFFF"
+            thumbTintColor="#FEC41F"
+          />
         </View>
       </View>
       {/* compass */}
@@ -306,8 +339,8 @@ export default function MapScreen() {
         pointerEvents="none"
       >
         <Compass
-          gender={user.gender}
-          birthYear={user.birthYear}
+          gender={user?.gender}
+          birthYear={user?.birthYear}
           full={isFullCompass}
         />
       </Animated.View>
@@ -341,6 +374,7 @@ const styles = StyleSheet.create({
     width: COMPASS_SIZE,
     height: COMPASS_SIZE,
     borderRadius: COMPASS_SIZE / 2,
+    zIndex: 1,
   },
   compassHeading: {
     position: "absolute",
@@ -351,6 +385,7 @@ const styles = StyleSheet.create({
     left: screen.width / 2 - COMPASS_HEADING_SIZE / 2,
     width: COMPASS_HEADING_SIZE,
     height: COMPASS_HEADING_SIZE,
+    zIndex: 1,
   },
   compassLogo: {
     position: "absolute",
@@ -402,6 +437,7 @@ const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
     backgroundColor: "transparent",
+    zIndex: 2,
   },
   bottomCompassDescription: {
     alignItems: "center",
@@ -409,5 +445,15 @@ const styles = StyleSheet.create({
     bottom: 80,
     position: "absolute",
     width: screen.width,
+  },
+  sliderContainer: {
+    position: "absolute",
+    bottom: 120,
+    width: screen.width,
+    paddingHorizontal: 20,
+  },
+  slider: {
+    width: "100%",
+    height: 40,
   },
 });

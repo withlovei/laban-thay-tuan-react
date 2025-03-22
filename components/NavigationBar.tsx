@@ -1,24 +1,20 @@
 import { FC } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { screen } from "../constants/Dimensions";
 import { IconBar } from "./ui/icons/IconBar";
-import { useNavigation } from "@react-navigation/native";
-import { RootStackParamList } from "@/app/AppNavigation";
+import { useNavigation, DrawerActions } from "@react-navigation/native";
+import { RootStackParamList } from "@/types/navigation";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-interface NavigationBarProps {}
-
-export const NavigationBar: FC<NavigationBarProps> = () => {
+export const NavigationBar: FC = () => {
   const navigation = useNavigation<NavigationProp>();
 
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.iconBar}
-        // onPress={() => navigation.navigate('Sidebar')}
+        onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
       >
         <IconBar />
       </TouchableOpacity>

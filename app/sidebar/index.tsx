@@ -1,31 +1,74 @@
-import React from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  ImageBackground,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import type { RootStackParamList } from "../AppNavigation";
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { DrawerContentComponentProps } from '@react-navigation/drawer';
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-
-export default function Sidebar() {
-  const navigation = useNavigation<NavigationProp>();
+export default function Sidebar(props: DrawerContentComponentProps) {
+  const insets = useSafeAreaInsets();
+  const { navigation } = props;
 
   return (
-    <View style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        <ImageBackground
-          source={require("@/assets/images/side-bar/background.png")}
-          style={styles.backgroundImage}
-          imageStyle={styles.backgroundImageStyle}
-        ></ImageBackground>
-      </ScrollView>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Menu</Text>
+      </View>
+      <View style={styles.content}>
+        <TouchableOpacity 
+          style={styles.menuItem}
+          onPress={() => {
+            navigation.closeDrawer();
+            navigation.navigate('MainStack', {
+              screen: 'Map',
+            });
+          }}
+        >
+          <Text style={styles.menuText}>Lập cực</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.menuItem}
+          onPress={() => {
+            navigation.closeDrawer();
+            navigation.navigate('MainStack', {
+              screen: 'CompassOnly',
+            });
+          }}
+        >
+          <Text style={styles.menuText}>Tải ảnh</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.menuItem}
+          onPress={() => {
+            navigation.closeDrawer();
+            navigation.navigate('MainStack', {
+              screen: 'StarsPDF',
+            });
+          }}
+        >
+          <Text style={styles.menuText}>24 sao</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.menuItem}
+          onPress={() => {
+            navigation.closeDrawer();
+            navigation.navigate('MainStack', {
+              screen: 'SolutionPDF',
+            });
+          }}
+        >
+          <Text style={styles.menuText}>Hóa giải</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.menuItem}
+          onPress={() => {
+            navigation.closeDrawer();
+            navigation.navigate('MainStack', {
+              screen: 'MinhTuanBookPDF',
+            });
+          }}
+        >
+          <Text style={styles.menuText}>Tham khảo</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -33,22 +76,30 @@ export default function Sidebar() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#C81B22",
+    backgroundColor: '#FEC41F',
   },
-  backgroundImage: {
-    width: "100%",
+  header: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(123, 92, 38, 0.2)',
   },
-  backgroundImageStyle: {
-    opacity: 1,
-    // resizeMode: "stretch",
-  },
-  scrollContent: {
-    flexGrow: 1,
-    // backgroundColor: "#C81B22",
+  title: {
+    fontSize: 24,
+    fontFamily: 'Voltaire Regular',
+    color: '#7B5C26',
   },
   content: {
     flex: 1,
-    paddingTop: 93,
-    alignItems: "center",
+    padding: 20,
   },
-});
+  menuItem: {
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(123, 92, 38, 0.2)',
+  },
+  menuText: {
+    fontSize: 18,
+    fontFamily: 'Voltaire Regular',
+    color: '#7B5C26',
+  },
+}); 
