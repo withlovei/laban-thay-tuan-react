@@ -1,5 +1,5 @@
 import { User } from "@/types/user";
-import { FC, useMemo } from "react";
+import { FC, useMemo, useEffect } from "react";
 import { KhonFull } from "./ui/compass/khon_full";
 import { TonFull } from "./ui/compass/ton_full";
 import { Khon } from "./ui/compass/khon";
@@ -16,6 +16,7 @@ import { Ly } from "./ui/compass/ly";
 import { Can } from "./ui/compass/can";
 import { DoaiFull } from "./ui/compass/doai_full";
 import { Doai } from "./ui/compass/doai";
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
 type CompassProps = Pick<User, "gender" | "birthYear"> & { full?: boolean };
 
@@ -34,6 +35,9 @@ type CompassComponents = {
   FEMALE: GenderMapping;
 };
 
+/**
+ * This component use Crossfade strategy to render UI
+ */
 export const Compass: FC<CompassProps> = ({
   gender,
   birthYear,
@@ -48,6 +52,28 @@ export const Compass: FC<CompassProps> = ({
       .reduce((acc, digit) => acc + parseInt(digit), 0);
     return sum % 9;
   }, [birthYear]);
+
+  const fullOpacity = useSharedValue(full ? 1 : 0);
+  const regularOpacity = useSharedValue(full ? 0 : 1);
+
+  useEffect(() => {
+    fullOpacity.value = withTiming(full ? 1 : 0, { duration: 300 });
+    regularOpacity.value = withTiming(full ? 0 : 1, { duration: 300 });
+  }, [full]);
+
+  const fullStyle = useAnimatedStyle(() => ({
+    opacity: fullOpacity.value,
+    position: 'absolute',
+    width: "100%",
+    height: "100%"
+  }));
+
+  const regularStyle = useAnimatedStyle(() => ({
+    opacity: regularOpacity.value,
+    position: 'absolute',
+    width: "100%",
+    height: "100%"
+  }));
 
   // Define component mappings
   const compassComponents: CompassComponents = {
@@ -101,6 +127,17 @@ export const Compass: FC<CompassProps> = ({
     },
   };
 
-  const ComponentToRender = compassComponents[gender][full ? 'full' : 'regular'][remainder];
-  return ComponentToRender ? <ComponentToRender /> : null;
+  const FullComponent = compassComponents[gender].full[remainder];
+  const RegularComponent = compassComponents[gender].regular[remainder];
+
+  return (
+    <>
+      <Animated.View style={regularStyle}>
+        <RegularComponent />
+      </Animated.View>
+      <Animated.View style={fullStyle}>
+        <FullComponent />
+      </Animated.View>
+    </>
+  );
 };

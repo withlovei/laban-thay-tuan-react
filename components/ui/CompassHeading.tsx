@@ -82,13 +82,13 @@ export default function CompassHeading(props: SvgProps) {
         fill="#FEC41F"
         fillOpacity="0.6"
       />
-      <Image
+      {/* <Image
         x="163"
         y="177"
         width="64"
         height="64"
         href={require("@/assets/images/compass-logo.png")}
-      />
+      /> */}
     </Svg>
   );
 }

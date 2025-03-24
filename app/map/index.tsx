@@ -89,6 +89,10 @@ export default function MapScreen({ navigation }: MapScreenProps) {
   const compassHeadingStyle = useAnimatedStyle(() => ({
     opacity: compassOpacity.value,
     transform: [{ scale: compassScale.value }],
+    top:
+    screen.height / 2 -
+    COMPASS_HEADING_SIZE / 2 -
+    7 * compassScale.value * (COMPASS_HEADING_SIZE / 404),
   }));
   const [isLockCompass, toggleLockCompass] = useToggle(false);
   const [isFullCompass, toggleFullCompass] = useToggle(false);
@@ -378,10 +382,6 @@ const styles = StyleSheet.create({
   },
   compassHeading: {
     position: "absolute",
-    top:
-      screen.height / 2 -
-      COMPASS_HEADING_SIZE / 2 -
-      7 * (COMPASS_HEADING_SIZE / 404),
     left: screen.width / 2 - COMPASS_HEADING_SIZE / 2,
     width: COMPASS_HEADING_SIZE,
     height: COMPASS_HEADING_SIZE,
