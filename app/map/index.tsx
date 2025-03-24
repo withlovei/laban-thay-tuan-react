@@ -35,12 +35,15 @@ import { Compass } from "@/components/Compass";
 import { isNumberFinite } from "@/shared/validation";
 import {
   getSpecialDirectionByCompassHeading,
+  getStar,
+  getStarMeaning,
   normalizeHeading,
 } from "@/shared/compass";
 import { getDirectionByCompassHeading } from "@/shared/compass";
 import { mapGenderToText } from "@/shared/transform";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/types/navigation";
+import { MapPlaceholder } from "@/components/MapPlaceholder";
 
 type MapScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -85,6 +88,7 @@ export default function MapScreen({ navigation }: MapScreenProps) {
   const updateCompassHeadingFnRef = useRef<(heading: number) => void>(() => {});
   const compassHeadingTextRef = useRef<TextInput>(null);
   const backCompassHeadingTextRef = useRef<TextInput>(null);
+  const compassStarMeaningTextRef = useRef<TextInput>(null);
 
   const compassHeadingStyle = useAnimatedStyle(() => ({
     opacity: compassOpacity.value,
@@ -119,6 +123,10 @@ export default function MapScreen({ navigation }: MapScreenProps) {
       updateCompassHeadingFnRef.current = updateCompassHeading;
     }
   }, [isLockCompass]);
+
+  useEffect(() => {
+    updateCompassHeadingFnRef.current = updateCompassHeading;
+  }, [user?.gender, user?.birthYear]);
 
   useEffect(() => {
     goToMyLocation();
@@ -157,6 +165,16 @@ export default function MapScreen({ navigation }: MapScreenProps) {
         3
       )}° ${backDirection}`,
     });
+
+    if (user) {
+      const star = getStar(heading, user)
+      if (star) {
+        const starMeaning = getStarMeaning(star)
+        compassStarMeaningTextRef.current?.setNativeProps({
+          text: starMeaning,
+        });
+      }
+    }
 
     const remapHeading = heading > 180 ? heading - 360 : heading;
     const roundedHeading = Number(remapHeading.toFixed(3));
@@ -245,7 +263,7 @@ export default function MapScreen({ navigation }: MapScreenProps) {
     );
   };
 
-  if (user === null || location === undefined) return null;
+  if (user === null || location === undefined) return <MapPlaceholder />;
 
   return (
     <View style={styles.container}>
@@ -298,6 +316,14 @@ export default function MapScreen({ navigation }: MapScreenProps) {
             ref={compassHeadingTextRef}
             style={styles.compassDescriptionText}
             editable={false}
+          />
+        </View>
+        <View style={styles.compassStarMeaning} pointerEvents="none">
+          <TextInput
+            ref={compassStarMeaningTextRef}
+            style={styles.compassStarMeaningText}
+            editable={false}
+            multiline
           />
         </View>
         {/* back compass description */}
@@ -455,5 +481,17 @@ const styles = StyleSheet.create({
   slider: {
     width: "100%",
     height: 40,
+  },
+  compassStarMeaning: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: "80%",
+    alignSelf: "center",
+  },
+  compassStarMeaningText: {
+    color: "white",
+    fontSize: 18,
+    fontFamily: "Voltaire Regular",
+    textAlign: "center",
   },
 });

@@ -57,8 +57,8 @@ export const Compass: FC<CompassProps> = ({
   const regularOpacity = useSharedValue(full ? 0 : 1);
 
   useEffect(() => {
-    fullOpacity.value = withTiming(full ? 1 : 0, { duration: 300 });
-    regularOpacity.value = withTiming(full ? 0 : 1, { duration: 300 });
+    fullOpacity.value = withTiming(full ? 1 : 0, { duration: 500 });
+    regularOpacity.value = withTiming(full ? 0 : 1, { duration: 500 });
   }, [full]);
 
   const fullStyle = useAnimatedStyle(() => ({
