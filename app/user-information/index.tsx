@@ -6,7 +6,7 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { StackNavigationProp } from "@react-navigation/stack";
 import * as Haptics from "expo-haptics";
 import { UserInfoField } from "@/components/UserInfoField";
 import { Picker } from "@/components/Picker";
@@ -23,7 +23,7 @@ const YEARS = Array.from({ length: currentYear - 1900 + 1 }, (_, i) =>
   (currentYear - i).toString()
 );
 
-type UserInformationScreenNavigationProp = NativeStackNavigationProp<
+type UserInformationScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   "UserInformation"
 >;

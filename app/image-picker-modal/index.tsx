@@ -1,13 +1,13 @@
 import React from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "@/types/navigation";
 import { IconContainer } from "@/components/ui/IconContainer";
 import { IconClose } from "@/components/ui/icons/IconClose";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { RouteProp } from "@react-navigation/native";
 
-type ImagePickerModalNavigationProp = NativeStackNavigationProp<
+type ImagePickerModalNavigationProp = StackNavigationProp<
   RootStackParamList,
   "ImagePickerModal"
 >;

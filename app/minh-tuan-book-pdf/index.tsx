@@ -4,11 +4,11 @@ import Pdf from 'react-native-pdf';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NavigationBar } from '@/components/NavigationBar';
 import { RootStackParamList } from '@/types/navigation';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 
 type Props = {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'MinhTuanBookPDF'>;
+  navigation: StackNavigationProp<RootStackParamList, 'MinhTuanBookPDF'>;
   route: RouteProp<RootStackParamList, 'MinhTuanBookPDF'>;
 }
 const MinhTuanBookPDFScreen = ({navigation, route}: Props) => {

@@ -4,6 +4,7 @@ export type RootStackParamList = {
   EditUserModal: undefined;
   CompassOnly: {
     uri?: string;
+    degree?: number;
   };
   TableOfContents: undefined;
   ImagePickerModal: {
@@ -13,6 +14,9 @@ export type RootStackParamList = {
   StarsPDF: undefined;
   MinhTuanBookPDF: {
     page?: number;
+  };
+  RotateCompassModal: {
+    from: keyof RootStackParamList;
   };
 };
 

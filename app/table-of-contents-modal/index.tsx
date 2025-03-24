@@ -2,7 +2,7 @@ import React from "react";
 import { FlatList, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RouteProp } from "@react-navigation/native";
-import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "@/types/navigation";
 import { IconClose } from "@/components/ui/icons/IconClose";
 import { IconContainer } from "@/components/ui/IconContainer";
@@ -48,7 +48,7 @@ const sections: Section[] = [
 ];
 
 type TableOfContentsScreenProps = {
-  navigation: NativeStackNavigationProp<RootStackParamList, "TableOfContents">;
+  navigation: StackNavigationProp<RootStackParamList, "TableOfContents">;
 };
 export default function TableOfContentsScreen({
   navigation,

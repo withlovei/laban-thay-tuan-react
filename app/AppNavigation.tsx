@@ -3,7 +3,7 @@ import {
   DefaultTheme,
   NavigationContainer,
 } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
@@ -22,8 +22,9 @@ import TableOfContentsScreen from "@/app/table-of-contents-modal";
 import SolutionPDFScreen from "@/app/solution-pdf";
 import StarsPDFScreen from "@/app/stars-pdf";
 import MinhTuanBookPDFScreen from "@/app/minh-tuan-book-pdf";
+import RotateCompassModal from "@/app/rotate-compass-modal";
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
 function MainStack() {
@@ -56,6 +57,15 @@ function MainStack() {
       <Stack.Screen
         name="ImagePickerModal"
         component={ImagePickerModal}
+        options={{
+          presentation: "transparentModal",
+          animation: "fade",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="RotateCompassModal"
+        component={RotateCompassModal}
         options={{
           presentation: "transparentModal",
           animation: "fade",
@@ -110,6 +120,7 @@ export default function AppNavigation() {
           },
           overlayColor: "rgba(0, 0, 0, 0.5)",
         }}
+        detachInactiveScreens={false}
       >
         <Drawer.Screen
           name="MainStack"

@@ -3,9 +3,9 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { IconBar } from "./ui/icons/IconBar";
 import { useNavigation, DrawerActions } from "@react-navigation/native";
 import { RootStackParamList } from "@/types/navigation";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { StackNavigationProp } from "@react-navigation/stack";
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+type NavigationProp = StackNavigationProp<RootStackParamList>;
 
 export const NavigationBar: FC = () => {
   const navigation = useNavigation<NavigationProp>();

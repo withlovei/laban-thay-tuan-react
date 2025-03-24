@@ -41,11 +41,11 @@ import {
 } from "@/shared/compass";
 import { getDirectionByCompassHeading } from "@/shared/compass";
 import { mapGenderToText } from "@/shared/transform";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "@/types/navigation";
 import { MapPlaceholder } from "@/components/MapPlaceholder";
 
-type MapScreenNavigationProp = NativeStackNavigationProp<
+type MapScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   "Map"
 >;

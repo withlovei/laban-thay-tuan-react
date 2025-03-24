@@ -12,7 +12,7 @@ export const MapPlaceholder = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000aa',
+    backgroundColor: '#000',
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',

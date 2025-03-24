@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { StyleSheet, View, TextInput } from "react-native";
 import CompassHeading from "react-native-compass-heading";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -22,19 +22,22 @@ import { useUserStore } from "@/stores/useUserStore";
 import { Compass } from "@/components/Compass";
 import {
   getSpecialDirectionByCompassHeading,
+  getStar,
+  getStarMeaning,
   normalizeHeading,
 } from "@/shared/compass";
 import { getDirectionByCompassHeading } from "@/shared/compass";
 import { mapGenderToText } from "@/shared/transform";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "@/types/navigation";
 import { Background } from "@/app/compass-only/components/Background";
 import { IconAdd } from "@/components/ui/icons/IconAdd";
 import { ImagePicker, ImagePickerRef } from "@/components/ImagePicker";
 import { RouteProp } from "@react-navigation/native";
 import { IconSquare } from "@/components/ui/icons/IconSquare";
+import { IconRotateRight } from "@/components/ui/icons/IconRotateRight";
 
-type CompassOnlyScreenNavigationProp = NativeStackNavigationProp<
+type CompassOnlyScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   "CompassOnly"
 >;
@@ -57,6 +60,7 @@ export default function CompassOnlyScreen({
   const user = useUserStore((state) => state.user);
   const [isShowRect, toggleShowRect] = useToggle(true);
   const imagePickerRef = useRef<ImagePickerRef>(null);
+  const compassStarMeaningTextRef = useRef<TextInput>(null);
   const compassHeading = useSharedValue(0);
   const compassScale = useSharedValue(1);
   const compassOpacity = useSharedValue(1);
@@ -85,8 +89,15 @@ export default function CompassOnlyScreen({
     COMPASS_HEADING_SIZE / 2 -
     7 * compassScale.value * (COMPASS_HEADING_SIZE / 404),
   }));
-  const [isLockCompass, toggleLockCompass] = useToggle(false);
+  const [isLockCompass, toggleLockCompass, setIsLockCompass] = useToggle(false);
   const [isFullCompass, toggleFullCompass] = useToggle(false);
+
+  useEffect(() => {
+    if (route.params?.degree) {
+      setIsLockCompass(true);
+      updateCompassHeading(route.params.degree, true);
+    }
+  }, [route.params?.degree]);
 
   useEffect(() => {
     const degree_update_rate = 0.001;
@@ -103,6 +114,10 @@ export default function CompassOnlyScreen({
   }, []);
 
   useEffect(() => {
+    updateCompassHeadingFnRef.current = updateCompassHeading;
+  }, [user?.gender, user?.birthYear]);
+
+  useEffect(() => {
     if (isLockCompass) {
       updateCompassHeadingFnRef.current = () => {};
     } else {
@@ -110,7 +125,7 @@ export default function CompassOnlyScreen({
     }
   }, [isLockCompass]);
 
-  const updateCompassHeading = (heading: number) => {
+  const updateCompassHeading = (heading: number, animation: boolean = false) => {
     const direction = getDirectionByCompassHeading(heading);
     const specialDirection = getSpecialDirectionByCompassHeading(heading);
     compassHeadingTextRef.current?.setNativeProps({
@@ -129,10 +144,19 @@ export default function CompassOnlyScreen({
         3
       )}° ${backDirection}`,
     });
+    if (user) {
+      const star = getStar(heading, user)
+      if (star) {
+        const starMeaning = getStarMeaning(star)
+        compassStarMeaningTextRef.current?.setNativeProps({
+          text: starMeaning,
+        });
+      }
+    }
 
     const remapHeading = heading > 180 ? heading - 360 : heading;
     const roundedHeading = Number(remapHeading.toFixed(3));
-    compassHeading.value = roundedHeading;
+    compassHeading.value = animation ? withTiming(roundedHeading, { duration: 500 }) : roundedHeading;
   };
 
   if (user === null) return null;
@@ -182,6 +206,14 @@ export default function CompassOnlyScreen({
             pointerEvents="none"
           />
         </View>
+        <View style={styles.compassStarMeaning} pointerEvents="none">
+          <TextInput
+            ref={compassStarMeaningTextRef}
+            style={styles.compassStarMeaningText}
+            editable={false}
+            multiline
+          />
+        </View>
         {/* back compass description */}
         <View style={styles.bottomCompassDescription} pointerEvents="none">
           <TextInput
@@ -202,6 +234,17 @@ export default function CompassOnlyScreen({
           <IconContainer onPress={() => navigation.navigate("EditUserModal")}>
             <IconEditDocument />
           </IconContainer>
+          {isLockCompass && (
+            <IconContainer
+              onPress={() =>
+                navigation.navigate("RotateCompassModal", {
+                  from: "CompassOnly",
+                })
+              }
+            >
+              <IconRotateRight />
+            </IconContainer>
+          )}
         </View>
         {/* compass scale slider */}
         <View style={styles.sliderContainer}>
@@ -314,7 +357,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   compassDescriptionText: {
-    color: "white",
+    color: "#553D13",
     fontSize: 18,
     fontFamily: "Voltaire Regular",
     textAlign: "center",
@@ -347,5 +390,17 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+  },
+  compassStarMeaning: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: "80%",
+    alignSelf: "center",
+  },
+  compassStarMeaningText: {
+    color: "#553D13",
+    fontSize: 18,
+    fontFamily: "Voltaire Regular",
+    textAlign: "center",
   },
 });

@@ -8,9 +8,10 @@ import {
 import { useUserStore } from "@/stores/useUserStore";
 import { GenderCheckBox } from "@/components/GenderCheckBox";
 import { Picker } from "@/components/Picker";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "@/types/navigation";
-type EditUserModalNavigationProp = NativeStackNavigationProp<
+
+type EditUserModalNavigationProp = StackNavigationProp<
   RootStackParamList,
   "EditUserModal"
 >;

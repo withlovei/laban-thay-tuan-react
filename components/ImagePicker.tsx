@@ -18,7 +18,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { screen } from "@/constants/Dimensions";
 import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "@/types/navigation";
 
 interface ImagePickerProps {
@@ -32,7 +32,7 @@ export interface ImagePickerRef {
   hideModal: () => void;
 }
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+type NavigationProp = StackNavigationProp<RootStackParamList>;
 
 export const ImagePicker = forwardRef<ImagePickerRef, ImagePickerProps>(
   ({ from, style, uri }, ref) => {
