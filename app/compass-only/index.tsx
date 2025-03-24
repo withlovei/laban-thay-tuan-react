@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, View, TextInput } from "react-native";
 import CompassHeading from "react-native-compass-heading";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -32,6 +32,7 @@ import { Background } from "@/app/compass-only/components/Background";
 import { IconAdd } from "@/components/ui/icons/IconAdd";
 import { ImagePicker, ImagePickerRef } from "@/components/ImagePicker";
 import { RouteProp } from "@react-navigation/native";
+import { IconSquare } from "@/components/ui/icons/IconSquare";
 
 type CompassOnlyScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -54,6 +55,7 @@ export default function CompassOnlyScreen({
   route,
 }: CompassOnlyScreenProps) {
   const user = useUserStore((state) => state.user);
+  const [isShowRect, toggleShowRect] = useToggle(true);
   const imagePickerRef = useRef<ImagePickerRef>(null);
   const compassHeading = useSharedValue(0);
   const compassScale = useSharedValue(1);
@@ -191,6 +193,9 @@ export default function CompassOnlyScreen({
         </View>
         {/* footer bar */}
         <View style={styles.footerBar}>
+          <IconContainer onPress={toggleShowRect}>
+            <IconSquare />
+          </IconContainer>
           <IconContainer onPress={toggleLockCompass}>
             {isLockCompass ? <IconLock /> : <IconLockOpenRight />}
           </IconContainer>
@@ -230,7 +235,7 @@ export default function CompassOnlyScreen({
         pointerEvents="none"
         style={[styles.compassHeading, compassHeadingStyle]}
       >
-        <CompassHeadingUI />
+        <CompassHeadingUI showRect={isShowRect} />
       </Animated.View>
     </View>
   );
