@@ -16,6 +16,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@quidone/react-native-wheel-picker": "^1.4.0",
     "@react-native-community/slider": "4.5.5",
     "@react-navigation/drawer": "^7.2.1",
     "@react-navigation/native": "^7.0.14",

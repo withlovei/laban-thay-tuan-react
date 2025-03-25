@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import {
   StyleSheet,
   View,
-  Modal,
   TouchableOpacity,
   Text,
-  FlatList,
 } from "react-native";
+import WheelPicker from "@quidone/react-native-wheel-picker";
+import { screen } from "@/constants/Dimensions";
 
 interface PickerProps {
   initialValue?: string;
@@ -23,6 +23,7 @@ export function Picker({
   title,
   data,
 }: PickerProps) {
+  const [bottomSheetHeight, setBottomSheetHeight] = useState(0);
   const [selected, setSelected] = useState<string | undefined>(initialValue);
 
   const handleSelect = (value: string) => {
@@ -37,94 +38,43 @@ export function Picker({
   };
 
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={true}
-      onRequestClose={onClose}
-    >
+    <View style={styles.container}>
       <TouchableOpacity
-        id={title}
-        style={styles.modalOverlay}
+        style={styles.backdrop}
         activeOpacity={1}
         onPress={onClose}
+      />
+      <View
+        style={[
+          styles.bottomSheetContainer,
+          { transform: [{ translateY: -bottomSheetHeight }] },
+        ]}
+        onLayout={(event) =>
+          setBottomSheetHeight(event.nativeEvent.layout.height)
+        }
       >
-        <TouchableOpacity
-          activeOpacity={1}
-          style={styles.modalContent}
-          onPress={(e) => e.stopPropagation()}
-        >
-          <View style={styles.header}>
-            <TouchableOpacity onPress={onClose}>
-              <Text style={styles.cancelButton}>Hủy</Text>
-            </TouchableOpacity>
-            <Text style={styles.title}>{title}</Text>
-            <TouchableOpacity onPress={handleDone}>
-              <Text style={styles.doneButton}>Chọn</Text>
-            </TouchableOpacity>
-          </View>
-
-          <FlatList
-            data={data}
-            keyExtractor={(item) => item.toString()}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={[
-                  styles.yearItem,
-                  selected === item && styles.selectedYearItem,
-                ]}
-                onPress={() => handleSelect(item)}
-              >
-                <Text
-                  style={[
-                    styles.yearText,
-                    selected === item && styles.selectedYearText,
-                  ]}
-                >
-                  {item}
-                </Text>
-              </TouchableOpacity>
-            )}
-            showsVerticalScrollIndicator={true}
-            initialScrollIndex={initialValue ? data.indexOf(initialValue) : 0}
-            getItemLayout={(_data, index) => ({
-              length: 50,
-              offset: 50 * index,
-              index,
-            })}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={onClose}>
+            <Text style={styles.cancelButton}>Hủy</Text>
+          </TouchableOpacity>
+          <Text style={styles.title}>{title}</Text>
+          <TouchableOpacity onPress={handleDone}>
+            <Text style={styles.doneButton}>Chọn</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.content}>
+          <WheelPicker
+            data={data.map((item) => ({ value: item, label: item }))}
+            value={selected}
+            onValueChanged={({ item: { value } }) => handleSelect(value)}
           />
-        </TouchableOpacity>
-      </TouchableOpacity>
-    </Modal>
+        </View>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  modalOverlay: {
-    flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    backgroundColor: "white",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 10,
-    maxHeight: "60%",
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "#EEEEEE",
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
   cancelButton: {
     color: "#007AFF",
     fontSize: 16,
@@ -134,25 +84,61 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  pickerItem: {
-    fontSize: 18,
-    height: 150,
+  picker: {
+    width: "100%",
   },
-  yearItem: {
-    paddingVertical: 15,
+  container: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  bottomSheetContainer: {
+    width: "100%",
+    backgroundColor: "#FFF",
+    position: "absolute",
+    top: screen.height,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  header: {
+    height: 40,
     borderBottomWidth: 1,
-    borderBottomColor: "#EEEEEE",
+    borderBottomColor: "#E5E5E5",
+    flexDirection: "row",
+    alignItems: "center",
+    position: "relative",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
   },
-  selectedYearItem: {
-    backgroundColor: "rgba(212, 0, 29, 0.1)",
+  line: {
+    width: 40,
+    height: 4,
+    backgroundColor: "#E5E5E5",
+    borderRadius: 2,
+    position: "absolute",
+    top: 8,
   },
-  yearText: {
+  title: {
     fontSize: 16,
-    color: "#333333",
-    textAlign: "center",
-  },
-  selectedYearText: {
-    color: "#D4001D",
     fontWeight: "bold",
+  },
+  closeButton: {
+    position: "absolute",
+    right: 16,
+    top: 8,
+    width: 24,
+    height: 24,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  closeText: {
+    fontSize: 24,
+    color: "#272729",
+  },
+  content: {
+    flex: 1,
+    backgroundColor: "#F5F5F7",
   },
 });
