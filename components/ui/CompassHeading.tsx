@@ -1,4 +1,4 @@
-import Svg, { Image, Path, Rect, SvgProps } from "react-native-svg";
+import Svg, { Image, Path, Rect, SvgProps, Defs, ClipPath, Circle } from "react-native-svg";
 
 interface CompassHeadingProps extends SvgProps {
   showRect?: boolean;
@@ -87,12 +87,18 @@ export default function CompassHeading({ showRect = true, ...props }: CompassHea
         fill="#FEC41F"
         fillOpacity="0.6"
       />
+      <Defs>
+        <ClipPath id="circleClip">
+          <Circle cx="195" cy="209" r="32" />
+        </ClipPath>
+      </Defs>
       <Image
         x="163"
         y="177"
         width="64"
         height="64"
         href={require("@/assets/images/compass-logo.png")}
+        clipPath="url(#circleClip)"
       />
     </Svg>
   );

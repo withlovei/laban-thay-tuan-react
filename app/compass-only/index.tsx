@@ -36,6 +36,7 @@ import { ImagePicker, ImagePickerRef } from "@/components/ImagePicker";
 import { RouteProp } from "@react-navigation/native";
 import { IconSquare } from "@/components/ui/icons/IconSquare";
 import { IconRotateRight } from "@/components/ui/icons/IconRotateRight";
+import { isNumberInRange } from "@/shared/validation";
 
 type CompassOnlyScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -61,6 +62,7 @@ export default function CompassOnlyScreen({
   const [isShowRect, toggleShowRect] = useToggle(true);
   const imagePickerRef = useRef<ImagePickerRef>(null);
   const compassStarMeaningTextRef = useRef<TextInput>(null);
+  const homeDirectionTextRef = useRef<TextInput>(null);
   const compassHeading = useSharedValue(0);
   const compassScale = useSharedValue(1);
   const compassOpacity = useSharedValue(1);
@@ -154,6 +156,21 @@ export default function CompassOnlyScreen({
       }
     }
 
+    const forwardHeading = normalizeHeading(heading);
+    if (isNumberInRange(forwardHeading, 141, 144)) {
+      homeDirectionTextRef.current?.setNativeProps({
+        text: "Tiểu không vong",
+      });
+    } else if (isNumberInRange(forwardHeading, 154.5, 160.5)) {
+      homeDirectionTextRef.current?.setNativeProps({
+        text: "Đại không vong",
+      });
+    } else {
+      homeDirectionTextRef.current?.setNativeProps({
+        text: "",
+      });
+    }
+
     const remapHeading = heading > 180 ? heading - 360 : heading;
     const roundedHeading = Number(remapHeading.toFixed(3));
     compassHeading.value = animation ? withTiming(roundedHeading, { duration: 500 }) : roundedHeading;
@@ -245,6 +262,13 @@ export default function CompassOnlyScreen({
               <IconRotateRight />
             </IconContainer>
           )}
+        </View>
+        <View style={styles.homeDirection}>
+          <TextInput
+            ref={homeDirectionTextRef}
+            style={styles.compassStarMeaningText}
+            editable={false}
+          />
         </View>
         {/* compass scale slider */}
         <View style={styles.sliderContainer}>
@@ -376,7 +400,7 @@ const styles = StyleSheet.create({
   },
   sliderContainer: {
     position: "absolute",
-    bottom: 120,
+    bottom: 140,
     width: screen.width,
     paddingHorizontal: 20,
   },
@@ -402,5 +426,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: "Voltaire Regular",
     textAlign: "center",
+  },
+  homeDirection: {
+    position: "absolute",
+    bottom: 125,
+    width: screen.width,
+    paddingHorizontal: 20,
   },
 });

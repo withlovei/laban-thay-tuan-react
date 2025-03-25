@@ -32,7 +32,7 @@ import Animated, {
 import Slider from "@react-native-community/slider";
 import { useUserStore } from "@/stores/useUserStore";
 import { Compass } from "@/components/Compass";
-import { isNumberFinite } from "@/shared/validation";
+import { isNumberFinite, isNumberInRange } from "@/shared/validation";
 import {
   getSpecialDirectionByCompassHeading,
   getStar,
@@ -45,10 +45,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "@/types/navigation";
 import { MapPlaceholder } from "@/components/MapPlaceholder";
 
-type MapScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  "Map"
->;
+type MapScreenNavigationProp = StackNavigationProp<RootStackParamList, "Map">;
 
 interface MapScreenProps {
   navigation: MapScreenNavigationProp;
@@ -89,14 +86,15 @@ export default function MapScreen({ navigation }: MapScreenProps) {
   const compassHeadingTextRef = useRef<TextInput>(null);
   const backCompassHeadingTextRef = useRef<TextInput>(null);
   const compassStarMeaningTextRef = useRef<TextInput>(null);
+  const homeDirectionTextRef = useRef<TextInput>(null);
 
   const compassHeadingStyle = useAnimatedStyle(() => ({
     opacity: compassOpacity.value,
     transform: [{ scale: compassScale.value }],
     top:
-    screen.height / 2 -
-    COMPASS_HEADING_SIZE / 2 -
-    7 * compassScale.value * (COMPASS_HEADING_SIZE / 404),
+      screen.height / 2 -
+      COMPASS_HEADING_SIZE / 2 -
+      7 * compassScale.value * (COMPASS_HEADING_SIZE / 404),
   }));
   const [isLockCompass, toggleLockCompass] = useToggle(false);
   const [isFullCompass, toggleFullCompass] = useToggle(false);
@@ -167,13 +165,28 @@ export default function MapScreen({ navigation }: MapScreenProps) {
     });
 
     if (user) {
-      const star = getStar(heading, user)
+      const star = getStar(heading, user);
       if (star) {
-        const starMeaning = getStarMeaning(star)
+        const starMeaning = getStarMeaning(star);
         compassStarMeaningTextRef.current?.setNativeProps({
           text: starMeaning,
         });
       }
+    }
+
+    const forwardHeading = normalizeHeading(heading);
+    if (isNumberInRange(forwardHeading, 141, 144)) {
+      homeDirectionTextRef.current?.setNativeProps({
+        text: "Tiểu không vong",
+      });
+    } else if (isNumberInRange(forwardHeading, 154.5, 160.5)) {
+      homeDirectionTextRef.current?.setNativeProps({
+        text: "Đại không vong",
+      });
+    } else {
+      homeDirectionTextRef.current?.setNativeProps({
+        text: "",
+      });
     }
 
     const remapHeading = heading > 180 ? heading - 360 : heading;
@@ -205,7 +218,7 @@ export default function MapScreen({ navigation }: MapScreenProps) {
       });
     }
     if (!searchLocation) {
-      alert("Please enter a valid latitude and longitude");
+      alert("Vui lòng nhập đúng tọa độ");
     }
   };
 
@@ -347,6 +360,13 @@ export default function MapScreen({ navigation }: MapScreenProps) {
             <IconEditDocument />
           </IconContainer>
         </View>
+        <View style={styles.homeDirection}>
+          <TextInput
+            ref={homeDirectionTextRef}
+            style={styles.compassStarMeaningText}
+            editable={false}
+          />
+        </View>
         {/* compass scale slider */}
         <View style={styles.sliderContainer}>
           <Slider
@@ -372,6 +392,7 @@ export default function MapScreen({ navigation }: MapScreenProps) {
           gender={user?.gender}
           birthYear={user?.birthYear}
           full={isFullCompass}
+          color="#fff"
         />
       </Animated.View>
       {/* compass heading */}
@@ -474,7 +495,7 @@ const styles = StyleSheet.create({
   },
   sliderContainer: {
     position: "absolute",
-    bottom: 120,
+    bottom: 140,
     width: screen.width,
     paddingHorizontal: 20,
   },
@@ -493,5 +514,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: "Voltaire Regular",
     textAlign: "center",
+  },
+  homeDirection: {
+    position: "absolute",
+    bottom: 125,
+    width: screen.width,
+    paddingHorizontal: 20,
   },
 });

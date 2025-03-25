@@ -1,15 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
+  ScrollView,
   View,
   Text,
   TouchableOpacity,
 } from "react-native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import * as Haptics from "expo-haptics";
+import { UserInfoField } from "@/components/UserInfoField";
+import { Picker } from "@/components/Picker";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
+import { User } from "@/types/user";
 import { useUserStore } from "@/stores/useUserStore";
 import { GenderCheckBox } from "@/components/GenderCheckBox";
-import { Picker } from "@/components/Picker";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { Background } from "@/app/user-information/components/Background";
 import { RootStackParamList } from "@/types/navigation";
+import { IconContainer } from "@/components/ui/IconContainer";
+import { IconClose } from "@/components/ui/icons/IconClose";
+import { screen } from "@/constants/Dimensions";
+
+// Temporary type definition for User
+const currentYear = new Date().getFullYear();
+const YEARS = Array.from({ length: currentYear - 1900 + 1 }, (_, i) =>
+  (currentYear - i).toString()
+);
 
 type EditUserModalNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -21,148 +39,125 @@ interface EditUserModalProps {
 }
 
 export default function EditUserModal({ navigation }: EditUserModalProps) {
+  const { top, bottom } = useSafeAreaInsets();
+  const updateUser = useUserStore((state) => state.updateUser);
   const user = useUserStore((state) => state.user);
-  const setUser = useUserStore((state) => state.setUser);
-  const [tempBirthYear, setTempBirthYear] = useState<number | null>(null);
-  const [tempGender, setTempGender] = useState<"MALE" | "FEMALE" | null>(null);
+  const [birthYear, setBirthYear] = useState<number | null>(
+    user?.birthYear ?? null
+  );
+  const [gender, setGender] = useState<"MALE" | "FEMALE" | null>(
+    user?.gender ?? null
+  );
   const [showYearPicker, setShowYearPicker] = useState(false);
 
-  useEffect(() => {
-    if (user) {
-      setTempBirthYear(user.birthYear);
-      setTempGender(user.gender);
-    }
-  }, [user]);
-
-  const handleSaveUserInfo = () => {
-    if (user && tempGender && tempBirthYear) {
-      setUser({
-        ...user,
-        gender: tempGender,
-        birthYear: tempBirthYear,
-      });
-      navigation.goBack();
-    }
-  };
-
   const handleYearSelect = (year: string) => {
-    setTempBirthYear(Number(year));
+    setBirthYear(Number(year));
     setShowYearPicker(false);
   };
 
-  if (!user) return null;
+  const handleSave = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    if (!gender || !birthYear) {
+      return;
+    }
+
+    const user: Partial<User> = {
+      gender,
+      birthYear,
+    };
+
+    updateUser(user);
+    navigation.goBack();
+  };
 
   return (
-    <View style={styles.modalOverlay}>
-      <View style={styles.modalContent}>
-        <Text style={styles.modalTitle}>Chỉnh sửa thông tin</Text>
-        
-        <TouchableOpacity
-          style={styles.yearPickerButton}
-          onPress={() => setShowYearPicker(true)}
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        contentContainerStyle={{ minHeight: screen.height - top - bottom }}
+        showsVerticalScrollIndicator={false}
+      >
+        <Background />
+        <IconContainer
+          onPress={() => navigation.goBack()}
+          style={styles.closeButton}
         >
-          <Text style={styles.yearPickerButtonText}>
-            {tempBirthYear ? `Năm sinh: ${tempBirthYear}` : "Chọn năm sinh"}
-          </Text>
-        </TouchableOpacity>
+          <IconClose />
+        </IconContainer>
+        <View style={styles.content}>
+          <View style={styles.inputsContainer}>
+            <UserInfoField
+              title="Năm sinh"
+              placeholder="Chọn năm sinh"
+              value={birthYear ? birthYear.toString() : ""}
+              onPress={() => setShowYearPicker(true)}
+              isDropdown
+              editable={false}
+            />
 
-        <View style={styles.genderContainer}>
-          <GenderCheckBox
-            selectedGender={tempGender}
-            onSelectGender={setTempGender}
-          />
+            <GenderCheckBox
+              selectedGender={gender}
+              onSelectGender={setGender}
+            />
+          </View>
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleSave}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.buttonText}>LƯU</Text>
+          </TouchableOpacity>
         </View>
 
-        <TouchableOpacity
-          style={styles.saveButton}
-          onPress={handleSaveUserInfo}
-        >
-          <Text style={styles.saveButtonText}>XÁC NHẬN</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.closeButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.closeButtonText}>ĐÓNG</Text>
-        </TouchableOpacity>
-      </View>
-
-      {showYearPicker && (
-        <Picker
-          initialValue={tempBirthYear?.toString()}
-          onSelectValue={handleYearSelect}
-          onClose={() => setShowYearPicker(false)}
-          data={Array.from(
-            { length: new Date().getFullYear() - 1900 + 1 },
-            (_, i) => (new Date().getFullYear() - i).toString()
-          )}
-          title="Năm sinh"
-        />
-      )}
-    </View>
+        {showYearPicker && (
+          <Picker
+            initialValue={birthYear?.toString()}
+            onSelectValue={handleYearSelect}
+            onClose={() => setShowYearPicker(false)}
+            data={YEARS}
+            title="Năm sinh"
+          />
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  modalOverlay: {
+  container: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContent: {
     backgroundColor: "#C81B22",
-    borderRadius: 16,
-    padding: 20,
+  },
+  backgroundImage: {
+    width: "100%",
+  },
+  content: {
+    marginTop: 393,
+    alignItems: "center",
+    marginBottom: 142,
+  },
+  inputsContainer: {
+    width: "80%",
+    marginBottom: 16,
+    gap: 12,
+  },
+  button: {
+    backgroundColor: "#FEC41F",
+    paddingVertical: 16,
+    borderRadius: 100,
     width: "80%",
     alignItems: "center",
+    justifyContent: "center",
   },
-  modalTitle: {
-    color: "#FEC41F",
-    fontSize: 24,
-    fontFamily: "Voltaire Regular",
-    marginBottom: 20,
-  },
-  yearPickerButton: {
-    backgroundColor: "rgba(254, 196, 31, 0.1)",
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#D69C66",
-    width: "100%",
-    marginBottom: 16,
-  },
-  yearPickerButtonText: {
-    color: "#FEC41F",
-    fontSize: 16,
-    fontFamily: "Voltaire Regular",
-    textAlign: "center",
-  },
-  genderContainer: {
-    width: "100%",
-    marginBottom: 20,
-  },
-  saveButton: {
-    backgroundColor: "#FEC41F",
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 100,
-    marginBottom: 12,
-  },
-  saveButtonText: {
+  buttonText: {
     color: "#7B5C26",
     fontSize: 16,
     fontFamily: "Voltaire Regular",
   },
   closeButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 32,
+    position: "absolute",
+    top: 12,
+    right: 16,
+    backgroundColor: "transparent",
   },
-  closeButtonText: {
-    color: "#FEC41F",
-    fontSize: 16,
-    fontFamily: "Voltaire Regular",
-  },
-}); 
+});

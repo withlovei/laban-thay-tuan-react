@@ -18,9 +18,9 @@ import { DoaiFull } from "./ui/compass/doai_full";
 import { Doai } from "./ui/compass/doai";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
-type CompassProps = Pick<User, "gender" | "birthYear"> & { full?: boolean };
+type CompassProps = Pick<User, "gender" | "birthYear"> & { full?: boolean; color?: string };
 
-type CompassComponent = () => JSX.Element;
+type CompassComponent = ({ textColor }: { textColor: string }) => JSX.Element;
 type CompassMapping = {
   [key: number]: CompassComponent;
 };
@@ -42,6 +42,7 @@ export const Compass: FC<CompassProps> = ({
   gender,
   birthYear,
   full = false,
+  color = "#231f20"
 }) => {
   if (birthYear === null || gender === null) return null;
 
@@ -133,10 +134,10 @@ export const Compass: FC<CompassProps> = ({
   return (
     <>
       <Animated.View style={regularStyle}>
-        <RegularComponent />
+        <RegularComponent textColor={color} />
       </Animated.View>
       <Animated.View style={fullStyle}>
-        <FullComponent />
+        <FullComponent textColor={color} />
       </Animated.View>
     </>
   );

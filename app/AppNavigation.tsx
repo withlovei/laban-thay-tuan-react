@@ -8,7 +8,6 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
-
 import { useColorScheme } from "@/hooks/useColorScheme";
 import UserInformationScreen from "./user-information";
 import MapScreen from "./map";
@@ -23,6 +22,14 @@ import SolutionPDFScreen from "@/app/solution-pdf";
 import StarsPDFScreen from "@/app/stars-pdf";
 import MinhTuanBookPDFScreen from "@/app/minh-tuan-book-pdf";
 import RotateCompassModal from "@/app/rotate-compass-modal";
+import { InformationProvider } from "@/contexts/InformationContext";
+import { InformationBottomSheet } from "@/components/InformationBottomSheet";
+import { InformationContent } from "@/components/InformationContent";
+import { useInformation } from "@/contexts/InformationContext";
+import { Linking } from "react-native";
+import { IconCall } from "@/components/ui/icons/IconCall";
+import { IconPinDrop } from "@/components/ui/icons/IconPinDrop";
+import { IconCaptivePortal } from "@/components/ui/icons/IconCaptivePortal";
 
 const Stack = createStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator<DrawerParamList>();
@@ -49,7 +56,7 @@ function MainStack() {
         name="EditUserModal"
         component={EditUserModal}
         options={{
-          presentation: "transparentModal",
+          presentation: "card",
           animation: "fade",
           headerShown: false,
         }}
@@ -100,8 +107,9 @@ function MainStack() {
   );
 }
 
-export default function AppNavigation() {
+function NavigationContent() {
   const colorScheme = useColorScheme();
+  const { isInformationVisible, hideInformation } = useInformation();
 
   useEffect(() => {
     SplashScreen.hide();
@@ -129,6 +137,62 @@ export default function AppNavigation() {
         />
       </Drawer.Navigator>
       <StatusBar style="auto" />
+      <InformationBottomSheet
+        isVisible={isInformationVisible}
+        onClose={hideInformation}
+        title="Thông tin liên hệ"
+      >
+        <InformationContent
+          title="PHONG THUỶ MINH TUẤN"
+          rows={[
+            {
+              icon: <IconCaptivePortal />,
+              text: "Liên hệ website: phongthuyminhtuan.com",
+              onPress: () => Linking.openURL(`https://phongthuyminhtuan.com`),
+            },
+            {
+              icon: <IconCall />,
+              text: "Hotline hỗ trợ: 088 938 2868",
+              onPress: () => Linking.openURL(`tel:0889382868`),
+            },
+            {
+              icon: <IconPinDrop fill="#7B5C26" />,
+              text: "Địa chỉ: 397-399 Lê Lợi, TP Bắc Giang",
+              onPress: () =>
+                Linking.openURL(
+                  `https://maps.google.com/?q=${encodeURIComponent("397-399 Lê Lợi, TP Bắc Giang")}`
+                ),
+            },
+          ]}
+          images={[
+            {
+              source: require("@/assets/images/bottomsheet/tiktok.png"),
+              onPress: () => Linking.openURL(`https://www.tiktok.com/@thaytuanpt`),
+            },
+            {
+              source: require("@/assets/images/bottomsheet/facebook.png"),
+              onPress: () => Linking.openURL(`https://www.facebook.com/Phongthuyminhtuanbg`),
+            },
+            {
+              source: require("@/assets/images/bottomsheet/zalo.png"),
+              onPress: () => Linking.openURL(`https://zalo.me/3868559906881276529`),
+            },
+            {
+              source: require("@/assets/images/bottomsheet/youtube.png"),
+              onPress: () => Linking.openURL(`https://www.youtube.com/@Thaytuanphongthuy`),
+            },
+          ]}
+          description="Thầy Tuấn Phong Thủy - Chuyên gia tư vấn Phong Thủy và hóa giải lỗi phạm Phong Thủy nhà ở."
+        />
+      </InformationBottomSheet>
     </NavigationContainer>
+  );
+}
+
+export default function AppNavigation() {
+  return (
+    <InformationProvider>
+      <NavigationContent />
+    </InformationProvider>
   );
 }

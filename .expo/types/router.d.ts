@@ -7,7 +7,7 @@ declare module "expo-router" {
   export * from 'expo-router/build';
 
   // prettier-ignore
-  type StaticRoutes = `/` | `/.DS_Store` | `/AppNavigation` | `/compass-only/components/Background` | `/compass-only/` | `/edit-user-modal/` | `/image-picker-modal/` | `/map/` | `/minh-tuan-book-pdf/` | `/sidebar/` | `/solution-pdf/` | `/stars-pdf/` | `/table-of-contents-modal/components/Background` | `/table-of-contents-modal/components/SectionItem` | `/table-of-contents-modal/` | `/user-information/.DS_Store` | `/user-information/components/Background` | `/user-information/` | `/rotate-compass-modal/` | `/components/MapPlaceholder`;
+  type StaticRoutes = `/` | `/.DS_Store` | `/AppNavigation` | `/compass-only/components/Background` | `/compass-only/` | `/components/MapPlaceholder` | `/edit-user-modal/` | `/image-picker-modal/` | `/map/` | `/minh-tuan-book-pdf/` | `/rotate-compass-modal/` | `/sidebar/` | `/solution-pdf/` | `/stars-pdf/` | `/table-of-contents-modal/components/Background` | `/table-of-contents-modal/components/SectionItem` | `/table-of-contents-modal/` | `/user-information/.DS_Store` | `/user-information/components/Background` | `/user-information/` | `/edit-user-modal/components/Background` | `/sidebar/components/Background`;
   // prettier-ignore
   type DynamicRoutes<T extends string> = never;
   // prettier-ignore

@@ -244,7 +244,7 @@ export const getStarMeaning = (star: CompassStar) => {
     case "Tự Ải":
       return "Trong nhà có người khổ tâm, uất ức hay nghĩ quẩn"
     case "Vượng Trang":
-      return "Tốt về đát đai nhà, cửa"
+      return "Tốt về đất đai nhà, cửa"
     case "Hưng Phúc":
       return "Gia đình hòa thuận, êm ấm"
     case "Pháp Trường":

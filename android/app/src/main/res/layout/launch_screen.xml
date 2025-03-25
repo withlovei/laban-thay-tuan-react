@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:scaleType="center"
-        android:src="@drawable/splashscreen_logo" />
-</RelativeLayout>
+    android:background="@drawable/splashscreen_image"
+    android:orientation="vertical">
+    </LinearLayout>

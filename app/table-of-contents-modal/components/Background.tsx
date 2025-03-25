@@ -9,7 +9,7 @@ export const Background = () => {
         style={styles.footer}
       />
       <Image
-        source={require("@/assets/images/side-bar/avt.png")}
+        source={require("@/assets/images/table-of-contents/avt.png")}
         style={styles.avt}
       />
       <Text style={styles.title}>LA BÀN THẦY TUẤN</Text>
