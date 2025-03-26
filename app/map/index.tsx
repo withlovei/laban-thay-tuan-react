@@ -388,7 +388,7 @@ export default function MapScreen({ navigation }: MapScreenProps) {
         </View>
       </View>
       {/* compass */}
-      {/* <Animated.View
+      <Animated.View
         style={[styles.compass, compassStyle]}
         pointerEvents="none"
       >
@@ -398,7 +398,7 @@ export default function MapScreen({ navigation }: MapScreenProps) {
           full={isFullCompass}
           color="#fff"
         />
-      </Animated.View> */}
+      </Animated.View>
       {/* compass heading */}
       <Animated.View
         pointerEvents="none"

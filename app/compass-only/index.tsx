@@ -288,7 +288,7 @@ export default function CompassOnlyScreen({
         </View>
       </View>
       {/* compass */}
-      {/* <Animated.View
+      <Animated.View
         style={[styles.compass, compassStyle]}
         pointerEvents="none"
       >
@@ -297,7 +297,7 @@ export default function CompassOnlyScreen({
           birthYear={user?.birthYear}
           full={isFullCompass}
         />
-      </Animated.View> */}
+      </Animated.View>
       {/* compass heading */}
       <Animated.View
         pointerEvents="none"

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -24,15 +24,15 @@ export function Picker({
   data,
 }: PickerProps) {
   const [bottomSheetHeight, setBottomSheetHeight] = useState(0);
-  const [selected, setSelected] = useState<string | undefined>(initialValue);
+  const selectedRef = useRef<string | undefined>();
 
   const handleSelect = (value: string) => {
-    setSelected(value);
+    selectedRef.current = value;
   };
 
   const handleDone = () => {
-    if (selected) {
-      onSelectValue(selected);
+    if (selectedRef.current) {
+      onSelectValue(selectedRef.current);
     }
     onClose();
   };
@@ -65,7 +65,7 @@ export function Picker({
         <View style={styles.content}>
           <WheelPicker
             data={data.map((item) => ({ value: item, label: item }))}
-            value={selected}
+            value={initialValue}
             onValueChanged={({ item: { value } }) => handleSelect(value)}
           />
         </View>
