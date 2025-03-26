@@ -17,6 +17,7 @@ import { Can } from "./ui/compass/can";
 import { DoaiFull } from "./ui/compass/doai_full";
 import { Doai } from "./ui/compass/doai";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { AfterAnimations } from "@/components/AfterAnimations";
 
 type CompassProps = Pick<User, "gender" | "birthYear"> & { full?: boolean; color?: string };
 
@@ -132,13 +133,13 @@ export const Compass: FC<CompassProps> = ({
   const RegularComponent = compassComponents[gender].regular[remainder];
 
   return (
-    <>
+    <AfterAnimations>
       <Animated.View style={regularStyle}>
         <RegularComponent textColor={color} />
       </Animated.View>
       <Animated.View style={fullStyle}>
         <FullComponent textColor={color} />
       </Animated.View>
-    </>
+    </AfterAnimations>
   );
 };

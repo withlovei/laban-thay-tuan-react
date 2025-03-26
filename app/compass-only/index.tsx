@@ -37,6 +37,7 @@ import { RouteProp } from "@react-navigation/native";
 import { IconSquare } from "@/components/ui/icons/IconSquare";
 import { IconRotateRight } from "@/components/ui/icons/IconRotateRight";
 import { isNumberInRange } from "@/shared/validation";
+import { ScreenPlaceholder } from "@/components/ScreenPlaceholder";
 
 type CompassOnlyScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -176,7 +177,7 @@ export default function CompassOnlyScreen({
     compassHeading.value = animation ? withTiming(roundedHeading, { duration: 500 }) : roundedHeading;
   };
 
-  if (user === null) return null;
+  if (user === null) return <ScreenPlaceholder />;
 
   return (
     <View style={styles.container}>
@@ -287,7 +288,7 @@ export default function CompassOnlyScreen({
         </View>
       </View>
       {/* compass */}
-      <Animated.View
+      {/* <Animated.View
         style={[styles.compass, compassStyle]}
         pointerEvents="none"
       >
@@ -296,7 +297,7 @@ export default function CompassOnlyScreen({
           birthYear={user?.birthYear}
           full={isFullCompass}
         />
-      </Animated.View>
+      </Animated.View> */}
       {/* compass heading */}
       <Animated.View
         pointerEvents="none"

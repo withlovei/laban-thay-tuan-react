@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
 
-export const MapPlaceholder = () => {
+export const ScreenPlaceholder = () => {
   return (
     <View style={styles.container}>
       <ActivityIndicator size="large" color="#FEC41F" />

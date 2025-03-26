@@ -1,5 +1,6 @@
 import { screen } from "@/constants/Dimensions";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image } from "expo-image";
+import { StyleSheet, Text, View } from "react-native";
 
 export const Background = () => {
   return (

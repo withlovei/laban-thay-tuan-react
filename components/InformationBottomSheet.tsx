@@ -37,7 +37,7 @@ export const InformationBottomSheet: React.FC<Props> = ({
 
   React.useEffect(() => {
     if (isVisible) {
-      translateY.value = withSpring(-screen.height / 2, { damping: 50 });
+      translateY.value = withSpring(-375, { damping: 50 });
     } else {
       translateY.value = withTiming(0, { duration: 200 });
     }

@@ -31,7 +31,7 @@ export const InformationContent: React.FC<Props> = ({
   description,
 }) => {
   return (
-    <View style={styles.container}>
+    <View>
       <View style={styles.section}>
         <View style={styles.header}>
           <Text style={styles.headerTitle}>{title}</Text>
@@ -100,9 +100,6 @@ export const InformationContent: React.FC<Props> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   section: {
     backgroundColor: "#FFFFFF",
     padding: 16,

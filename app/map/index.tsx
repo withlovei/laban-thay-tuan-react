@@ -43,7 +43,7 @@ import { getDirectionByCompassHeading } from "@/shared/compass";
 import { mapGenderToText } from "@/shared/transform";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "@/types/navigation";
-import { MapPlaceholder } from "@/components/MapPlaceholder";
+import { ScreenPlaceholder } from "@/components/ScreenPlaceholder";
 
 type MapScreenNavigationProp = StackNavigationProp<RootStackParamList, "Map">;
 
@@ -63,6 +63,7 @@ interface Location {
 
 export default function MapScreen({ navigation }: MapScreenProps) {
   const user = useUserStore((state) => state.user);
+  const [isMapReady, setIsMapReady] = useState(false);
   const [location, setLocation] = useState<Location>();
   const [searchLocation, setSearchLocation] = useState<Location>();
   const compassHeading = useSharedValue(0);
@@ -127,8 +128,10 @@ export default function MapScreen({ navigation }: MapScreenProps) {
   }, [user?.gender, user?.birthYear]);
 
   useEffect(() => {
-    goToMyLocation();
-  }, [location]);
+    if (isMapReady) {
+      goToMyLocation();
+    }
+  }, [location, isMapReady]);
 
   const updateMapCamera = (heading: number) => {
     if (mapRef.current && location) {
@@ -276,7 +279,7 @@ export default function MapScreen({ navigation }: MapScreenProps) {
     );
   };
 
-  if (user === null || location === undefined) return <MapPlaceholder />;
+  if (user === null || location === undefined) return <ScreenPlaceholder />;
 
   return (
     <View style={styles.container}>
@@ -289,6 +292,7 @@ export default function MapScreen({ navigation }: MapScreenProps) {
         showsUserLocation
         rotateEnabled={false}
         showsMyLocationButton={false}
+        onMapReady={() => setIsMapReady(true)}
       />
       <View
         style={[
@@ -384,7 +388,7 @@ export default function MapScreen({ navigation }: MapScreenProps) {
         </View>
       </View>
       {/* compass */}
-      <Animated.View
+      {/* <Animated.View
         style={[styles.compass, compassStyle]}
         pointerEvents="none"
       >
@@ -394,7 +398,7 @@ export default function MapScreen({ navigation }: MapScreenProps) {
           full={isFullCompass}
           color="#fff"
         />
-      </Animated.View>
+      </Animated.View> */}
       {/* compass heading */}
       <Animated.View
         pointerEvents="none"

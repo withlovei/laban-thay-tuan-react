@@ -1,5 +1,6 @@
 import { screen } from "@/constants/Dimensions";
-import { Image, StyleSheet, View } from "react-native";
+import { Image } from "expo-image";
+import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export const Background = () => {

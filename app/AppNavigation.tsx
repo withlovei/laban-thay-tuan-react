@@ -56,7 +56,7 @@ function MainStack() {
         name="EditUserModal"
         component={EditUserModal}
         options={{
-          presentation: "card",
+          presentation: "transparentModal",
           animation: "fade",
           headerShown: false,
         }}
@@ -128,7 +128,7 @@ function NavigationContent() {
           },
           overlayColor: "rgba(0, 0, 0, 0.5)",
         }}
-        detachInactiveScreens={false}
+        detachInactiveScreens={true}
       >
         <Drawer.Screen
           name="MainStack"
