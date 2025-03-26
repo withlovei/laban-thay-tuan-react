@@ -26,7 +26,7 @@ import { InformationProvider } from "@/contexts/InformationContext";
 import { InformationBottomSheet } from "@/components/InformationBottomSheet";
 import { InformationContent } from "@/components/InformationContent";
 import { useInformation } from "@/contexts/InformationContext";
-import { Linking } from "react-native";
+import { Alert, BackHandler, Linking } from "react-native";
 import { IconCall } from "@/components/ui/icons/IconCall";
 import { IconPinDrop } from "@/components/ui/icons/IconPinDrop";
 import { IconCaptivePortal } from "@/components/ui/icons/IconCaptivePortal";
@@ -113,6 +113,35 @@ function NavigationContent() {
 
   useEffect(() => {
     SplashScreen.hide();
+  }, []);
+
+  useEffect(() => {
+    const onBackPress = () => {
+      Alert.alert(
+        'Thoát ứng dụng',
+        'Bạn có muốn thoát ứng dụng?',
+        [
+          {
+            text: 'Hủy',
+            onPress: () => {
+              // Do nothing
+            },
+            style: 'cancel',
+          },
+          { text: 'Thoát', onPress: () => BackHandler.exitApp() },
+        ],
+        { cancelable: false }
+      );
+  
+      return true;
+    };
+  
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      onBackPress
+    );
+  
+    return () => backHandler.remove();
   }, []);
 
   return (
