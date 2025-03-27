@@ -1,12 +1,8 @@
-import React, { useRef, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  Text,
-} from "react-native";
+import React, { useRef } from "react";
+import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import WheelPicker from "@quidone/react-native-wheel-picker";
 import { screen } from "@/constants/Dimensions";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface PickerProps {
   initialValue?: string;
@@ -23,7 +19,7 @@ export function Picker({
   title,
   data,
 }: PickerProps) {
-  const [bottomSheetHeight, setBottomSheetHeight] = useState(0);
+  const { top } = useSafeAreaInsets();
   const selectedRef = useRef<string | undefined>();
 
   const handleSelect = (value: string) => {
@@ -47,11 +43,8 @@ export function Picker({
       <View
         style={[
           styles.bottomSheetContainer,
-          { transform: [{ translateY: -bottomSheetHeight }] },
+          { top: screen.height + top - 280 },
         ]}
-        onLayout={(event) =>
-          setBottomSheetHeight(event.nativeEvent.layout.height)
-        }
       >
         <View style={styles.header}>
           <TouchableOpacity onPress={onClose}>
@@ -66,7 +59,7 @@ export function Picker({
           <WheelPicker
             data={data.map((item) => ({ value: item, label: item }))}
             value={initialValue}
-            onValueChanged={({ item: { value } }) => handleSelect(value)}
+            onValueChanging={({ item: { value } }) => handleSelect(value)}
           />
         </View>
       </View>
@@ -98,7 +91,6 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "#FFF",
     position: "absolute",
-    top: screen.height,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },

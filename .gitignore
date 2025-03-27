@@ -12,3 +12,7 @@ expo-env.d.ts
 # Firebase config files
 ios/GoogleService-Info.plist
 android/app/google-services.json
+
+# Keystore
+android/key.properties
+android/app/upload-keystore.jks

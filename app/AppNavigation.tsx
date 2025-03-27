@@ -7,7 +7,6 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import UserInformationScreen from "./user-information";
 import MapScreen from "./map";
@@ -30,25 +29,19 @@ import { Alert, BackHandler, Linking } from "react-native";
 import { IconCall } from "@/components/ui/icons/IconCall";
 import { IconPinDrop } from "@/components/ui/icons/IconPinDrop";
 import { IconCaptivePortal } from "@/components/ui/icons/IconCaptivePortal";
+import { PaymentProvider } from "@/contexts/PaymentContext";
+import { PaymentBottomSheet } from "@/app/payment/PaymentBottomSheet";
+import { usePayment } from "@/contexts/PaymentContext";
 
 const Stack = createStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
 function MainStack() {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen
-        name="UserInformation"
-        component={UserInformationScreen}
-      />
-      <Stack.Screen
-        name="Map"
-        component={MapScreen}
-      />
-      <Stack.Screen
-        name="CompassOnly"
-        component={CompassOnlyScreen}
-      />
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="UserInformation" component={UserInformationScreen} />
+      <Stack.Screen name="Map" component={MapScreen} />
+      <Stack.Screen name="CompassOnly" component={CompassOnlyScreen} />
       <Stack.Screen
         name="EditUserModal"
         component={EditUserModal}
@@ -84,18 +77,9 @@ function MainStack() {
           headerShown: false,
         }}
       />
-      <Stack.Screen
-        name="SolutionPDF"
-        component={SolutionPDFScreen}
-      />
-      <Stack.Screen
-        name="StarsPDF"
-        component={StarsPDFScreen}
-      />
-      <Stack.Screen
-        name="MinhTuanBookPDF"
-        component={MinhTuanBookPDFScreen}
-      />
+      <Stack.Screen name="SolutionPDF" component={SolutionPDFScreen} />
+      <Stack.Screen name="StarsPDF" component={StarsPDFScreen} />
+      <Stack.Screen name="MinhTuanBookPDF" component={MinhTuanBookPDFScreen} />
     </Stack.Navigator>
   );
 }
@@ -103,6 +87,7 @@ function MainStack() {
 function NavigationContent() {
   const colorScheme = useColorScheme();
   const { isInformationVisible, hideInformation } = useInformation();
+  const { isPaymentVisible } = usePayment();
 
   useEffect(() => {
     SplashScreen.hide();
@@ -111,29 +96,29 @@ function NavigationContent() {
   useEffect(() => {
     const onBackPress = () => {
       Alert.alert(
-        'Thoát ứng dụng',
-        'Bạn có muốn thoát ứng dụng?',
+        "Thoát ứng dụng",
+        "Bạn có muốn thoát ứng dụng?",
         [
           {
-            text: 'Hủy',
+            text: "Hủy",
             onPress: () => {
               // Do nothing
             },
-            style: 'cancel',
+            style: "cancel",
           },
-          { text: 'Thoát', onPress: () => BackHandler.exitApp() },
+          { text: "Thoát", onPress: () => BackHandler.exitApp() },
         ],
         { cancelable: false }
       );
-  
+
       return true;
     };
-  
+
     const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
+      "hardwareBackPress",
       onBackPress
     );
-  
+
     return () => backHandler.remove();
   }, []);
 
@@ -182,31 +167,38 @@ function NavigationContent() {
               text: "Địa chỉ: 397-399 Lê Lợi, TP Bắc Giang",
               onPress: () =>
                 Linking.openURL(
-                  `https://maps.google.com/?q=${encodeURIComponent("397-399 Lê Lợi, TP Bắc Giang")}`
+                  `https://maps.google.com/?q=${encodeURIComponent(
+                    "397-399 Lê Lợi, TP Bắc Giang"
+                  )}`
                 ),
             },
           ]}
           images={[
             {
               source: require("@/assets/images/bottomsheet/tiktok.png"),
-              onPress: () => Linking.openURL(`https://www.tiktok.com/@thaytuanpt`),
+              onPress: () =>
+                Linking.openURL(`https://www.tiktok.com/@thaytuanpt`),
             },
             {
               source: require("@/assets/images/bottomsheet/facebook.png"),
-              onPress: () => Linking.openURL(`https://www.facebook.com/Phongthuyminhtuanbg`),
+              onPress: () =>
+                Linking.openURL(`https://www.facebook.com/Phongthuyminhtuanbg`),
             },
             {
               source: require("@/assets/images/bottomsheet/zalo.png"),
-              onPress: () => Linking.openURL(`https://zalo.me/3868559906881276529`),
+              onPress: () =>
+                Linking.openURL(`https://zalo.me/3868559906881276529`),
             },
             {
               source: require("@/assets/images/bottomsheet/youtube.png"),
-              onPress: () => Linking.openURL(`https://www.youtube.com/@Thaytuanphongthuy`),
+              onPress: () =>
+                Linking.openURL(`https://www.youtube.com/@Thaytuanphongthuy`),
             },
           ]}
           description="Thầy Tuấn Phong Thủy - Chuyên gia tư vấn Phong Thủy và hóa giải lỗi phạm Phong Thủy nhà ở."
         />
       </InformationBottomSheet>
+      <PaymentBottomSheet isVisible={isPaymentVisible} />
     </NavigationContainer>
   );
 }
@@ -214,7 +206,9 @@ function NavigationContent() {
 export default function AppNavigation() {
   return (
     <InformationProvider>
-      <NavigationContent />
+      <PaymentProvider>
+        <NavigationContent />
+      </PaymentProvider>
     </InformationProvider>
   );
 }

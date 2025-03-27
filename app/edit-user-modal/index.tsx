@@ -108,17 +108,16 @@ export default function EditUserModal({ navigation }: EditUserModalProps) {
             <Text style={styles.buttonText}>LƯU</Text>
           </TouchableOpacity>
         </View>
-
-        {showYearPicker && (
-          <Picker
-            initialValue={birthYear?.toString()}
-            onSelectValue={handleYearSelect}
-            onClose={() => setShowYearPicker(false)}
-            data={YEARS}
-            title="Năm sinh"
-          />
-        )}
       </ScrollView>
+      {showYearPicker && (
+        <Picker
+          initialValue={birthYear?.toString()}
+          onSelectValue={handleYearSelect}
+          onClose={() => setShowYearPicker(false)}
+          data={YEARS}
+          title="Năm sinh"
+        />
+      )}
     </SafeAreaView>
   );
 }

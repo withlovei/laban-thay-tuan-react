@@ -122,17 +122,16 @@ export default function UserInformationScreen({
             <Text style={styles.buttonText}>XEM LA BÀN</Text>
           </TouchableOpacity>
         </View>
-
-        {showYearPicker && (
-          <Picker
-            initialValue={birthYear?.toString()}
-            onSelectValue={handleYearSelect}
-            onClose={() => setShowYearPicker(false)}
-            data={YEARS}
-            title="Năm sinh"
-          />
-        )}
       </ScrollView>
+      {showYearPicker && (
+        <Picker
+          initialValue={birthYear?.toString()}
+          onSelectValue={handleYearSelect}
+          onClose={() => setShowYearPicker(false)}
+          data={YEARS}
+          title="Năm sinh"
+        />
+      )}
     </SafeAreaView>
   );
 }

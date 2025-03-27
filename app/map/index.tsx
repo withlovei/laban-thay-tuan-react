@@ -44,6 +44,7 @@ import { mapGenderToText } from "@/shared/transform";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "@/types/navigation";
 import { ScreenPlaceholder } from "@/components/ScreenPlaceholder";
+import { useCheckSubscription } from "@/hooks/useCheckSubscription";
 
 type MapScreenNavigationProp = StackNavigationProp<RootStackParamList, "Map">;
 
@@ -100,6 +101,7 @@ export default function MapScreen({ navigation }: MapScreenProps) {
   const [isLockCompass, toggleLockCompass] = useToggle(false);
   const [isFullCompass, toggleFullCompass] = useToggle(false);
 
+  useCheckSubscription();
   useEffect(() => {
     requestLocationPermission();
     const degree_update_rate = 0.001;
