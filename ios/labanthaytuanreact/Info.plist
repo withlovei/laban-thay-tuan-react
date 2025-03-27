@@ -28,7 +28,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>myapp</string>
-				<string>com.hieuvnuet.labanthaytuanreact</string>
+				<string>com.lbtt.laban.thaytuan.dev</string>
 			</array>
 		</dict>
 		<dict>

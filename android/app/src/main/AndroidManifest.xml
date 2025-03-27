@@ -30,7 +30,7 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="myapp"/>
-        <data android:scheme="com.hieuvnuet.labanthaytuanreact"/>
+        <data android:scheme="com.lbtt.laban.thaytuan.dev"/>
         <data android:scheme="exp+laban-thay-tuan-react"/>
       </intent-filter>
     </activity>

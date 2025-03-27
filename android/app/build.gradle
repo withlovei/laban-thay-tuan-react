@@ -1,6 +1,8 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+apply plugin: 'com.google.gms.google-services'
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
 
@@ -86,9 +88,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.hieuvnuet.labanthaytuanreact'
+    namespace 'com.lbtt.laban.thaytuan.dev'
     defaultConfig {
-        applicationId 'com.hieuvnuet.labanthaytuanreact'
+        applicationId 'com.lbtt.laban.thaytuan.dev'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

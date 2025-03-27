@@ -36,21 +36,18 @@ const Drawer = createDrawerNavigator<DrawerParamList>();
 
 function MainStack() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen
         name="UserInformation"
         component={UserInformationScreen}
-        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Map"
         component={MapScreen}
-        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="CompassOnly"
         component={CompassOnlyScreen}
-        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="EditUserModal"
@@ -67,7 +64,6 @@ function MainStack() {
         options={{
           presentation: "transparentModal",
           animation: "fade",
-          headerShown: false,
         }}
       />
       <Stack.Screen
@@ -91,17 +87,14 @@ function MainStack() {
       <Stack.Screen
         name="SolutionPDF"
         component={SolutionPDFScreen}
-        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="StarsPDF"
         component={StarsPDFScreen}
-        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="MinhTuanBookPDF"
         component={MinhTuanBookPDFScreen}
-        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

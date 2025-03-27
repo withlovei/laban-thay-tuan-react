@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.hieuvnuet.labanthaytuanreact",
+      "bundleIdentifier": "com.lbtt.laban.thaytuan.dev",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -20,7 +20,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.hieuvnuet.labanthaytuanreact"
+      "package": "com.lbtt.laban.thaytuan.dev"
     },
     "plugins": [
       [

@@ -1,5 +1,6 @@
 #import "AppDelegate.h"
 
+#import <Firebase.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTLinkingManager.h>
 #import "RNSplashScreen.h"
@@ -18,6 +19,7 @@
   [super application:application didFinishLaunchingWithOptions:launchOptions];
 
   [RNSplashScreen show];
+  [FIRApp configure];
   return YES;
 }
 
