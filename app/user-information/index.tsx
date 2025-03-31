@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   ScrollView,
@@ -15,6 +15,7 @@ import { useUserStore } from "@/stores/useUserStore";
 import { GenderCheckBox } from "@/components/GenderCheckBox";
 import { Background } from "@/app/user-information/components/Background";
 import useNavigation from "@/stores/useNavigation";
+import { useAndroidKeyboardModule } from "@/hooks/useAndroidKeyboardModule";
 
 // Temporary type definition for User
 const currentYear = new Date().getFullYear();
@@ -30,6 +31,12 @@ export default function UserInformationScreen() {
   const [gender, setGender] = useState<"MALE" | "FEMALE" | null>(null);
   const [showYearPicker, setShowYearPicker] = useState(false);
   const { navigateTo } = useNavigation();
+  const { setSoftInputMode } = useAndroidKeyboardModule();
+
+  useEffect(() => {
+    setSoftInputMode("resize");
+    return () => setSoftInputMode("nothing");
+  }, [])
 
   const handleYearSelect = (year: string) => {
     setBirthYear(Number(year));

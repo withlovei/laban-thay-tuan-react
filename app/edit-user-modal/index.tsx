@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   ScrollView,
@@ -43,6 +43,18 @@ export default function EditUserModal({ isVisible, onClose }: EditUserModalProps
     user?.gender ?? null
   );
   const [showYearPicker, setShowYearPicker] = useState(false);
+
+  useEffect(() => {
+    if (!isVisible) {
+      resetState();
+    }
+  }, [isVisible])
+
+  const resetState = () => {
+    setGender(null);
+    setBirthYear(null);
+    setShowYearPicker(false);
+  }
 
   const handleYearSelect = (year: string) => {
     setBirthYear(Number(year));

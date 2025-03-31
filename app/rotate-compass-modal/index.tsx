@@ -1,6 +1,7 @@
-import React, { useRef } from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { StyleSheet, View, Text, TouchableOpacity, Alert } from "react-native";
 import { UserInfoField } from "@/components/UserInfoField";
+import { isNumberInRange } from "@/shared/validation";
 
 interface RotateCompassModalProps {
   isVisible: boolean;
@@ -15,11 +16,22 @@ export default function RotateCompassModal({
 }: RotateCompassModalProps) {
   const tempDegree = useRef<number | null>(null);
   const handleSave = () => {
+    if (tempDegree.current === null || !isNumberInRange(tempDegree.current, 0, 360)) {
+      Alert.alert("Vui lòng nhập độ xoay từ 0 đến 360");
+      return;
+    }
     if (tempDegree.current !== null) {
       setDegree({ degree: tempDegree.current, isDone: false });
       onClose();
     }
   }
+  
+  useEffect(() => {
+    if (!isVisible) {
+      tempDegree.current = null;
+    }
+  }, [isVisible])
+
   if (!isVisible) return null;
   return (
     <View style={styles.modalOverlay}>

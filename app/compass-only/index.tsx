@@ -102,8 +102,6 @@ export default function CompassOnlyScreen() {
   useEffect(() => {
     if (!rotate.isDone && isNumberFinite(rotate.degree)) {
       setIsLockCompass(true);
-      updateCompassHeading(rotate.degree, true);
-      setRotate({ degree: 0, isDone: true });
     }
   }, [rotate]);
 
@@ -120,6 +118,8 @@ export default function CompassOnlyScreen() {
   useEffect(() => {
     if (isLockCompass) {
       updateCompassHeadingFnRef.current = () => {};
+      updateCompassHeading(rotate.degree, true);
+      setRotate({ degree: 0, isDone: true });
     } else {
       updateCompassHeadingFnRef.current = updateCompassHeading;
     }

@@ -61,7 +61,7 @@ export default function MapScreen() {
   const { isVisible, onClose, onOpen } = useModal();
   const [isMapReady, setIsMapReady] = useState(false);
   const [location, setLocation] = useState<Location>();
-  const [searchLocation, setSearchLocation] = useState<Location>();
+  const [searchLocation, setSearchLocation] = useState<Location | null>(null);
   const compassHeading = useSharedValue(0);
   const compassScale = useSharedValue(1);
   const mapRef = useRef<MapView>(null);
@@ -101,7 +101,7 @@ export default function MapScreen() {
     requestLocationPermission();
     compassService.subscribe((heading: number) => {
       updateCompassHeadingFnRef.current(heading);
-    })
+    });
   }, []);
 
   useEffect(() => {
@@ -182,12 +182,12 @@ export default function MapScreen() {
     }
 
     const remapHeading = heading > 180 ? heading - 360 : heading;
-    const roundedHeading = Number(remapHeading.toFixed(3));
+    const roundedHeading = Number(remapHeading.toFixed(1));
     compassHeading.value = roundedHeading;
   };
 
   const handleSearchLocationTextChange = (text: string) => {
-    const [latitude, longitude] = text.split(",");
+    const [latitude, longitude] = text.split(",").map((item) => item.trim());
     if (
       latitude &&
       longitude &&
@@ -198,6 +198,8 @@ export default function MapScreen() {
         latitude: Number(latitude),
         longitude: Number(longitude),
       });
+    } else {
+      setSearchLocation(null);
     }
   };
 
@@ -205,7 +207,7 @@ export default function MapScreen() {
     if (mapRef.current && searchLocation) {
       mapRef.current.setCamera({
         center: searchLocation,
-        zoom: 1000,
+        zoom: 22,
         pitch: 0,
       });
     }
@@ -218,7 +220,7 @@ export default function MapScreen() {
     if (mapRef.current && location) {
       mapRef.current.setCamera({
         center: location,
-        zoom: 17,
+        zoom: 22,
         pitch: 0,
       });
     }
@@ -278,13 +280,13 @@ export default function MapScreen() {
         style={styles.map}
         mapType="satellite"
         showsCompass={false}
-        showsUserLocation={false}
+        showsUserLocation={true}
         rotateEnabled={false}
         showsMyLocationButton={false}
         onMapReady={() => setIsMapReady(true)}
         maxZoomLevel={22}
       >
-        <Marker coordinate={location} />
+        {searchLocation && <Marker coordinate={searchLocation} />}
       </MapView>
       <View
         style={[
@@ -310,7 +312,7 @@ export default function MapScreen() {
           <TextInput
             style={styles.textInput}
             placeholderTextColor={"rgba(123, 92, 38, 0.2)"}
-            placeholder={`${location?.latitude}, ${location?.longitude}`}
+            placeholder={`Nhập địa chỉ hoặc toạ độ`}
             onChangeText={(text) => handleSearchLocationTextChange(text)}
           />
           <IconContainer onPress={goToSearchLocation}>
