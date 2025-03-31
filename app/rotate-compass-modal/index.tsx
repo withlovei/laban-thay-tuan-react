@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { StyleSheet, View, Text, TouchableOpacity, Alert } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { UserInfoField } from "@/components/UserInfoField";
 import { isNumberInRange } from "@/shared/validation";
 
@@ -17,7 +17,7 @@ export default function RotateCompassModal({
   const tempDegree = useRef<number | null>(null);
   const handleSave = () => {
     if (tempDegree.current === null || !isNumberInRange(tempDegree.current, 0, 360)) {
-      Alert.alert("Vui lòng nhập độ xoay từ 0 đến 360");
+      alert("Vui lòng nhập độ xoay từ 0 đến 360");
       return;
     }
     if (tempDegree.current !== null) {
