@@ -37,7 +37,7 @@ export const InformationBottomSheet: React.FC<Props> = ({
 
   React.useEffect(() => {
     if (isVisible) {
-      translateY.value = withSpring(-375, { damping: 50 });
+      translateY.value = withSpring(-410, { damping: 50 });
     } else {
       translateY.value = withTiming(0, { duration: 200 });
     }
@@ -68,6 +68,7 @@ export const InformationBottomSheet: React.FC<Props> = ({
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
+    zIndex: 10,
   },
   backdrop: {
     ...StyleSheet.absoluteFillObject,

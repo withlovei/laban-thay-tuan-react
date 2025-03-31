@@ -10,7 +10,7 @@ import {
 
 interface UserInfoFieldProps {
   title: string;
-  value: string;
+  value?: string;
   onChangeText?: (text: string) => void;
   onPress?: () => void;
   keyboardType?: KeyboardTypeOptions;
@@ -44,7 +44,6 @@ export function UserInfoField({
     return (
       <TextInput
         style={styles.input}
-        value={value}
         onChangeText={onChangeText}
         keyboardType={keyboardType}
         maxLength={maxLength}

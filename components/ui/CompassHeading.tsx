@@ -7,7 +7,7 @@ export default function CompassHeading({ showRect = true, ...props }: CompassHea
   // center point is x: 195, y: 209
   return (
     <Svg viewBox="0 0 390 404" fill="none" {...props}>
-      {showRect && (
+      {/* {showRect && (
         <Rect
           x="107.5"
           y="121.5"
@@ -16,7 +16,7 @@ export default function CompassHeading({ showRect = true, ...props }: CompassHea
           rx="3.5"
           stroke="#D72229"
         />
-      )}
+      )} */}
       <Path
         d="M195.495 0.505025C195.222 0.231658 194.778 0.231658 194.505 0.505025L190.05 4.9598C189.777 5.23317 189.777 5.67638 190.05 5.94975C190.324 6.22311 190.767 6.22311 191.04 5.94975L195 1.98995L198.96 5.94975C199.233 6.22311 199.676 6.22311 199.95 5.94975C200.223 5.67638 200.223 5.23316 199.95 4.9598L195.495 0.505025ZM194.3 1L194.3 404L195.7 404L195.7 1L194.3 1Z"
         fill="#D72229"
@@ -92,14 +92,14 @@ export default function CompassHeading({ showRect = true, ...props }: CompassHea
           <Circle cx="195" cy="209" r="32" />
         </ClipPath>
       </Defs>
-      <Image
+      {/* <Image
         x="163"
         y="177"
         width="64"
         height="64"
         href={require("@/assets/images/compass-logo.png")}
         clipPath="url(#circleClip)"
-      />
+      /> */}
     </Svg>
   );
 }

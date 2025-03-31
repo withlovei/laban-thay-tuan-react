@@ -6,9 +6,8 @@ import {
   Platform,
   TextInput,
 } from "react-native";
-import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import Geolocation from "react-native-geolocation-service";
-import CompassHeading from "react-native-compass-heading";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useToggle } from "@/hooks/useToggle";
 import { IconLock } from "@/components/ui/icons/IconLock";
@@ -41,16 +40,11 @@ import {
 } from "@/shared/compass";
 import { getDirectionByCompassHeading } from "@/shared/compass";
 import { mapGenderToText } from "@/shared/transform";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "@/types/navigation";
 import { ScreenPlaceholder } from "@/components/ScreenPlaceholder";
 import { useCheckSubscription } from "@/hooks/useCheckSubscription";
-
-type MapScreenNavigationProp = StackNavigationProp<RootStackParamList, "Map">;
-
-interface MapScreenProps {
-  navigation: MapScreenNavigationProp;
-}
+import { compassService } from "@/services/compass";
+import { useModal } from "@/hooks/useModal";
+import EditUserModal from "@/app/edit-user-modal";
 
 const COMPASS_SIZE = screen.width - 26;
 const COMPASS_HEADING_SIZE = screen.width;
@@ -62,8 +56,9 @@ interface Location {
   longitude: number;
 }
 
-export default function MapScreen({ navigation }: MapScreenProps) {
+export default function MapScreen() {
   const user = useUserStore((state) => state.user);
+  const { isVisible, onClose, onOpen } = useModal();
   const [isMapReady, setIsMapReady] = useState(false);
   const [location, setLocation] = useState<Location>();
   const [searchLocation, setSearchLocation] = useState<Location>();
@@ -104,17 +99,9 @@ export default function MapScreen({ navigation }: MapScreenProps) {
   useCheckSubscription();
   useEffect(() => {
     requestLocationPermission();
-    const degree_update_rate = 0.001;
-
-    CompassHeading.start(
-      degree_update_rate,
-      ({ heading }: { heading: number }) => {
-        updateCompassHeadingFnRef.current(heading);
-      }
-    );
-    return () => {
-      CompassHeading.stop();
-    };
+    compassService.subscribe((heading: number) => {
+      updateCompassHeadingFnRef.current(heading);
+    })
   }, []);
 
   useEffect(() => {
@@ -218,7 +205,7 @@ export default function MapScreen({ navigation }: MapScreenProps) {
     if (mapRef.current && searchLocation) {
       mapRef.current.setCamera({
         center: searchLocation,
-        zoom: 17,
+        zoom: 1000,
         pitch: 0,
       });
     }
@@ -291,11 +278,14 @@ export default function MapScreen({ navigation }: MapScreenProps) {
         style={styles.map}
         mapType="satellite"
         showsCompass={false}
-        showsUserLocation
+        showsUserLocation={false}
         rotateEnabled={false}
         showsMyLocationButton={false}
         onMapReady={() => setIsMapReady(true)}
-      />
+        maxZoomLevel={22}
+      >
+        <Marker coordinate={location} />
+      </MapView>
       <View
         style={[
           styles.safeAreaView,
@@ -303,6 +293,7 @@ export default function MapScreen({ navigation }: MapScreenProps) {
         ]}
         pointerEvents="box-none"
       >
+        <EditUserModal isVisible={isVisible} onClose={onClose} />
         <NavigationBar />
         {/* tool bar */}
         <View style={styles.toolBar}>
@@ -362,7 +353,7 @@ export default function MapScreen({ navigation }: MapScreenProps) {
           <IconContainer onPress={goToMyLocation}>
             <IconPinDrop />
           </IconContainer>
-          <IconContainer onPress={() => navigation.navigate("EditUserModal")}>
+          <IconContainer onPress={onOpen}>
             <IconEditDocument />
           </IconContainer>
         </View>
@@ -399,6 +390,7 @@ export default function MapScreen({ navigation }: MapScreenProps) {
           birthYear={user?.birthYear}
           full={isFullCompass}
           color="#fff"
+          map={true}
         />
       </Animated.View>
       {/* compass heading */}

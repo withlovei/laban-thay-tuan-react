@@ -1,25 +1,15 @@
 import React from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "@/types/navigation";
 import { IconContainer } from "@/components/ui/IconContainer";
 import { IconClose } from "@/components/ui/icons/IconClose";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
-import { RouteProp } from "@react-navigation/native";
-
-type ImagePickerModalNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  "ImagePickerModal"
->;
-
-type ImagePickerModalRouteProp = RouteProp<RootStackParamList, "ImagePickerModal">;
-
 interface ImagePickerModalProps {
-  navigation: ImagePickerModalNavigationProp;
-  route: ImagePickerModalRouteProp;
+  setUri: (uri: string) => void;
+  isVisible: boolean;
+  onClose: () => void;
 }
 
-export default function ImagePickerModal({ navigation, route }: ImagePickerModalProps) {
+export default function ImagePickerModal({ setUri, isVisible, onClose }: ImagePickerModalProps) {
   const handleCameraLaunch = async () => {
     const result = await launchCamera({
       mediaType: "photo",
@@ -27,9 +17,8 @@ export default function ImagePickerModal({ navigation, route }: ImagePickerModal
     });
 
     if (result.assets && result.assets[0]?.uri) {
-      navigation.popTo(route.params.from, {
-        uri: result.assets[0].uri,
-      } as any);
+      setUri(result.assets[0].uri);
+      onClose();
     }
   };
 
@@ -40,18 +29,19 @@ export default function ImagePickerModal({ navigation, route }: ImagePickerModal
     });
 
     if (result.assets && result.assets[0]?.uri) {
-      navigation.popTo(route.params.from, {
-        uri: result.assets[0].uri,
-      } as any);
+      setUri(result.assets[0].uri);
+      onClose();
     }
   };
+
+  if (!isVisible) return null;
 
   return (
     <View style={styles.modalOverlay}>
       <View style={styles.modalContent}>
         <View style={styles.header}>
-          <Text style={styles.title}>Select Image</Text>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.title}>Chọn ảnh</Text>
+          <TouchableOpacity onPress={onClose}>
             <IconContainer>
               <IconClose />
             </IconContainer>
@@ -62,14 +52,14 @@ export default function ImagePickerModal({ navigation, route }: ImagePickerModal
           style={styles.button}
           onPress={handleCameraLaunch}
         >
-          <Text style={styles.buttonText}>Take Photo</Text>
+          <Text style={styles.buttonText}>Mở máy ảnh</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.button}
           onPress={handleGalleryLaunch}
         >
-          <Text style={styles.buttonText}>Choose from Library</Text>
+          <Text style={styles.buttonText}>Chọn từ thư viện</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -82,6 +72,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 10,
   },
   modalContent: {
     backgroundColor: "white",

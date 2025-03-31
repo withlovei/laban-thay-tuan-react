@@ -1,93 +1,47 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  NavigationContainer,
-} from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import UserInformationScreen from "./user-information";
 import MapScreen from "./map";
 import SplashScreen from "react-native-splash-screen";
 import Sidebar from "@/app/sidebar";
-import EditUserModal from "@/app/edit-user-modal";
-import { RootStackParamList, DrawerParamList } from "@/types/navigation";
 import CompassOnlyScreen from "@/app/compass-only";
-import ImagePickerModal from "@/app/image-picker-modal";
-import TableOfContentsScreen from "@/app/table-of-contents-modal";
-import SolutionPDFScreen from "@/app/solution-pdf";
 import StarsPDFScreen from "@/app/stars-pdf";
-import MinhTuanBookPDFScreen from "@/app/minh-tuan-book-pdf";
-import RotateCompassModal from "@/app/rotate-compass-modal";
 import { InformationProvider } from "@/contexts/InformationContext";
 import { InformationBottomSheet } from "@/components/InformationBottomSheet";
 import { InformationContent } from "@/components/InformationContent";
 import { useInformation } from "@/contexts/InformationContext";
-import { Alert, BackHandler, Linking } from "react-native";
+import { Alert, BackHandler, Linking, StyleSheet, View } from "react-native";
 import { IconCall } from "@/components/ui/icons/IconCall";
 import { IconPinDrop } from "@/components/ui/icons/IconPinDrop";
 import { IconCaptivePortal } from "@/components/ui/icons/IconCaptivePortal";
 import { PaymentProvider } from "@/contexts/PaymentContext";
 import { PaymentBottomSheet } from "@/app/payment/PaymentBottomSheet";
-import { usePayment } from "@/contexts/PaymentContext";
-
-const Stack = createStackNavigator<RootStackParamList>();
-const Drawer = createDrawerNavigator<DrawerParamList>();
+import useNavigation from "@/stores/useNavigation";
+import { SidebarProvider } from "@/contexts/SidebarContext";
+import MinhTuanBookPDFScreen from "@/app/minh-tuan-book-pdf";
+import SolutionPDFScreen from "@/app/solution-pdf";
 
 function MainStack() {
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="UserInformation" component={UserInformationScreen} />
-      <Stack.Screen name="Map" component={MapScreen} />
-      <Stack.Screen name="CompassOnly" component={CompassOnlyScreen} />
-      <Stack.Screen
-        name="EditUserModal"
-        component={EditUserModal}
-        options={{
-          presentation: "transparentModal",
-          animation: "fade",
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="ImagePickerModal"
-        component={ImagePickerModal}
-        options={{
-          presentation: "transparentModal",
-          animation: "fade",
-        }}
-      />
-      <Stack.Screen
-        name="RotateCompassModal"
-        component={RotateCompassModal}
-        options={{
-          presentation: "transparentModal",
-          animation: "fade",
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="TableOfContents"
-        component={TableOfContentsScreen}
-        options={{
-          presentation: "card",
-          animation: "fade",
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen name="SolutionPDF" component={SolutionPDFScreen} />
-      <Stack.Screen name="StarsPDF" component={StarsPDFScreen} />
-      <Stack.Screen name="MinhTuanBookPDF" component={MinhTuanBookPDFScreen} />
-    </Stack.Navigator>
-  );
+  const { currentScreen } = useNavigation();
+  switch (currentScreen) {
+    case "user-information":
+      return <UserInformationScreen />;
+    case "map":
+      return <MapScreen />;
+    case "compass-only":
+      return <CompassOnlyScreen />;
+    case "stars-pdf":
+      return <StarsPDFScreen />;
+    case "minh-tuan-book-pdf":
+      return <MinhTuanBookPDFScreen />;
+    case "solution-pdf":
+      return <SolutionPDFScreen />;
+    default:
+      return <UserInformationScreen />
+  }
 }
 
 function NavigationContent() {
-  const colorScheme = useColorScheme();
   const { isInformationVisible, hideInformation } = useInformation();
-  const { isPaymentVisible } = usePayment();
 
   useEffect(() => {
     SplashScreen.hide();
@@ -123,27 +77,9 @@ function NavigationContent() {
   }, []);
 
   return (
-    <NavigationContainer
-      theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-    >
-      <Drawer.Navigator
-        drawerContent={(props) => <Sidebar {...props} />}
-        screenOptions={{
-          drawerStyle: {
-            backgroundColor: "#FEC41F",
-            width: "80%",
-          },
-          overlayColor: "rgba(0, 0, 0, 0.5)",
-        }}
-        detachInactiveScreens={true}
-      >
-        <Drawer.Screen
-          name="MainStack"
-          component={MainStack}
-          options={{ headerShown: false }}
-        />
-      </Drawer.Navigator>
-      <StatusBar style="auto" />
+    <View style={styles.container}>
+      <MainStack />
+      <Sidebar />
       <InformationBottomSheet
         isVisible={isInformationVisible}
         onClose={hideInformation}
@@ -198,8 +134,8 @@ function NavigationContent() {
           description="Thầy Tuấn Phong Thủy - Chuyên gia tư vấn Phong Thủy và hóa giải lỗi phạm Phong Thủy nhà ở."
         />
       </InformationBottomSheet>
-      <PaymentBottomSheet isVisible={isPaymentVisible} />
-    </NavigationContainer>
+      <PaymentBottomSheet />
+    </View>
   );
 }
 
@@ -207,8 +143,16 @@ export default function AppNavigation() {
   return (
     <InformationProvider>
       <PaymentProvider>
-        <NavigationContent />
+        <SidebarProvider>
+          <NavigationContent />
+        </SidebarProvider>
       </PaymentProvider>
     </InformationProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});

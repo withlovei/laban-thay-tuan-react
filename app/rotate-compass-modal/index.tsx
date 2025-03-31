@@ -1,32 +1,26 @@
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "@/types/navigation";
 import { UserInfoField } from "@/components/UserInfoField";
-import { RouteProp } from "@react-navigation/native";
 
 interface RotateCompassModalProps {
-  navigation: StackNavigationProp<
-    RootStackParamList,
-    "RotateCompassModal"
-  >;
-  route: RouteProp<RootStackParamList, "RotateCompassModal">;
+  isVisible: boolean;
+  onClose: () => void;
+  setDegree: (degree: { degree: number; isDone: boolean }) => void;
 }
 
 export default function RotateCompassModal({
-  navigation,
-  route,
+  isVisible,
+  onClose,
+  setDegree,
 }: RotateCompassModalProps) {
-  const [tempDegree, setTempDegree] = useState<number | null>(null);
-
-  const handleRotateCompass = () => {
-    if (tempDegree) {
-      navigation.popTo(route.params.from, {
-        degree: tempDegree,
-      } as any);
+  const tempDegree = useRef<number | null>(null);
+  const handleSave = () => {
+    if (tempDegree.current !== null) {
+      setDegree({ degree: tempDegree.current, isDone: false });
+      onClose();
     }
-  };
-
+  }
+  if (!isVisible) return null;
   return (
     <View style={styles.modalOverlay}>
       <View style={styles.modalContent}>
@@ -35,8 +29,7 @@ export default function RotateCompassModal({
         <View style={styles.inputContainer}>
           <UserInfoField
             title="Độ xoay"
-            value={tempDegree ? tempDegree.toString() : ""}
-            onChangeText={(text) => setTempDegree(Number(text))}
+            onChangeText={(text) => (tempDegree.current = Number(text))}
             keyboardType="numeric"
             maxLength={30}
           />
@@ -44,15 +37,12 @@ export default function RotateCompassModal({
 
         <TouchableOpacity
           style={styles.saveButton}
-          onPress={handleRotateCompass}
+          onPress={handleSave}
         >
           <Text style={styles.saveButtonText}>XÁC NHẬN</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.closeButton}
-          onPress={() => navigation.goBack()}
-        >
+        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
           <Text style={styles.closeButtonText}>ĐÓNG</Text>
         </TouchableOpacity>
       </View>
@@ -62,10 +52,12 @@ export default function RotateCompassModal({
 
 const styles = StyleSheet.create({
   modalOverlay: {
+    ...StyleSheet.absoluteFillObject,
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "center",
     alignItems: "center",
+    zIndex: 10,
   },
   modalContent: {
     backgroundColor: "#C81B22",

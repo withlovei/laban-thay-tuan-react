@@ -1,32 +1,38 @@
-import React, { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
-import Pdf from 'react-native-pdf';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { NavigationBar } from '@/components/NavigationBar';
-import { RootStackParamList } from '@/types/navigation';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/native';
+import React, { useEffect, useState } from "react";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import Pdf from "react-native-pdf";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { NavigationBar } from "@/components/NavigationBar";
+import { useModal } from "@/hooks/useModal";
+import TableOfContentsModal from "@/app/table-of-contents-modal";
+import { IconAZ } from "@/components/ui/icons/IconAZ";
 
-type Props = {
-  navigation: StackNavigationProp<RootStackParamList, 'MinhTuanBookPDF'>;
-  route: RouteProp<RootStackParamList, 'MinhTuanBookPDF'>;
-}
-const MinhTuanBookPDFScreen = ({navigation, route}: Props) => {
-  const source = require('../../assets/pdf/sach_thay_tuan.pdf') 
+const MinhTuanBookPDFScreen = () => {
+  const [page, setPage] = useState(0);
+  const { isVisible, onClose, onOpen } = useModal();
 
   useEffect(() => {
-    goToTableOfContents();
+    onOpen();
   }, []);
 
-  function goToTableOfContents() {
-    navigation.navigate('TableOfContents');
-  }
   return (
     <SafeAreaView style={styles.container}>
-      <NavigationBar />
+      <TableOfContentsModal
+        isVisible={isVisible}
+        onClose={onClose}
+        setPageIndex={setPage}
+      />
+      <NavigationBar>
+        <TouchableOpacity style={styles.iconBar} onPress={onOpen}>
+          <IconAZ />
+        </TouchableOpacity>
+      </NavigationBar>
       <View style={styles.pdfContainer}>
         <Pdf
-          source={source}
+          source={{
+            uri: "bundle-assets://pdf/sach_thay_tuan.pdf",
+            cache: true,
+          }}
           style={styles.pdf}
           onLoadComplete={(numberOfPages, filePath) => {
             console.log(`Number of pages: ${numberOfPages}`);
@@ -39,7 +45,7 @@ const MinhTuanBookPDFScreen = ({navigation, route}: Props) => {
           }}
           // enablePaging
           trustAllCerts={false}
-          page={route.params?.page}
+          page={page}
         />
       </View>
     </SafeAreaView>
@@ -49,7 +55,7 @@ const MinhTuanBookPDFScreen = ({navigation, route}: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   pdfContainer: {
     flex: 1,
@@ -57,6 +63,10 @@ const styles = StyleSheet.create({
   pdf: {
     flex: 1,
   },
+  iconBar: {
+    position: "absolute",
+    right: 8,
+  },
 });
 
-export default MinhTuanBookPDFScreen; 
+export default MinhTuanBookPDFScreen;

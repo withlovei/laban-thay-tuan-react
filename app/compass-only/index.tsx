@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, View, TextInput } from "react-native";
 import CompassHeading from "react-native-compass-heading";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -28,45 +28,33 @@ import {
 } from "@/shared/compass";
 import { getDirectionByCompassHeading } from "@/shared/compass";
 import { mapGenderToText } from "@/shared/transform";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "@/types/navigation";
 import { Background } from "@/app/compass-only/components/Background";
 import { IconAdd } from "@/components/ui/icons/IconAdd";
-import { ImagePicker, ImagePickerRef } from "@/components/ImagePicker";
-import { RouteProp } from "@react-navigation/native";
+import { ImagePicker } from "@/components/ImagePicker";
 import { IconSquare } from "@/components/ui/icons/IconSquare";
 import { IconRotateRight } from "@/components/ui/icons/IconRotateRight";
-import { isNumberInRange } from "@/shared/validation";
+import { isNumberFinite, isNumberInRange } from "@/shared/validation";
 import { ScreenPlaceholder } from "@/components/ScreenPlaceholder";
-
-type CompassOnlyScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  "CompassOnly"
->;
-
-type CompassOnlyScreenRouteProp = RouteProp<RootStackParamList, "CompassOnly">;
-interface CompassOnlyScreenProps {
-  navigation: CompassOnlyScreenNavigationProp;
-  route: CompassOnlyScreenRouteProp;
-}
+import { compassService } from "@/services/compass";
+import { useModal } from "@/hooks/useModal";
+import RotateCompassModal from "@/app/rotate-compass-modal";
+import EditUserModal from "@/app/edit-user-modal";
+import ImagePickerModal from "@/app/image-picker-modal";
 
 const COMPASS_SIZE = screen.width - 26;
 const COMPASS_HEADING_SIZE = screen.width;
 const MIN_SCALE = 0.5;
 const MAX_SCALE = 2;
 
-export default function CompassOnlyScreen({
-  navigation,
-  route,
-}: CompassOnlyScreenProps) {
+export default function CompassOnlyScreen() {
   const user = useUserStore((state) => state.user);
   const [isShowRect, toggleShowRect] = useToggle(true);
-  const imagePickerRef = useRef<ImagePickerRef>(null);
   const compassStarMeaningTextRef = useRef<TextInput>(null);
   const homeDirectionTextRef = useRef<TextInput>(null);
   const compassHeading = useSharedValue(0);
   const compassScale = useSharedValue(1);
   const compassOpacity = useSharedValue(1);
+  const [uri, setUri] = useState<string | null>(null);
   const {
     top: paddingTop,
     bottom: paddingBottom,
@@ -80,6 +68,22 @@ export default function CompassOnlyScreen({
       { scale: compassScale.value },
     ],
   }));
+  const {
+    isVisible: isVisibleRotateCompass,
+    onClose: onCloseRotateCompass,
+    onOpen: onOpenRotateCompass,
+  } = useModal();
+  const {
+    isVisible: isVisibleImagePicker,
+    onClose: onCloseImagePicker,
+    onOpen: onOpenImagePicker,
+  } = useModal();
+  const {
+    isVisible: isVisibleEditUser,
+    onClose: onCloseEditUser,
+    onOpen: onOpenEditUser,
+  } = useModal();
+  const [rotate, setRotate] = useState({ degree: 0, isDone: true });
   const updateCompassHeadingFnRef = useRef<(heading: number) => void>(() => {});
   const compassHeadingTextRef = useRef<TextInput>(null);
   const backCompassHeadingTextRef = useRef<TextInput>(null);
@@ -88,32 +92,25 @@ export default function CompassOnlyScreen({
     opacity: compassOpacity.value,
     transform: [{ scale: compassScale.value }],
     top:
-    screen.height / 2 -
-    COMPASS_HEADING_SIZE / 2 -
-    7 * compassScale.value * (COMPASS_HEADING_SIZE / 404),
+      screen.height / 2 -
+      COMPASS_HEADING_SIZE / 2 -
+      7 * compassScale.value * (COMPASS_HEADING_SIZE / 404),
   }));
   const [isLockCompass, toggleLockCompass, setIsLockCompass] = useToggle(false);
   const [isFullCompass, toggleFullCompass] = useToggle(false);
 
   useEffect(() => {
-    if (route.params?.degree) {
+    if (!rotate.isDone && isNumberFinite(rotate.degree)) {
       setIsLockCompass(true);
-      updateCompassHeading(route.params.degree, true);
+      updateCompassHeading(rotate.degree, true);
+      setRotate({ degree: 0, isDone: true });
     }
-  }, [route.params?.degree]);
+  }, [rotate]);
 
   useEffect(() => {
-    const degree_update_rate = 0.001;
-
-    CompassHeading.start(
-      degree_update_rate,
-      ({ heading }: { heading: number }) => {
-        updateCompassHeadingFnRef.current(heading);
-      }
-    );
-    return () => {
-      CompassHeading.stop();
-    };
+    compassService.subscribe((heading: number) => {
+      updateCompassHeadingFnRef.current(heading);
+    });
   }, []);
 
   useEffect(() => {
@@ -128,7 +125,10 @@ export default function CompassOnlyScreen({
     }
   }, [isLockCompass]);
 
-  const updateCompassHeading = (heading: number, animation: boolean = false) => {
+  const updateCompassHeading = (
+    heading: number,
+    animation: boolean = false
+  ) => {
     const direction = getDirectionByCompassHeading(heading);
     const specialDirection = getSpecialDirectionByCompassHeading(heading);
     compassHeadingTextRef.current?.setNativeProps({
@@ -148,9 +148,9 @@ export default function CompassOnlyScreen({
       )}° ${backDirection}`,
     });
     if (user) {
-      const star = getStar(heading, user)
+      const star = getStar(heading, user);
       if (star) {
-        const starMeaning = getStarMeaning(star)
+        const starMeaning = getStarMeaning(star);
         compassStarMeaningTextRef.current?.setNativeProps({
           text: starMeaning,
         });
@@ -174,7 +174,9 @@ export default function CompassOnlyScreen({
 
     const remapHeading = heading > 180 ? heading - 360 : heading;
     const roundedHeading = Number(remapHeading.toFixed(3));
-    compassHeading.value = animation ? withTiming(roundedHeading, { duration: 500 }) : roundedHeading;
+    compassHeading.value = animation
+      ? withTiming(roundedHeading, { duration: 500 })
+      : roundedHeading;
   };
 
   if (user === null) return <ScreenPlaceholder />;
@@ -182,12 +184,12 @@ export default function CompassOnlyScreen({
   return (
     <View style={styles.container}>
       <Background />
-      <ImagePicker
-        ref={imagePickerRef}
-        style={[StyleSheet.absoluteFillObject, { top: paddingTop + 64 }]}
-        from="CompassOnly"
-        uri={route.params?.uri}
-      />
+      {uri && (
+        <ImagePicker
+          style={[StyleSheet.absoluteFillObject, { top: paddingTop + 64 }]}
+          uri={uri}
+        />
+      )}
       <View
         style={[
           styles.safeAreaView,
@@ -195,6 +197,20 @@ export default function CompassOnlyScreen({
         ]}
         pointerEvents="box-none"
       >
+        <RotateCompassModal
+          setDegree={setRotate}
+          isVisible={isVisibleRotateCompass}
+          onClose={onCloseRotateCompass}
+        />
+        <EditUserModal
+          isVisible={isVisibleEditUser}
+          onClose={onCloseEditUser}
+        />
+        <ImagePickerModal
+          isVisible={isVisibleImagePicker}
+          onClose={onCloseImagePicker}
+          setUri={setUri}
+        />
         <NavigationBar />
         {/* tool bar */}
         <View style={styles.toolBar}>
@@ -208,7 +224,7 @@ export default function CompassOnlyScreen({
           >
             <IconEyeSlash />
           </IconContainer>
-          <IconContainer onPress={() => imagePickerRef.current?.showModal()}>
+          <IconContainer onPress={onOpenImagePicker}>
             <IconAdd />
           </IconContainer>
           <IconContainer onPress={toggleFullCompass}>
@@ -243,26 +259,18 @@ export default function CompassOnlyScreen({
         </View>
         {/* footer bar */}
         <View style={styles.footerBar}>
-          <IconContainer onPress={toggleShowRect}>
+          {/* <IconContainer onPress={toggleShowRect}>
             <IconSquare />
-          </IconContainer>
+          </IconContainer> */}
           <IconContainer onPress={toggleLockCompass}>
             {isLockCompass ? <IconLock /> : <IconLockOpenRight />}
           </IconContainer>
-          <IconContainer onPress={() => navigation.navigate("EditUserModal")}>
+          <IconContainer onPress={onOpenEditUser}>
             <IconEditDocument />
           </IconContainer>
-          {isLockCompass && (
-            <IconContainer
-              onPress={() =>
-                navigation.navigate("RotateCompassModal", {
-                  from: "CompassOnly",
-                })
-              }
-            >
-              <IconRotateRight />
-            </IconContainer>
-          )}
+          <IconContainer onPress={onOpenRotateCompass}>
+            <IconRotateRight />
+          </IconContainer>
         </View>
         <View style={styles.homeDirection}>
           <TextInput

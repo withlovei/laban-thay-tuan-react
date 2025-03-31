@@ -12,17 +12,12 @@ import { screen } from "@/constants/Dimensions";
 import { usePayment } from "@/contexts/PaymentContext";
 import { IconCheckMark } from "@/components/ui/icons/IconCheckMark";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-interface PaymentBottomSheetProps {
-  isVisible: boolean;
-}
 const productIds = ["laban.full.access"];
 
-export const PaymentBottomSheet = ({
-  isVisible,
-}: PaymentBottomSheetProps) => {
+export const PaymentBottomSheet = () => {
   const [loading, setLoading] = useState(false);
   const { top } = useSafeAreaInsets();
-  const { isInitialized, productInfo } = usePayment();
+  const { isInitialized, productInfo, isPaymentVisible: isVisible } = usePayment();
 
   const handlePurchase = async () => {
     if (!isInitialized) {

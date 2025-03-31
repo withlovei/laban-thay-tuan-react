@@ -48,46 +48,46 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({
   const updateUserRef = useRef<() => void>(() => {});
   const user = useUserStore((state) => state.user);
 
-  useEffect(() => {
-    const initIAP = async () => {
-      try {
-        await initConnection();
-        setIsInitialized(true);
-      } catch (err) {
-        console.warn("IAP init error:", err);
-        setIsInitialized(true);
-      }
-    };
+//   useEffect(() => {
+//     const initIAP = async () => {
+//       try {
+//         await initConnection();
+//         setIsInitialized(true);
+//       } catch (err) {
+//         console.warn("IAP init error:", err);
+//         setIsInitialized(true);
+//       }
+//     };
 
-    const purchaseUpdateSubscription = purchaseUpdatedListener(
-      async (purchase: ProductPurchase) => {
-        const receipt = purchase.transactionReceipt;
-        if (receipt) {
-          try {
-            await finishTransaction({ purchase });
-            updateUserRef.current();
-            Alert.alert("Thành công", "Cảm ơn bạn đã mua Gói La bàn!");
-            hidePayment();
-          } catch (err) {
-            Alert.alert("Lỗi", "Không thể hoàn thành giao dịch");
-          }
-        }
-      }
-    );
+//     const purchaseUpdateSubscription = purchaseUpdatedListener(
+//       async (purchase: ProductPurchase) => {
+//         const receipt = purchase.transactionReceipt;
+//         if (receipt) {
+//           try {
+//             await finishTransaction({ purchase });
+//             updateUserRef.current();
+//             Alert.alert("Thành công", "Cảm ơn bạn đã mua Gói La bàn!");
+//             hidePayment();
+//           } catch (err) {
+//             Alert.alert("Lỗi", "Không thể hoàn thành giao dịch");
+//           }
+//         }
+//       }
+//     );
 
-    const purchaseErrorSubscription = purchaseErrorListener(
-      (error: PurchaseError) => {
-        Alert.alert("Lỗi", error.message);
-      }
-    );
+//     const purchaseErrorSubscription = purchaseErrorListener(
+//       (error: PurchaseError) => {
+//         Alert.alert("Lỗi", error.message);
+//       }
+//     );
 
-    initIAP();
+//     initIAP();
 
-    return () => {
-      purchaseUpdateSubscription.remove();
-      purchaseErrorSubscription.remove();
-    };
-  }, []);
+//     return () => {
+//       purchaseUpdateSubscription.remove();
+//       purchaseErrorSubscription.remove();
+//     };
+//   }, []);
   
   useEffect(() => {
     if (isInitialized) {

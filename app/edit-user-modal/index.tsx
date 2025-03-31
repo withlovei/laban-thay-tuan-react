@@ -6,7 +6,6 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import { StackNavigationProp } from "@react-navigation/stack";
 import * as Haptics from "expo-haptics";
 import { UserInfoField } from "@/components/UserInfoField";
 import { Picker } from "@/components/Picker";
@@ -28,17 +27,12 @@ const currentYear = new Date().getFullYear();
 const YEARS = Array.from({ length: currentYear - 1900 + 1 }, (_, i) =>
   (currentYear - i).toString()
 );
-
-type EditUserModalNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  "EditUserModal"
->;
-
 interface EditUserModalProps {
-  navigation: EditUserModalNavigationProp;
+  isVisible: boolean;
+  onClose: () => void;
 }
 
-export default function EditUserModal({ navigation }: EditUserModalProps) {
+export default function EditUserModal({ isVisible, onClose }: EditUserModalProps) {
   const { top, bottom } = useSafeAreaInsets();
   const updateUser = useUserStore((state) => state.updateUser);
   const user = useUserStore((state) => state.user);
@@ -67,8 +61,10 @@ export default function EditUserModal({ navigation }: EditUserModalProps) {
     };
 
     updateUser(user);
-    navigation.goBack();
+    onClose();
   };
+
+  if (!isVisible) return null;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -78,7 +74,7 @@ export default function EditUserModal({ navigation }: EditUserModalProps) {
       >
         <Background />
         <IconContainer
-          onPress={() => navigation.goBack()}
+          onPress={onClose}
           style={styles.closeButton}
         >
           <IconClose />
@@ -124,8 +120,10 @@ export default function EditUserModal({ navigation }: EditUserModalProps) {
 
 const styles = StyleSheet.create({
   container: {
+    ...StyleSheet.absoluteFillObject,
     flex: 1,
     backgroundColor: "#C81B22",
+    zIndex: 10,
   },
   backgroundImage: {
     width: "100%",

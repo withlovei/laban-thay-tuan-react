@@ -1,24 +1,19 @@
+import { IconBar } from "@/components/ui/icons/IconBar";
+import { useSidebar } from "@/contexts/SidebarContext";
 import { FC } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { IconBar } from "./ui/icons/IconBar";
-import { useNavigation, DrawerActions } from "@react-navigation/native";
-import { RootStackParamList } from "@/types/navigation";
-import { StackNavigationProp } from "@react-navigation/stack";
 
-type NavigationProp = StackNavigationProp<RootStackParamList>;
-
-export const NavigationBar: FC = () => {
-  const navigation = useNavigation<NavigationProp>();
-
+export const NavigationBar: FC<{ children?: React.ReactNode }> = ({
+  children,
+}) => {
+  const { showSidebar } = useSidebar();
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.iconBar}
-        onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-      >
+      <TouchableOpacity style={styles.iconBar} onPress={showSidebar}>
         <IconBar />
       </TouchableOpacity>
       <Text style={styles.title}>LA BÀN THẦY TUẤN</Text>
+      {children}
     </View>
   );
 };

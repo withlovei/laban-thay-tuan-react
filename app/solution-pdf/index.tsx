@@ -1,19 +1,17 @@
 import React from 'react';
-import { StyleSheet, Dimensions, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Pdf from 'react-native-pdf';
-import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NavigationBar } from '@/components/NavigationBar';
 
 const SolutionPDFScreen = () => {
-  const source =  require('../../assets/pdf/cach_hoa_giai.pdf') 
 
   return (
     <SafeAreaView style={styles.container}>
       <NavigationBar />
       <View style={styles.pdfContainer}>
         <Pdf
-          source={source}
+          source={{uri: 'bundle-assets://pdf/cach_hoa_giai.pdf', cache: true}}
           style={styles.pdf}
           onLoadComplete={(numberOfPages, filePath) => {
             console.log(`Number of pages: ${numberOfPages}`);

@@ -1,9 +1,6 @@
 import React from "react";
 import { FlatList, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { RouteProp } from "@react-navigation/native";
-import type { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "@/types/navigation";
 import { IconClose } from "@/components/ui/icons/IconClose";
 import { IconContainer } from "@/components/ui/IconContainer";
 import { IconInventory } from "@/components/ui/icons/IconInventory";
@@ -48,11 +45,16 @@ const sections: Section[] = [
 ];
 
 type TableOfContentsScreenProps = {
-  navigation: StackNavigationProp<RootStackParamList, "TableOfContents">;
+  onClose: () => void;
+  isVisible: boolean;
+  setPageIndex: (pageIndex: number) => void;
 };
 export default function TableOfContentsScreen({
-  navigation,
+  onClose,
+  isVisible,
+  setPageIndex
 }: TableOfContentsScreenProps) {
+  if (!isVisible) return null;
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -64,7 +66,7 @@ export default function TableOfContentsScreen({
           style={styles.closeButton}
           width={24}
           height={24}
-          onPress={() => navigation.goBack()}
+          onPress={onClose}
         >
           <IconClose />
         </IconContainer>
@@ -73,9 +75,8 @@ export default function TableOfContentsScreen({
           renderItem={({ item }) => (
             <SectionItem
               onPress={() => {
-                navigation.popTo("MinhTuanBookPDF", {
-                  page: item.pageIndex,
-                });
+                setPageIndex(item.pageIndex)
+                onClose()
               }}
               title={item.title}
               Icon={item.icon}
@@ -94,6 +95,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#C81B22",
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 10,
   },
   scrollView: {
     // flex: 1,

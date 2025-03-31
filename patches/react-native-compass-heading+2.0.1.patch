@@ -1,59 +1,86 @@
+diff --git a/node_modules/react-native-compass-heading/android/src/main/AndroidManifest.xml b/node_modules/react-native-compass-heading/android/src/main/AndroidManifest.xml
+index ba650eb..cd211a6 100644
+--- a/node_modules/react-native-compass-heading/android/src/main/AndroidManifest.xml
++++ b/node_modules/react-native-compass-heading/android/src/main/AndroidManifest.xml
+@@ -1,3 +1,5 @@
+ <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+           package="com.compassheading">
++  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
++  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+ </manifest>
+diff --git a/node_modules/react-native-compass-heading/android/src/main/AndroidManifestNew.xml b/node_modules/react-native-compass-heading/android/src/main/AndroidManifestNew.xml
+index a2f47b6..28a8ed4 100644
+--- a/node_modules/react-native-compass-heading/android/src/main/AndroidManifestNew.xml
++++ b/node_modules/react-native-compass-heading/android/src/main/AndroidManifestNew.xml
+@@ -1,2 +1,4 @@
+ <manifest xmlns:android="http://schemas.android.com/apk/res/android">
++    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
++    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+ </manifest>
 diff --git a/node_modules/react-native-compass-heading/android/src/main/java/com/compassheading/CompassHeadingModule.kt b/node_modules/react-native-compass-heading/android/src/main/java/com/compassheading/CompassHeadingModule.kt
-index d2bf0b2..7b191a6 100644
+index d2bf0b2..a9744ab 100644
 --- a/node_modules/react-native-compass-heading/android/src/main/java/com/compassheading/CompassHeadingModule.kt
 +++ b/node_modules/react-native-compass-heading/android/src/main/java/com/compassheading/CompassHeadingModule.kt
-@@ -1,19 +1,14 @@
+@@ -1,156 +1,225 @@
  package com.compassheading
  
 -import android.app.Activity
  import android.content.Context
--import android.hardware.Sensor
--import android.hardware.SensorEvent
--import android.hardware.SensorEventListener
--import android.hardware.SensorManager
-+import android.hardware.*
++import android.hardware.GeomagneticField
+ import android.hardware.Sensor
+ import android.hardware.SensorEvent
+ import android.hardware.SensorEventListener
+ import android.hardware.SensorManager
++import android.location.Location
++import android.location.LocationListener
++import android.location.LocationManager
++import android.os.Bundle
  import android.util.Log
 -import android.view.Surface
- import android.view.Display
-+import android.view.Surface
- import android.view.WindowManager
- import com.facebook.react.bridge.*
+-import android.view.Display
+-import android.view.WindowManager
+-import com.facebook.react.bridge.*
  import com.facebook.react.modules.core.DeviceEventManagerModule
- import kotlin.math.abs
+-import kotlin.math.abs
 -import kotlin.math.PI
+-
+-class CompassHeadingModule(reactContext: ReactApplicationContext) :
+-    ReactContextBaseJavaModule(reactContext), SensorEventListener {
++import com.facebook.react.bridge.*
++import kotlin.math.roundToInt
  
- class CompassHeadingModule(reactContext: ReactApplicationContext) :
-     ReactContextBaseJavaModule(reactContext), SensorEventListener {
-@@ -22,42 +17,56 @@ class CompassHeadingModule(reactContext: ReactApplicationContext) :
-         const val NAME = "CompassHeading"
-     }
- 
-+    private val appContext: Context = reactContext.applicationContext
-     private val mApplicationContext: Context = reactContext.applicationContext
+-    companion object {
+-        const val NAME = "CompassHeading"
+-    }
++// Main module class
++class CompassHeadingModule(private val reactContext: ReactApplicationContext) : 
++    ReactContextBaseJavaModule(), SensorEventListener, LocationListener {
+     
+-    private val mApplicationContext: Context = reactContext.applicationContext
 -    private var mAzimuth: Int = 0 // degree
 -    private var mFilter: Int = 1
++    private val TAG = "CompassHeading"
      private var sensorManager: SensorManager? = null
 -    private val mGravity = FloatArray(3)
 -    private val mGeomagnetic = FloatArray(3)
 -    private val R = FloatArray(9)
 -    private val I = FloatArray(9)
+-
+-    override fun getName(): String {
+-        return NAME
++    private var locationManager: LocationManager? = null
 +    private var rotationVectorSensor: Sensor? = null
-+    private var geomagneticRotationVectorSensor: Sensor? = null
-+    private var accelerometer: Sensor? = null
-+    private var magnetometer: Sensor? = null
++    private var currentLocation: Location? = null
++    private var azimuthAccuracy: Int = -1
++    private var latestData: List<Double>? = null
 +
-+    private var azimuth: Double = 0.0
-+    private var filterThreshold: Double = 1.0
-+    private var gravity = FloatArray(3)
-+    private var geomagnetic = FloatArray(3)
-+    private var rotationMatrix = FloatArray(9)
-+    private var inclinationMatrix = FloatArray(9)
- 
-     override fun getName(): String {
-         return NAME
++    init {
++        sensorManager = reactContext.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
++        locationManager = reactContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
++        rotationVectorSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
      }
  
-     @ReactMethod
+-    @ReactMethod
 -    fun addListener(eventName: String) {
 -        // Required for React Native built-in Event Emitter Calls
 -    }
@@ -61,12 +88,13 @@ index d2bf0b2..7b191a6 100644
 -    @ReactMethod
 -    fun removeListeners(count: Int) {
 -        // Required for React Native built-in Event Emitter Calls
--    }
--
--    @ReactMethod
--    fun start(filter: Int, promise: Promise) {
-+    fun start(filter: Double, promise: Promise) {
-         try {
++    override fun getName(): String {
++        return "CompassHeading"
+     }
+ 
+     @ReactMethod
+     fun start(filter: Int, promise: Promise) {
+-        try {
 -            sensorManager = mApplicationContext.getSystemService(Context.SENSOR_SERVICE) as SensorManager
 -            val gsensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 -            val msensor = sensorManager?.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
@@ -74,44 +102,37 @@ index d2bf0b2..7b191a6 100644
 -            sensorManager?.registerListener(this, msensor, SensorManager.SENSOR_DELAY_GAME)
 -            mFilter = filter
 -            Log.d(NAME, "Compass heading started with filter: $mFilter")
-+            sensorManager = appContext.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-+
-+            // Check for TYPE_GEOMAGNETIC_ROTATION_VECTOR
-+            geomagneticRotationVectorSensor =
-+                sensorManager?.getDefaultSensor(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR)
-+
-+            // If not available, check for TYPE_ROTATION_VECTOR
-+            rotationVectorSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
-+
-+            // If both rotation vector sensors are not available, use accelerometer and magnetometer
-+            if (geomagneticRotationVectorSensor != null) {
-+                sensorManager?.registerListener(this, geomagneticRotationVectorSensor, SensorManager.SENSOR_DELAY_UI)
-+                Log.d(NAME, "Using TYPE_GEOMAGNETIC_ROTATION_VECTOR for heading.")
-+            } else if (rotationVectorSensor != null) {
-+                sensorManager?.registerListener(this, rotationVectorSensor, SensorManager.SENSOR_DELAY_UI)
-+                Log.d(NAME, "Using TYPE_ROTATION_VECTOR for heading.")
-+            } else {
-+                accelerometer = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-+                magnetometer = sensorManager?.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
-+                sensorManager?.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI)
-+                sensorManager?.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI)
-+                Log.d(NAME, "Using ACCELEROMETER & MAGNETIC_FIELD for heading.")
-+            }
-+
-+            filterThreshold = filter
-             promise.resolve(true)
-         } catch (e: Exception) {
+-            promise.resolve(true)
+-        } catch (e: Exception) {
 -            Log.e(NAME, "Failed to start compass heading: ${e.message}")
-+            Log.e(NAME, "Failed to start compass: ${e.message}")
-             promise.reject("failed_start", e.message)
+-            promise.reject("failed_start", e.message)
++        Log.d(TAG, "Starting compass updates")
++        rotationVectorSensor?.let { sensor ->
++            sensorManager?.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
++        }
++        
++        if (hasLocationPermission()) {
++            try {
++                locationManager?.requestLocationUpdates(
++                    LocationManager.GPS_PROVIDER,
++                    1000,
++                    10f,
++                    this
++                )
++                promise.resolve(true)
++            } catch (e: SecurityException) {
++                Log.e(TAG, "Error requesting location updates", e)
++                promise.reject("failed_start", e.message)
++            }
          }
      }
-@@ -65,92 +74,96 @@ class CompassHeadingModule(reactContext: ReactApplicationContext) :
+ 
      @ReactMethod
      fun stop() {
++        Log.d(TAG, "Stopping compass updates")
          sensorManager?.unregisterListener(this)
 -        Log.d(NAME, "Compass heading stopped")
-+        Log.d(NAME, "Compass heading stopped.")
++        locationManager?.removeUpdates(this)
      }
  
 -    @ReactMethod
@@ -124,26 +145,16 @@ index d2bf0b2..7b191a6 100644
 -        } catch (e: Exception) {
 -            Log.e(NAME, "Error checking for compass: ${e.message}")
 -            promise.resolve(false)
-+    override fun onSensorChanged(event: SensorEvent) {
-+        when (event.sensor.type) {
-+            Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR -> {
-+                processGeomagneticRotationVector(event.values)
-+            }
-+            Sensor.TYPE_ROTATION_VECTOR -> {
-+                processRotationVector(event.values)
-+            }
-+            Sensor.TYPE_ACCELEROMETER -> {
-+                System.arraycopy(event.values, 0, gravity, 0, event.values.size)
-+                processCompass()
-+            }
-+            Sensor.TYPE_MAGNETIC_FIELD -> {
-+                System.arraycopy(event.values, 0, geomagnetic, 0, event.values.size)
-+                processCompass()
-+            }
-         }
+-        }
++    private fun hasLocationPermission(): Boolean {
++        // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
++        //     return reactContext.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) 
++        //         == PackageManager.PERMISSION_GRANTED
++        // }
++        return true
      }
  
--    override fun onSensorChanged(event: SensorEvent) {
+     override fun onSensorChanged(event: SensorEvent) {
 -        val alpha = 0.97f
 -        synchronized(this) {
 -            when (event.sensor.type) {
@@ -157,36 +168,21 @@ index d2bf0b2..7b191a6 100644
 -                    mGeomagnetic[1] = alpha * mGeomagnetic[1] + (1 - alpha) * event.values[1]
 -                    mGeomagnetic[2] = alpha * mGeomagnetic[2] + (1 - alpha) * event.values[2]
 -                }
--            }
-+    private fun processGeomagneticRotationVector(values: FloatArray) {
-+        val adjustedRotationMatrix = FloatArray(9)
-+        SensorManager.getRotationMatrixFromVector(adjustedRotationMatrix, values)
++        if (event.sensor.type == Sensor.TYPE_ROTATION_VECTOR) {
++            // if (azimuthAccuracy == SensorManager.SENSOR_STATUS_UNRELIABLE ||
++            //     azimuthAccuracy == SensorManager.SENSOR_STATUS_NO_CONTACT) {
++            //     return
++            // }
 +
-+        val orientation = FloatArray(3)
-+        SensorManager.getOrientation(adjustedRotationMatrix, orientation)
-+
-+        val newAzimuth = normalizeAzimuth(Math.toDegrees(orientation[0].toDouble()))
-+        updateAzimuth(newAzimuth)
-+    }
-+
-+    private fun processRotationVector(values: FloatArray) {
-+        val rotationMatrix = FloatArray(9)
-+        SensorManager.getRotationMatrixFromVector(rotationMatrix, values)
-+
-+        val orientation = FloatArray(3)
-+        SensorManager.getOrientation(rotationMatrix, orientation)
-+
-+        val newAzimuth = normalizeAzimuth(Math.toDegrees(orientation[0].toDouble()))
-+        updateAzimuth(newAzimuth)
-+    }
-+
-+    private fun processCompass() {
-+        if (gravity.any { it == 0f } || geomagnetic.any { it == 0f }) return // Avoid invalid readings
-+
-+        if (SensorManager.getRotationMatrix(rotationMatrix, inclinationMatrix, gravity, geomagnetic)) {
-+            val orientation = FloatArray(3)
-+            SensorManager.getOrientation(rotationMatrix, orientation)
- 
++            val rotationVector = RotationVector(event.values[0], event.values[1], event.values[2])
++            val magneticAzimuth = calculateAzimuth(rotationVector) ?: return
++            
++            var trueAzimuth = magneticAzimuth
++            currentLocation?.let { location ->
++                val magneticDeclination = getMagneticDeclination(location)
++                trueAzimuth = magneticAzimuth.plus(magneticDeclination)
+             }
+             
 -            val success = SensorManager.getRotationMatrix(R, I, mGravity, mGeomagnetic)
 -            if (success) {
 -                val orientation = FloatArray(3)
@@ -219,59 +215,150 @@ index d2bf0b2..7b191a6 100644
 -                        .emit("HeadingUpdated", params)
 -                    Log.d(NAME, "Emitting HeadingUpdated event with azimuth: $mAzimuth")
 -                }
-+            val newAzimuth = normalizeAzimuth(Math.toDegrees(orientation[0].toDouble()))
-+            updateAzimuth(newAzimuth)
-+        }
-+    }
++            val m = magneticAzimuth.degrees.toDouble()
++            val t = trueAzimuth.degrees.toDouble()
++            val a = azimuthAccuracy.toDouble()
++            
++            val data = listOf(m, t, a)
++            if (latestData == data) return
++            
++            latestData = data
 +
-+    private fun updateAzimuth(newAzimuth: Double) {
-+        val display = getDisplay()
-+        val adjustedAzimuth = when (display?.rotation) {
-+            Surface.ROTATION_90 -> (newAzimuth + 270) % 360
-+            Surface.ROTATION_270 -> (newAzimuth + 90) % 360
-+            Surface.ROTATION_180 -> (newAzimuth + 180) % 360
-+            else -> newAzimuth
-+        }
-+
-+        if (abs(azimuth - adjustedAzimuth) > filterThreshold) {
-+            azimuth = adjustedAzimuth
++            // val params = Arguments.createArray()
++            // params.pushDouble(m)
++            // params.pushDouble(t)
++            // params.pushDouble(a)
 +            val params = Arguments.createMap().apply {
-+                putDouble("heading", azimuth)
-+                putDouble("accuracy", 1.0)
++                putDouble("heading", t)
++                putDouble("accuracy", a)
              }
-+            reactApplicationContext
++            reactContext
 +                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
 +                .emit("HeadingUpdated", params)
-+            Log.d(NAME, "Emitting HeadingUpdated: $azimuth")
++            
++            // sendEvent("compassUpdate", params)
          }
      }
  
 -    override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
-+    private fun normalizeAzimuth(azimuth: Double): Double {
-+        return if (azimuth < 0) azimuth + 360 else azimuth
++    override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
++        azimuthAccuracy = accuracy
 +    }
- 
-     private fun getDisplay(): Display? {
-         return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-             reactApplicationContext.currentActivity?.display
-         } else {
++
++    override fun onLocationChanged(location: Location) {
++        currentLocation = location
++    }
+     
+-    private fun getDisplay(): Display? {
+-        return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+-            reactApplicationContext.currentActivity?.display
+-        } else {
 -            (mApplicationContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay
-+            @Suppress("DEPRECATION")
-+            (appContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay
++    @Suppress("DEPRECATION")
++    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
++        // Required for older Android versions
++    }
++    
++    @Suppress("DEPRECATION")
++    override fun onProviderEnabled(provider: String) {
++        // Required for older Android versions
++    }
++    
++    @Suppress("DEPRECATION")
++    override fun onProviderDisabled(provider: String) {
++        // Required for older Android versions
++    }
++
++    private fun sendEvent(eventName: String, params: WritableArray?) {
++        reactContext
++            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
++            .emit(eventName, params)
++    }
++    
++    // Utility functions
++    
++    private fun calculateAzimuth(rotationVector: RotationVector): Azimuth? {
++        val rotationMatrix = getRotationMatrix(rotationVector)
++        val orientationInRadians = SensorManager.getOrientation(rotationMatrix, FloatArray(3))
++        val azimuthInRadians = orientationInRadians[0]
++        val azimuthInDegrees = Math.toDegrees(azimuthInRadians.toDouble()).toFloat()
++        if (!azimuthInDegrees.isFinite()) {
++            return null
          }
++        return Azimuth(azimuthInDegrees)
      }
  
 -    private fun calculateHeading(azimuth: Float): Double {
 -        // Convert azimuth from radians to degrees
 -        var heading = Math.toDegrees(azimuth.toDouble())
--
++    private fun getRotationMatrix(rotationVector: RotationVector): FloatArray {
++        val rotationMatrix = FloatArray(9)
++        SensorManager.getRotationMatrixFromVector(rotationMatrix, rotationVector.toArray())
++        return rotationMatrix
++    }
+ 
 -        // Normalize the heading to [0, 360)
 -        if (heading < 0) {
 -            heading += 360
--        }
++    private fun getMagneticDeclination(location: Location): Float {
++        val latitude = location.latitude.toFloat()
++        val longitude = location.longitude.toFloat()
++        val altitude = location.altitude.toFloat()
++        val time = location.time
++        val geomagneticField = GeomagneticField(latitude, longitude, altitude, time)
++        return geomagneticField.declination
++    }
++}
++
++// Azimuth class
++class Azimuth(_degrees: Float) {
++    init {
++        if (!_degrees.isFinite()) {
++            throw IllegalArgumentException("Degrees must be finite but was '$_degrees'")
+         }
 -        return heading
--    }
-+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+     }
++
++    val degrees = normalizeAngle(_degrees)
++    val roundedDegrees = normalizeAngle(_degrees.roundToInt().toFloat()).toInt()
++
++    private fun normalizeAngle(angleInDegrees: Float): Float {
++        return (angleInDegrees + 360f) % 360f
++    }
++
++    override fun equals(other: Any?): Boolean {
++        if (this === other) return true
++        if (javaClass != other?.javaClass) return false
++
++        other as Azimuth
++        if (degrees != other.degrees) return false
++        return true
++    }
++
++    override fun hashCode(): Int {
++        return degrees.hashCode()
++    }
++
++    override fun toString(): String {
++        return "Azimuth(degrees=$degrees)"
++    }
++
++    operator fun plus(degrees: Float) = Azimuth(this.degrees + degrees)
++    operator fun minus(degrees: Float) = Azimuth(this.degrees - degrees)
++    operator fun compareTo(azimuth: Azimuth) = this.degrees.compareTo(azimuth.degrees)
++}
++
++// RotationVector class
++data class RotationVector(val x: Float, val y: Float, val z: Float) {
++    fun toArray(): FloatArray = floatArrayOf(x, y, z)
++}
++
++// Enum for display rotation
++enum class DisplayRotation {
++    ROTATION_0,
++    ROTATION_90,
++    ROTATION_180,
++    ROTATION_270
  }
 \ No newline at end of file
 diff --git a/node_modules/react-native-compass-heading/lib/commonjs/index.js b/node_modules/react-native-compass-heading/lib/commonjs/index.js

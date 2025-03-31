@@ -7,7 +7,6 @@ import {
   ImageBackground,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { DrawerContentComponentProps } from "@react-navigation/drawer";
 import { useInformation } from "@/contexts/InformationContext";
 import { IconStar } from "@/components/ui/icons/IconStar";
 import { IconContainer } from "@/components/ui/IconContainer";
@@ -16,109 +15,142 @@ import { IconCompass } from "@/components/ui/icons/IconCompass";
 import { IconBagua } from "@/components/ui/icons/IconBagua";
 import { IconFile } from "@/components/ui/icons/IconFile";
 import { IconEmail } from "@/components/ui/icons/IconEmail";
+import useNavigation, { Screen } from "@/stores/useNavigation";
+import { useSidebar } from "@/contexts/SidebarContext";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+import { screen } from "@/constants/Dimensions";
 
-export default function Sidebar(props: DrawerContentComponentProps) {
+export default function Sidebar() {
   const insets = useSafeAreaInsets();
-  const { navigation } = props;
   const { showInformation } = useInformation();
+  const { navigateTo } = useNavigation();
+  const translateX = useSharedValue(0);
+  const { isSidebarVisible, hideSidebar } = useSidebar();
 
+  const sidebarStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: translateX.value }],
+    };
+  });
+
+  React.useEffect(() => {
+    if (isSidebarVisible) {
+      translateX.value = withTiming(screen.width * 0.8, { duration: 200 });
+    } else {
+      translateX.value = withTiming(0, { duration: 200 });
+    }
+  }, [isSidebarVisible]);
+  
+  const navigate = (screen: Screen) => {
+    hideSidebar();
+    navigateTo(screen);
+  }
+
+  if (!isSidebarVisible) return null;
   return (
-    <ImageBackground
-      source={require("@/assets/images/sidebar/background.png")}
-      style={[styles.container, { paddingTop: insets.top }]}
-    >
-      <View style={styles.header}>
-        <Text style={styles.title}>LA BÀN THẦY TUẤN</Text>
-      </View>
-      <View style={styles.content}>
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => {
-            navigation.closeDrawer();
-            navigation.navigate("MainStack", {
-              screen: "Map",
-            });
-          }}
+    <View style={styles.sidebarWrapper}>
+      <TouchableOpacity style={styles.backdrop} onPress={hideSidebar} />
+      <Animated.View style={[styles.sidebarContainer, sidebarStyle]}>
+        <ImageBackground
+          source={require("@/assets/images/sidebar/background.png")}
+          style={[styles.container, { paddingTop: insets.top }]}
         >
-          <IconContainer style={styles.iconContainer}>
-            <IconCompass />
-          </IconContainer>
-          <Text style={styles.menuText}>Lập cực</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => {
-            navigation.closeDrawer();
-            navigation.navigate("MainStack", {
-              screen: "CompassOnly",
-            });
-          }}
-        >
-          <IconContainer style={styles.iconContainer}>
-            <IconCameraCompass />
-          </IconContainer>
-          <Text style={styles.menuText}>Tải ảnh</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => {
-            navigation.closeDrawer();
-            navigation.navigate("MainStack", {
-              screen: "StarsPDF",
-            });
-          }}
-        >
-          <IconContainer style={styles.iconContainer}>
-            <IconStar />
-          </IconContainer>
-          <Text style={styles.menuText}>24 sao</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => {
-            navigation.closeDrawer();
-            navigation.navigate("MainStack", {
-              screen: "SolutionPDF",
-            });
-          }}
-        >
-          <IconContainer style={styles.iconContainer}>
-            <IconBagua />
-          </IconContainer>
-          <Text style={styles.menuText}>Hóa giải</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => {
-            navigation.closeDrawer();
-            navigation.navigate("MainStack", {
-              screen: "MinhTuanBookPDF",
-            });
-          }}
-        >
-          <IconContainer style={styles.iconContainer}>
-            <IconFile />
-          </IconContainer>
-          <Text style={styles.menuText}>Tham khảo</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => {
-            navigation.closeDrawer();
-            showInformation();
-          }}
-        >
-          <IconContainer style={styles.iconContainer}>
-            <IconEmail />
-          </IconContainer>
-          <Text style={styles.menuText}>Liên hệ</Text>
-        </TouchableOpacity>
-      </View>
-    </ImageBackground>
+          <View style={styles.header}>
+            <Text style={styles.title}>LA BÀN THẦY TUẤN</Text>
+          </View>
+          <View style={styles.content}>
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => {
+                navigate("map");
+              }}
+            >
+              <IconContainer style={styles.iconContainer}>
+                <IconCompass />
+              </IconContainer>
+              <Text style={styles.menuText}>Lập cực</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => {
+                navigate("compass-only");
+              }}
+            >
+              <IconContainer style={styles.iconContainer}>
+                <IconCameraCompass />
+              </IconContainer>
+              <Text style={styles.menuText}>Tải ảnh</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => {
+                navigate("stars-pdf");
+              }}
+            >
+              <IconContainer style={styles.iconContainer}>
+                <IconStar />
+              </IconContainer>
+              <Text style={styles.menuText}>24 sao</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => {
+                navigate("solution-pdf");
+              }}
+            >
+              <IconContainer style={styles.iconContainer}>
+                <IconBagua />
+              </IconContainer>
+              <Text style={styles.menuText}>Hóa giải</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => {
+                navigate("minh-tuan-book-pdf");
+              }}
+            >
+              <IconContainer style={styles.iconContainer}>
+                <IconFile />
+              </IconContainer>
+              <Text style={styles.menuText}>Tham khảo</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => {
+                showInformation();
+              }}
+            >
+              <IconContainer style={styles.iconContainer}>
+                <IconEmail />
+              </IconContainer>
+              <Text style={styles.menuText}>Liên hệ</Text>
+            </TouchableOpacity>
+          </View>
+        </ImageBackground>
+      </Animated.View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  sidebarWrapper: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 5,
+  },
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  sidebarContainer: {
+    height: screen.height,
+    width: screen.width * 0.8,
+    position: "absolute",
+    left: -screen.width * 0.8,
+  },
   container: {
     flex: 1,
     backgroundColor: "#FEC41F",

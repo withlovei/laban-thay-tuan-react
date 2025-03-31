@@ -5,14 +5,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { NavigationBar } from '@/components/NavigationBar';
 
 const StarsPDFScreen = () => {
-  const source =  require('../../assets/pdf/y_nghia_24_sao.pdf') 
-
   return (
     <SafeAreaView style={styles.container}>
       <NavigationBar />
       <View style={styles.pdfContainer}>
         <Pdf
-          source={source}
+          source={{uri: 'bundle-assets://pdf/y_nghia_24_sao.pdf', cache: true}}
           style={styles.pdf}
           onLoadComplete={(numberOfPages, filePath) => {
             console.log(`Number of pages: ${numberOfPages}`);

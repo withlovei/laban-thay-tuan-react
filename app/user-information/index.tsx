@@ -6,7 +6,6 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import { StackNavigationProp } from "@react-navigation/stack";
 import * as Haptics from "expo-haptics";
 import { UserInfoField } from "@/components/UserInfoField";
 import { Picker } from "@/components/Picker";
@@ -15,7 +14,7 @@ import { User } from "@/types/user";
 import { useUserStore } from "@/stores/useUserStore";
 import { GenderCheckBox } from "@/components/GenderCheckBox";
 import { Background } from "@/app/user-information/components/Background";
-import { RootStackParamList } from "@/types/navigation";
+import useNavigation from "@/stores/useNavigation";
 
 // Temporary type definition for User
 const currentYear = new Date().getFullYear();
@@ -23,24 +22,14 @@ const YEARS = Array.from({ length: currentYear - 1900 + 1 }, (_, i) =>
   (currentYear - i).toString()
 );
 
-type UserInformationScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  "UserInformation"
->;
-
-interface UserInformationScreenProps {
-  navigation: UserInformationScreenNavigationProp;
-}
-
-export default function UserInformationScreen({
-  navigation,
-}: UserInformationScreenProps) {
+export default function UserInformationScreen() {
   const setUser = useUserStore((state) => state.setUser);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [fullName, setFullName] = useState("");
   const [birthYear, setBirthYear] = useState<number | null>(null);
   const [gender, setGender] = useState<"MALE" | "FEMALE" | null>(null);
   const [showYearPicker, setShowYearPicker] = useState(false);
+  const { navigateTo } = useNavigation();
 
   const handleYearSelect = (year: string) => {
     setBirthYear(Number(year));
@@ -60,7 +49,7 @@ export default function UserInformationScreen({
         fullName: "Nguyễn Văn A",
         birthYear: 1990,
       });
-      navigation.navigate("Map");
+      navigateTo("map");
       return;
     }
 
@@ -75,7 +64,7 @@ export default function UserInformationScreen({
     // Save user data to Zustand store
     setUser(user);
 
-    navigation.navigate("Map");
+    navigateTo("map");
   };
 
   return (
@@ -86,7 +75,6 @@ export default function UserInformationScreen({
           <View style={styles.inputsContainer}>
             <UserInfoField
               title="Số điện thoại"
-              value={phoneNumber}
               onChangeText={setPhoneNumber}
               keyboardType="phone-pad"
               maxLength={13}
@@ -94,7 +82,6 @@ export default function UserInformationScreen({
 
             <UserInfoField
               title="Họ và tên"
-              value={fullName}
               onChangeText={setFullName}
               maxLength={30}
             />

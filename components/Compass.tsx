@@ -5,6 +5,7 @@ import { FC, useMemo } from "react";
 type CompassProps = Pick<User, "gender" | "birthYear"> & {
   full?: boolean;
   color?: string;
+  map?: boolean;
 };
 
 type GenderMapping = {
@@ -21,7 +22,7 @@ type CompassComponents = {
   FEMALE: GenderMapping;
 };
 
-const CompassComponent: CompassComponents = {
+const CompassComponentsForImage: CompassComponents = {
   MALE: {
     regular: {
       0: require("@/assets/images/compass/laban_khon_tamdo.png"),
@@ -71,6 +72,57 @@ const CompassComponent: CompassComponents = {
     },
   },
 };
+
+const CompassComponentForMap: CompassComponents = {
+  MALE: {
+    regular: {
+      0: require("@/assets/images/compass-map/laban_khon_tamdo.png"),
+      1: require("@/assets/images/compass-map/laban_kham_tamdo.png"),
+      2: require("@/assets/images/compass-map/laban_ly_tamdo.png"),
+      3: require("@/assets/images/compass-map/laban_cans_tamdo.png"),
+      4: require("@/assets/images/compass-map/laban_doai_tamdo.png"),
+      5: require("@/assets/images/compass-map/laban_canf_tamdo.png"),
+      6: require("@/assets/images/compass-map/laban_khon_tamdo.png"),
+      7: require("@/assets/images/compass-map/laban_ton_tamdo.png"),
+      8: require("@/assets/images/compass-map/laban_chan_tamdo.png"),
+    },
+    full: {
+      0: require("@/assets/images/compass-map/laban_khon_full.png"),
+      1: require("@/assets/images/compass-map/laban_kham_full.png"),
+      2: require("@/assets/images/compass-map/laban_ly_full.png"),
+      3: require("@/assets/images/compass-map/laban_cans_full.png"),
+      4: require("@/assets/images/compass-map/laban_doai_full.png"),
+      5: require("@/assets/images/compass-map/laban_canf_full.png"),
+      6: require("@/assets/images/compass-map/laban_khon_full.png"),
+      7: require("@/assets/images/compass-map/laban_ton_full.png"),
+      8: require("@/assets/images/compass-map/laban_chan_full.png"),
+    },
+  },
+  FEMALE: {
+    regular: {
+      0: require("@/assets/images/compass-map/laban_ton_tamdo.png"),
+      1: require("@/assets/images/compass-map/laban_cans_tamdo.png"),
+      2: require("@/assets/images/compass-map/laban_canf_tamdo.png"),
+      3: require("@/assets/images/compass-map/laban_doai_tamdo.png"),
+      4: require("@/assets/images/compass-map/laban_cans_tamdo.png"),
+      5: require("@/assets/images/compass-map/laban_ly_tamdo.png"),
+      6: require("@/assets/images/compass-map/laban_kham_tamdo.png"),
+      7: require("@/assets/images/compass-map/laban_khon_tamdo.png"),
+      8: require("@/assets/images/compass-map/laban_chan_tamdo.png"),
+    },
+    full: {
+      0: require("@/assets/images/compass-map/laban_ton_full.png"),
+      1: require("@/assets/images/compass-map/laban_cans_full.png"),
+      2: require("@/assets/images/compass-map/laban_canf_full.png"),
+      3: require("@/assets/images/compass-map/laban_doai_full.png"),
+      4: require("@/assets/images/compass-map/laban_cans_full.png"),
+      5: require("@/assets/images/compass-map/laban_ly_full.png"),
+      6: require("@/assets/images/compass-map/laban_kham_full.png"),
+      7: require("@/assets/images/compass-map/laban_khon_full.png"),
+      8: require("@/assets/images/compass-map/laban_chan_full.png"),
+    },
+  },
+};
 /**
  * This component use Crossfade strategy to render UI
  */
@@ -78,6 +130,7 @@ export const Compass: FC<CompassProps> = ({
   gender,
   birthYear,
   full = false,
+  map = false
 }) => {
   if (birthYear === null || gender === null) return null;
 
@@ -89,6 +142,7 @@ export const Compass: FC<CompassProps> = ({
     return sum % 9;
   }, [birthYear]);
 
+  const CompassComponent = map ? CompassComponentForMap : CompassComponentsForImage;
   return (
     <>
       <Image
