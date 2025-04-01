@@ -200,9 +200,9 @@ export default function CompassOnlyScreen() {
         pointerEvents="box-none"
       >
         <RotateCompassModal
-          setDegree={setRotate}
           isVisible={isVisibleRotateCompass}
           onClose={onCloseRotateCompass}
+          onConfirm={(degree) => setRotate({ degree, isDone: false })}
         />
         <EditUserModal
           isVisible={isVisibleEditUser}

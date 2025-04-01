@@ -7,7 +7,7 @@ declare module "expo-router" {
   export * from 'expo-router/build';
 
   // prettier-ignore
-  type StaticRoutes = `/` | `/.DS_Store` | `/AppNavigation` | `/compass-only/.DS_Store` | `/compass-only/components/Background` | `/compass-only/` | `/edit-user-modal/.DS_Store` | `/edit-user-modal/components/Background` | `/edit-user-modal/` | `/image-picker-modal/` | `/map/` | `/minh-tuan-book-pdf/` | `/payment/PaymentBottomSheet` | `/rotate-compass-modal/` | `/sidebar/` | `/solution-pdf/` | `/stars-pdf/` | `/table-of-contents-modal/.DS_Store` | `/table-of-contents-modal/components/Background` | `/table-of-contents-modal/components/SectionItem` | `/table-of-contents-modal/` | `/user-information/.DS_Store` | `/user-information/components/Background` | `/user-information/`;
+  type StaticRoutes = `/` | `/.DS_Store` | `/AppNavigation` | `/compass-only/.DS_Store` | `/compass-only/components/Background` | `/compass-only/` | `/edit-user-modal/.DS_Store` | `/edit-user-modal/components/Background` | `/edit-user-modal/` | `/image-picker-modal/` | `/map/` | `/minh-tuan-book-pdf/` | `/payment/PaymentBottomSheet` | `/rotate-compass-modal/` | `/search-location-modal/` | `/sidebar/` | `/solution-pdf/` | `/stars-pdf/` | `/table-of-contents-modal/.DS_Store` | `/table-of-contents-modal/components/Background` | `/table-of-contents-modal/components/SectionItem` | `/table-of-contents-modal/` | `/user-information/.DS_Store` | `/user-information/components/Background` | `/user-information/`;
   // prettier-ignore
   type DynamicRoutes<T extends string> = never;
   // prettier-ignore

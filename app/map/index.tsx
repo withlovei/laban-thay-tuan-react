@@ -1,13 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import {
-  StyleSheet,
-  View,
-  PermissionsAndroid,
-  Platform,
-  TextInput,
-} from "react-native";
+import { StyleSheet, View, TextInput, TouchableOpacity } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
-import Geolocation from "react-native-geolocation-service";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useToggle } from "@/hooks/useToggle";
 import { IconLock } from "@/components/ui/icons/IconLock";
@@ -31,7 +24,7 @@ import Animated, {
 import Slider from "@react-native-community/slider";
 import { useUserStore } from "@/stores/useUserStore";
 import { Compass } from "@/components/Compass";
-import { isNumberFinite, isNumberInRange } from "@/shared/validation";
+import { isNumberInRange } from "@/shared/validation";
 import {
   getSpecialDirectionByCompassHeading,
   getStar,
@@ -45,6 +38,15 @@ import { useCheckSubscription } from "@/hooks/useCheckSubscription";
 import { compassService } from "@/services/compass";
 import { useModal } from "@/hooks/useModal";
 import EditUserModal from "@/app/edit-user-modal";
+import SearchLocationModal, {
+  SearchLocation,
+} from "@/app/search-location-modal";
+import {
+  getCurrentPositionAsync,
+  LocationAccuracy,
+  requestForegroundPermissionsAsync,
+} from "expo-location";
+import { Image } from "expo-image";
 
 const COMPASS_SIZE = screen.width - 26;
 const COMPASS_HEADING_SIZE = screen.width;
@@ -59,9 +61,16 @@ interface Location {
 export default function MapScreen() {
   const user = useUserStore((state) => state.user);
   const { isVisible, onClose, onOpen } = useModal();
+  const {
+    isVisible: isSearchModalVisible,
+    onClose: onCloseSearchModal,
+    onOpen: onOpenSearchModal,
+  } = useModal();
   const [isMapReady, setIsMapReady] = useState(false);
   const [location, setLocation] = useState<Location>();
-  const [searchLocation, setSearchLocation] = useState<Location | null>(null);
+  const [searchLocation, setSearchLocation] = useState<SearchLocation | null>(
+    null
+  );
   const compassHeading = useSharedValue(0);
   const compassScale = useSharedValue(1);
   const mapRef = useRef<MapView>(null);
@@ -186,21 +195,8 @@ export default function MapScreen() {
     compassHeading.value = roundedHeading;
   };
 
-  const handleSearchLocationTextChange = (text: string) => {
-    const [latitude, longitude] = text.split(",").map((item) => item.trim());
-    if (
-      latitude &&
-      longitude &&
-      isNumberFinite(latitude) &&
-      isNumberFinite(longitude)
-    ) {
-      setSearchLocation({
-        latitude: Number(latitude),
-        longitude: Number(longitude),
-      });
-    } else {
-      setSearchLocation(null);
-    }
+  const handleSearchLocationTextChange = (location: SearchLocation) => {
+    setSearchLocation(location);
   };
 
   const goToSearchLocation = () => {
@@ -228,46 +224,25 @@ export default function MapScreen() {
 
   const requestLocationPermission = async () => {
     try {
-      if (Platform.OS === "ios") {
-        const auth = await Geolocation.requestAuthorization("whenInUse");
-        if (auth === "granted") {
-          getCurrentLocation();
-        }
+      const { status } = await requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        return;
       }
-
-      if (Platform.OS === "android") {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          {
-            title: "Location Permission",
-            message: "App needs access to your location",
-            buttonNeutral: "Ask Me Later",
-            buttonNegative: "Cancel",
-            buttonPositive: "OK",
-          }
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          getCurrentLocation();
-        }
-      }
+      getCurrentLocation();
     } catch (err) {
       console.warn(err);
     }
   };
 
   const getCurrentLocation = () => {
-    Geolocation.getCurrentPosition(
-      (position) => {
-        setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-      },
-      (error) => {
-        console.log(error.code, error.message);
-      },
-      { enableHighAccuracy: true, timeout: 10000 }
-    );
+    getCurrentPositionAsync({
+      accuracy: LocationAccuracy.High,
+    }).then((location) => {
+      setLocation({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+    });
   };
 
   if (user === null || location === undefined) return <ScreenPlaceholder />;
@@ -280,13 +255,18 @@ export default function MapScreen() {
         style={styles.map}
         mapType="satellite"
         showsCompass={false}
-        showsUserLocation={true}
         rotateEnabled={false}
         showsMyLocationButton={false}
         onMapReady={() => setIsMapReady(true)}
         maxZoomLevel={22}
       >
         {searchLocation && <Marker coordinate={searchLocation} />}
+        <Marker coordinate={location}>
+          <Image
+            source={require("@/assets/images/user.png")}
+            style={{ width: 32, height: 32 }}
+          />
+        </Marker>
       </MapView>
       <View
         style={[
@@ -296,6 +276,11 @@ export default function MapScreen() {
         pointerEvents="box-none"
       >
         <EditUserModal isVisible={isVisible} onClose={onClose} />
+        <SearchLocationModal
+          isVisible={isSearchModalVisible}
+          onClose={onCloseSearchModal}
+          onConfirm={handleSearchLocationTextChange}
+        />
         <NavigationBar />
         {/* tool bar */}
         <View style={styles.toolBar}>
@@ -309,12 +294,19 @@ export default function MapScreen() {
           >
             <IconEyeSlash />
           </IconContainer>
-          <TextInput
+          <TouchableOpacity
             style={styles.textInput}
-            placeholderTextColor={"rgba(123, 92, 38, 0.2)"}
-            placeholder={`Nhập địa chỉ hoặc toạ độ`}
-            onChangeText={(text) => handleSearchLocationTextChange(text)}
-          />
+            onPress={onOpenSearchModal}
+          >
+            <TextInput
+              style={styles.textInputInner}
+              placeholderTextColor={"rgba(123, 92, 38, 0.2)"}
+              placeholder={`Nhập địa chỉ hoặc toạ độ`}
+              pointerEvents="none"
+              value={searchLocation?.address}
+              editable={false}
+            />
+          </TouchableOpacity>
           <IconContainer onPress={goToSearchLocation}>
             <IconDoubleArrow />
           </IconContainer>
@@ -457,6 +449,9 @@ const styles = StyleSheet.create({
     height: 32,
     backgroundColor: "white",
     borderRadius: 4,
+    justifyContent: "center",
+  },
+  textInputInner: {
     padding: 8,
     color: "#7B5C26",
     fontSize: 14,
