@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  Linking,
   ImageSourcePropType,
 } from "react-native";
 
@@ -117,7 +116,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     color: "#212121",
-    fontFamily: "Voltaire Regular",
+    fontFamily: "Roboto Condensed Bold",
   },
   imageGrid: {
     flexDirection: "row",
@@ -160,13 +159,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#553D13",
     flex: 1,
-    fontFamily: "Voltaire Regular",
+    fontFamily: "Roboto Condensed",
   },
   description: {
     fontSize: 14,
     color: "#553D13",
     lineHeight: 20,
-    fontFamily: "Voltaire Regular",
+    fontFamily: "Roboto Condensed",
   },
   websiteText: {
     color: "#0080CA",

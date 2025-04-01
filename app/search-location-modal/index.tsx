@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontFamily: "Voltaire Regular",
+    fontFamily: "Roboto Condensed",
     color: "#7B5C26",
     marginBottom: 20,
   },
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
-    fontFamily: "Voltaire Regular",
+    fontFamily: "Roboto Condensed",
   },
   cancelButton: {
     backgroundColor: "transparent",

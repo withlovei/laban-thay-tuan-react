@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontFamily: "UTM Iron Gothic",
+    fontFamily: "UTM Impact",
     color: "#FEC41F",
     position: "absolute",
     top: 335,

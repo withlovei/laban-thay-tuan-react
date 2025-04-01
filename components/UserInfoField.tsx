@@ -72,18 +72,18 @@ const styles = StyleSheet.create({
     borderColor: "#D69C66",
   },
   label: {
-    fontFamily: "Voltaire Regular",
+    fontFamily: "Roboto Condensed",
     color: "#EAD196",
-    fontSize: 12,
+    fontSize: 14,
   },
   input: {
-    fontSize: 14,
+    fontSize: 16,
     color: "#FEC41F",
-    fontFamily: "Voltaire Regular",
+    fontFamily: "Roboto Condensed",
   },
   inputText: {
-    fontSize: 14,
-    fontFamily: "Voltaire Regular",
+    fontSize: 16,
+    fontFamily: "Roboto Condensed",
     color: "#FEC41F",
   },
   placeholderText: {

@@ -57,14 +57,14 @@ export default function RotateCompassModal({
 
           <TouchableOpacity
             style={[styles.button, styles.confirmButton]}
-            disabled={!tempDegree}
+            disabled={tempDegree === null}
             onPress={handleSave}
           >
             <Text
               style={[
                 styles.buttonText,
                 styles.confirmButtonText,
-                !tempDegree && styles.disabledButtonText,
+                tempDegree !== null && styles.disabledButtonText,
               ]}
             >
               Xác nhận
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     color: "#7B5C26",
     fontSize: 24,
-    fontFamily: "Voltaire Regular",
+    fontFamily: "Roboto Condensed",
     marginBottom: 20,
   },
   saveButton: {
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: "#7B5C26",
     fontSize: 16,
-    fontFamily: "Voltaire Regular",
+    fontFamily: "Roboto Condensed",
   },
   closeButton: {
     paddingVertical: 12,
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: "#FEC41F",
     fontSize: 16,
-    fontFamily: "Voltaire Regular",
+    fontFamily: "Roboto Condensed",
   },
   inputContainer: {
     width: "100%",
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
-    fontFamily: "Voltaire Regular",
+    fontFamily: "Roboto Condensed",
   },
   cancelButton: {
     backgroundColor: "transparent",

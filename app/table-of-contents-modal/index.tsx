@@ -6,6 +6,13 @@ import { IconContainer } from "@/components/ui/IconContainer";
 import { IconInventory } from "@/components/ui/icons/IconInventory";
 import { SectionItem } from "@/app/table-of-contents-modal/components/SectionItem";
 import { Background } from "@/app/table-of-contents-modal/components/Background";
+import { IconMoonStars } from "@/components/ui/icons/IconMoonStars";
+import { IconExplore } from "@/components/ui/icons/IconExplore";
+import { IconStar } from "@/components/ui/icons/IconStar";
+import { IconStairs } from "@/components/ui/icons/IconStairs";
+import { IconManageSearch } from "@/components/ui/icons/IconManageSearch";
+import { IconChangeCircle } from "@/components/ui/icons/IconChangeCircle";
+import { IconDoorOpen } from "@/components/ui/icons/IconDoorOpen";
 
 interface Section {
   title: string;
@@ -14,32 +21,32 @@ interface Section {
 }
 const sections: Section[] = [
   { title: "Khái niệm cơ bản", icon: <IconInventory />, pageIndex: 13 },
-  { title: "Cung mệnh phong thuỷ", icon: <IconInventory />, pageIndex: 19 },
+  { title: "Cung mệnh phong thuỷ", icon: <IconMoonStars />, pageIndex: 19 },
   {
     title: "Hướng nhà trong phong thuỷ",
-    icon: <IconInventory />,
+    icon: <IconExplore />,
     pageIndex: 21,
   },
   {
     title: "24 sao trong vòng sao Phúc Đức",
-    icon: <IconInventory />,
+    icon: <IconStar />,
     pageIndex: 23,
   },
   {
     title:
       "Trình tự các bước tự kiểm tra phong thủy hướng nhà tốt xấu một cách nhanh nhất",
-    icon: <IconInventory />,
+    icon: <IconStairs />,
     pageIndex: 37,
   },
   {
     title: "Bảng tra cứu sự tác động vòng 24 sơn hướng theo năm sinh",
-    icon: <IconInventory />,
+    icon: <IconManageSearch />,
     pageIndex: 45,
   },
-  { title: "Cách hóa giải", icon: <IconInventory />, pageIndex: 225 },
+  { title: "Cách hóa giải", icon: <IconChangeCircle />, pageIndex: 225 },
   {
     title: "Câu chuyện thực tế kiểm tra cát hung tại vị trí mở cửa",
-    icon: <IconInventory />,
+    icon: <IconDoorOpen />,
     pageIndex: 233,
   },
 ];

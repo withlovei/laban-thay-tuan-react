@@ -74,8 +74,9 @@ const styles = StyleSheet.create({
   },
   label: {
     color: "#EAD196",
-    fontSize: 12,
-    fontFamily: "Voltaire Regular",
+    fontSize: 14,
+    fontFamily: "Roboto Condensed",
+    fontWeight: 400,
   },
   optionsContainer: {
     flexDirection: "row",
@@ -110,7 +111,8 @@ const styles = StyleSheet.create({
   },
   optionText: {
     color: "#FEC41F",
-    fontSize: 14,
-    fontFamily: "Voltaire Regular",
+    fontSize: 16,
+    fontFamily: "Roboto Condensed",
+    fontWeight: 500,
   },
 });

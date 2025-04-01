@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontFamily: "Voltaire Regular",
+    fontFamily: "Roboto Condensed",
     color: "#fff",
     marginLeft: 16,
     maxWidth: screen.width - 129,

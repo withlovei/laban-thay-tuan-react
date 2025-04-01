@@ -9,7 +9,11 @@ interface ImagePickerModalProps {
   onClose: () => void;
 }
 
-export default function ImagePickerModal({ setUri, isVisible, onClose }: ImagePickerModalProps) {
+export default function ImagePickerModal({
+  setUri,
+  isVisible,
+  onClose,
+}: ImagePickerModalProps) {
   const handleCameraLaunch = async () => {
     const result = await launchCamera({
       mediaType: "photo",
@@ -41,25 +45,25 @@ export default function ImagePickerModal({ setUri, isVisible, onClose }: ImagePi
       <View style={styles.modalContent}>
         <View style={styles.header}>
           <Text style={styles.title}>Chọn ảnh</Text>
-          <TouchableOpacity onPress={onClose}>
+          {/* <TouchableOpacity onPress={onClose}>
             <IconContainer>
               <IconClose />
             </IconContainer>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={handleCameraLaunch}
-        >
+        <TouchableOpacity style={styles.button} onPress={handleCameraLaunch}>
           <Text style={styles.buttonText}>Mở máy ảnh</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={handleGalleryLaunch}
-        >
+        <TouchableOpacity style={styles.button} onPress={handleGalleryLaunch}>
           <Text style={styles.buttonText}>Chọn từ thư viện</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, styles.cancelButton]}
+          onPress={onClose}
+        >
+          <Text style={[styles.buttonText, styles.cancelButtonText]}>Huỷ</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -89,19 +93,32 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontSize: 20,
-    fontWeight: "bold",
+    color: "#7B5C26",
+    fontSize: 24,
+    fontFamily: "Roboto Condensed",
   },
   button: {
-    backgroundColor: "#C81B22",
-    padding: 15,
-    borderRadius: 8,
-    marginVertical: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 100,
+    minWidth: 120,
+    alignItems: "center",
+    backgroundColor: "#FEC41F",
+    marginBottom: 12,
+  },
+  cancelButton: {
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: "#FEC41F",
   },
   buttonText: {
-    color: "white",
     textAlign: "center",
     fontSize: 16,
     fontWeight: "600",
+    color: "#7B5C26",
+    fontFamily: "Roboto Condensed",
   },
-}); 
+  cancelButtonText: {
+    color: "#FEC41F",
+  },
+});

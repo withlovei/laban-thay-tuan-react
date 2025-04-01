@@ -2,12 +2,16 @@
   "migIndex": 1,
   "data": [
     {
-      "path": "assets/fonts/UTM Iron Gothic.ttf",
-      "sha1": "bbc7941cb5ea4fb491c6543ebc47b88212731db0"
+      "path": "assets/fonts/Roboto Condensed Bold.ttf",
+      "sha1": "97289a9d7448164e46ea8b3107a24ac1807f6c0e"
     },
     {
-      "path": "assets/fonts/Voltaire Regular.ttf",
-      "sha1": "5cebf0941fd43ece9be23968d1260723f7ee0c9a"
+      "path": "assets/fonts/Roboto Condensed.ttf",
+      "sha1": "8e3b1c2ac207f652b67855020cf731cd600942f5"
+    },
+    {
+      "path": "assets/fonts/UTM Impact.ttf",
+      "sha1": "fd9200e6dd9e364593b65ae094b889ea9c3f5154"
     }
   ]
 }

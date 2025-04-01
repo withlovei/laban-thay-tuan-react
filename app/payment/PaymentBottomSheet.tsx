@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     top: 8,
   },
   title: {
-    fontFamily: "Voltaire Regular",
+    fontFamily: "Roboto Condensed",
     fontSize: 16,
     color: "#27272A",
   },
@@ -175,19 +175,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#C81B22",
     marginBottom: 20,
-    fontFamily: "Voltaire Regular",
+    fontFamily: "Roboto Condensed",
   },
   includes: {
     fontSize: 18,
     fontWeight: "600",
     marginBottom: 10,
-    fontFamily: "Voltaire Regular",
+    fontFamily: "Roboto Condensed",
   },
   benefit: {
     fontSize: 16,
     marginBottom: 8,
     color: "#666",
-    fontFamily: "Voltaire Regular",
+    fontFamily: "Roboto Condensed",
   },
   buttonContainer: {
     width: "100%",
@@ -212,12 +212,12 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
-    fontFamily: "Voltaire Regular",
+    fontFamily: "Roboto Condensed",
   },
   description: {
     fontSize: 16,
     fontWeight: "600",
-    fontFamily: "Voltaire Regular",
+    fontFamily: "Roboto Condensed",
     marginBottom: 10,
   },
   benefitContainer: {

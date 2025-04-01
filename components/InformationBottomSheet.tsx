@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     top: 8,
   },
   title: {
-    fontFamily: "Voltaire Regular",
+    fontFamily: "Roboto Condensed Bold",
     fontSize: 16,
     color: "#27272A",
   },

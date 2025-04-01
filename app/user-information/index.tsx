@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#7B5C26",
-    fontSize: 16,
-    fontFamily: "Voltaire Regular",
+    fontSize: 18,
+    fontFamily: "Roboto Condensed Bold",
   },
 });

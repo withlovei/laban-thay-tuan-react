@@ -4,7 +4,7 @@ import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useToggle } from "@/hooks/useToggle";
 import { IconLock } from "@/components/ui/icons/IconLock";
-import { screen } from "@/constants/Dimensions";
+import { screen, SLIDER_HEIGHT, SLIDER_WIDTH } from "@/constants/Dimensions";
 import { NavigationBar } from "@/components/NavigationBar";
 import { IconContainer } from "@/components/ui/IconContainer";
 import { IconEyeSlash } from "@/components/ui/icons/IconEyeSlash";
@@ -330,48 +330,33 @@ export default function MapScreen() {
             multiline
           />
         </View>
-        {/* back compass description */}
-        <View style={styles.bottomCompassDescription} pointerEvents="none">
-          <TextInput
-            ref={backCompassHeadingTextRef}
-            style={styles.compassDescriptionText}
-            multiline
-            editable={false}
-          />
-        </View>
         {/* footer bar */}
         <View style={styles.footerBar}>
-          <IconContainer onPress={toggleLockCompass}>
-            {isLockCompass ? <IconLock /> : <IconLockOpenRight />}
-          </IconContainer>
+          {/* back compass description */}
+          <View style={styles.bottomCompassDescription} pointerEvents="none">
+            <TextInput
+              ref={backCompassHeadingTextRef}
+              style={styles.compassDescriptionText}
+              multiline
+              editable={false}
+            />
+          </View>
+          <View style={styles.homeDirection}>
+            <TextInput
+              ref={homeDirectionTextRef}
+              style={styles.compassStarMeaningText}
+              editable={false}
+            />
+          </View>
           <IconContainer onPress={goToMyLocation}>
             <IconPinDrop />
+          </IconContainer>
+          <IconContainer onPress={toggleLockCompass} width={56} height={56}>
+            {isLockCompass ? <IconLock /> : <IconLockOpenRight />}
           </IconContainer>
           <IconContainer onPress={onOpen}>
             <IconEditDocument />
           </IconContainer>
-        </View>
-        <View style={styles.homeDirection}>
-          <TextInput
-            ref={homeDirectionTextRef}
-            style={styles.compassStarMeaningText}
-            editable={false}
-          />
-        </View>
-        {/* compass scale slider */}
-        <View style={styles.sliderContainer}>
-          <Slider
-            style={styles.slider}
-            minimumValue={MIN_SCALE}
-            maximumValue={MAX_SCALE}
-            value={1}
-            onValueChange={(value: number) => {
-              compassScale.value = value;
-            }}
-            minimumTrackTintColor="#FEC41F"
-            maximumTrackTintColor="#FFFFFF"
-            thumbTintColor="#FEC41F"
-          />
         </View>
       </View>
       {/* compass */}
@@ -394,6 +379,21 @@ export default function MapScreen() {
       >
         <CompassHeadingUI />
       </Animated.View>
+      {/* compass scale slider */}
+      <View style={styles.sliderContainer}>
+        <Slider
+          style={styles.slider}
+          minimumValue={MIN_SCALE}
+          maximumValue={MAX_SCALE}
+          value={1}
+          onValueChange={(value: number) => {
+            compassScale.value = value;
+          }}
+          minimumTrackTintColor="#C81B22"
+          maximumTrackTintColor="#00000080"
+          thumbTintColor="#C81B22"
+        />
+      </View>
     </View>
   );
 }
@@ -443,6 +443,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     gap: 8,
     flexDirection: "row",
+    alignItems: "center",
   },
   textInput: {
     flex: 1,
@@ -461,9 +462,9 @@ const styles = StyleSheet.create({
     width: screen.width,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
+    justifyContent: "space-between",
     paddingVertical: 8,
+    paddingHorizontal: 16,
     bottom: 32,
   },
   topCompassDescription: {
@@ -472,8 +473,8 @@ const styles = StyleSheet.create({
   },
   compassDescriptionText: {
     color: "white",
-    fontSize: 18,
-    fontFamily: "Voltaire Regular",
+    fontSize: 20,
+    fontFamily: "Roboto Condensed Bold",
     textAlign: "center",
   },
   safeAreaView: {
@@ -490,13 +491,14 @@ const styles = StyleSheet.create({
   },
   sliderContainer: {
     position: "absolute",
-    bottom: 140,
-    width: screen.width,
-    paddingHorizontal: 20,
+    transform: [{ rotate: "270deg" }],
+    top: screen.height / 2 - SLIDER_HEIGHT / 2,
+    right: -SLIDER_WIDTH / 2 + SLIDER_HEIGHT / 2 + 9,
+    zIndex: 1
   },
   slider: {
-    width: "100%",
-    height: 40,
+    width: SLIDER_WIDTH,
+    height: SLIDER_HEIGHT,
   },
   compassStarMeaning: {
     alignItems: "center",
@@ -507,8 +509,9 @@ const styles = StyleSheet.create({
   compassStarMeaningText: {
     color: "white",
     fontSize: 18,
-    fontFamily: "Voltaire Regular",
+    fontFamily: "Roboto Condensed",
     textAlign: "center",
+    fontWeight: 400,
   },
   homeDirection: {
     position: "absolute",

@@ -12,8 +12,8 @@ interface IconContainerProps {
 
 export const IconContainer: FC<IconContainerProps> = ({
   children,
-  width = 32,
-  height = 32,
+  width = 40,
+  height = 40,
   onPress,
   style,
 }) => {
@@ -32,7 +32,7 @@ export const IconContainer: FC<IconContainerProps> = ({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#C81B22",
-    borderRadius: 4,
+    borderRadius: 50,
     alignItems: "center",
     justifyContent: "center",
   },

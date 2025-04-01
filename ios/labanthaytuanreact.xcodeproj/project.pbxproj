@@ -12,13 +12,14 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		33F594472D95066C0078895F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 33F594462D95066C0078895F /* GoogleService-Info.plist */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		5FF4353F875548C698619442 /* UTM Iron Gothic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DFB07A05CA7B49519B2153DE /* UTM Iron Gothic.ttf */; };
 		6919BE29CE7C42BC80B2E62B /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4D347BD0B94592BFBCFF9E /* noop-file.swift */; };
-		755F2F72A04E46F8BB327236 /* Voltaire Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA2C519B72E94469B709FE43 /* Voltaire Regular.ttf */; };
 		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		E45F8621F740E809E31283E1 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 747E481B5A3EE6250AAC76B6 /* PrivacyInfo.xcprivacy */; };
 		F00939A2A2C1DB566B4BF8AC /* Pods_labanthaytuanreact.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F2E6943CC9E5CBF387FA56 /* Pods_labanthaytuanreact.framework */; };
+		9584ED6A37AF4B92A4F5A8D4 /* Roboto Condensed Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 00904014F7B04C629B1A4EA4 /* Roboto Condensed Bold.ttf */; };
+		B6364907AF634AC9846E235F /* Roboto Condensed.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2CDA03E3299543E288CB34AD /* Roboto Condensed.ttf */; };
+		5EFC690252F44521A0ECED95 /* UTM Impact.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8AC6FAD93C714549B3EF1045 /* UTM Impact.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,13 +35,14 @@
 		6E4D347BD0B94592BFBCFF9E /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "labanthaytuanreact/noop-file.swift"; sourceTree = "<group>"; };
 		747E481B5A3EE6250AAC76B6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = labanthaytuanreact/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = labanthaytuanreact/SplashScreen.storyboard; sourceTree = "<group>"; };
-		AA2C519B72E94469B709FE43 /* Voltaire Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Voltaire Regular.ttf"; path = "../assets/fonts/Voltaire Regular.ttf"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		BC53DB35662558401F4744F3 /* Pods-labanthaytuanreact.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-labanthaytuanreact.release.xcconfig"; path = "Target Support Files/Pods-labanthaytuanreact/Pods-labanthaytuanreact.release.xcconfig"; sourceTree = "<group>"; };
-		DFB07A05CA7B49519B2153DE /* UTM Iron Gothic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "UTM Iron Gothic.ttf"; path = "../assets/fonts/UTM Iron Gothic.ttf"; sourceTree = "<group>"; };
 		EACDF19BD32348F38AE4AA99 /* labanthaytuanreact-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "labanthaytuanreact-Bridging-Header.h"; path = "labanthaytuanreact/labanthaytuanreact-Bridging-Header.h"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-labanthaytuanreact/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		00904014F7B04C629B1A4EA4 /* Roboto Condensed Bold.ttf */ = {isa = PBXFileReference; name = "Roboto Condensed Bold.ttf"; path = "../assets/fonts/Roboto Condensed Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		2CDA03E3299543E288CB34AD /* Roboto Condensed.ttf */ = {isa = PBXFileReference; name = "Roboto Condensed.ttf"; path = "../assets/fonts/Roboto Condensed.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		8AC6FAD93C714549B3EF1045 /* UTM Impact.ttf */ = {isa = PBXFileReference; name = "UTM Impact.ttf"; path = "../assets/fonts/UTM Impact.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,8 +87,9 @@
 		44A7659F52E24C98933C1E0C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				DFB07A05CA7B49519B2153DE /* UTM Iron Gothic.ttf */,
-				AA2C519B72E94469B709FE43 /* Voltaire Regular.ttf */,
+				00904014F7B04C629B1A4EA4 /* Roboto Condensed Bold.ttf */,
+				2CDA03E3299543E288CB34AD /* Roboto Condensed.ttf */,
+				8AC6FAD93C714549B3EF1045 /* UTM Impact.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -222,9 +225,10 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
 				E45F8621F740E809E31283E1 /* PrivacyInfo.xcprivacy in Resources */,
-				5FF4353F875548C698619442 /* UTM Iron Gothic.ttf in Resources */,
-				755F2F72A04E46F8BB327236 /* Voltaire Regular.ttf in Resources */,
 				33F594472D95066C0078895F /* GoogleService-Info.plist in Resources */,
+				9584ED6A37AF4B92A4F5A8D4 /* Roboto Condensed Bold.ttf in Resources */,
+				B6364907AF634AC9846E235F /* Roboto Condensed.ttf in Resources */,
+				5EFC690252F44521A0ECED95 /* UTM Impact.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

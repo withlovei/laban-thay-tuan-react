@@ -35,8 +35,8 @@ const styles = StyleSheet.create({
     left: screen.width / 2 - 90,
   },
   title: {
-    fontSize: 32,
-    fontFamily: "UTM Iron Gothic",
+    fontSize: 26,
+    fontFamily: "UTM Impact",
     color: "#EAD196",
     position: "absolute",
     bottom: 96,

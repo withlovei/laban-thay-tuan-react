@@ -92,7 +92,7 @@ export default function Sidebar() {
               }}
             >
               <IconContainer style={styles.iconContainer}>
-                <IconStar />
+                <IconStar fill={"#7B5C26"} />
               </IconContainer>
               <Text style={styles.menuText}>24 sao</Text>
             </TouchableOpacity>
@@ -161,8 +161,8 @@ const styles = StyleSheet.create({
     borderBottomColor: "rgba(123, 92, 38, 0.2)",
   },
   title: {
-    fontSize: 24,
-    fontFamily: "Voltaire Regular",
+    fontSize: 20,
+    fontFamily: "UTM Impact",
     color: "#7B5C26",
   },
   content: {
@@ -178,8 +178,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   menuText: {
-    fontSize: 18,
-    fontFamily: "Voltaire Regular",
+    fontSize: 16,
+    fontFamily: "Roboto Condensed",
     color: "#7B5C26",
   },
   iconContainer: {

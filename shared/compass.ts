@@ -220,52 +220,52 @@ export const getStar = (heading: number, user: User): CompassStar | null => {
 export const getStarMeaning = (star: CompassStar) => {
   switch (star) {
     case "Thân Hôn":
-      return "Gia đình hạnh phúc, an vui"
+      return "Vui vẻ"
     case "Hoan Lạc":
-      return "Gia đình vui vẻ, hay có tiếng cười"
+      return "May mắn"
     case "Bại Tuyệt":
-      return "Kinh tế suy bại sau 1 đến 3 năm"
+      return "Kinh tế suy kém"
     case "Vượng Tài":
-      return "Tốt về tài lộc, kinh doanh buôn bán"
+      return "Tài Lộc"
     case "Phúc Đức":
-      return "Gia đình có trật tự trên dưới"
+      return "Tốt gia đạo"
     case "Ôn Hoàng":
-      return "Chủ về bệnh tật, đặc biệt là các bệnh về da"
+      return "Bệnh tật, thị phi"
     case "Tấn Tài":
-      return "Tốt về tài lộc, kinh doanh buôn bán"
+      return "Thêm tài lộc"
     case "Trường Bệnh":
-      return "Người trong nhà ốm lâu ngày không khỏi"
+      return "Bệnh tật lâu ngày"
     case "Tố Tụng":
-      return "Liên quan đến kiện cáo, tranh chấp"
+      return "Kiện cáo"
     case "Quan Lộc":
-      return "Tốt về quan vận, hay được quý nhân giúp đỡ"
+      return "Quý nhân giúp đỡ"
     case "Quan Quý":
-      return "Tốt về quan vận, đặc biệt có người làm công chức"
+      return "Quý nhân giúp đỡ"
     case "Tự Ải":
-      return "Trong nhà có người khổ tâm, uất ức hay nghĩ quẩn"
+      return "Khổ tâm, tiêu cực"
     case "Vượng Trang":
-      return "Tốt về đất đai nhà, cửa"
+      return "Tốt về đất đai"
     case "Hưng Phúc":
-      return "Gia đình hòa thuận, êm ấm"
+      return "Hạnh Phúc"
     case "Pháp Trường":
-      return "Dễ liên quan đến pháp luật"
+      return "Pháp Luật"
     case "Điên Cuồng":
-      return "Người trong nhà nóng tính, hay mất bình tĩnh"
+      return "Nóng nảy, hung hãn"
     case "Khẩu Thiệt":
-      return "Người trong nhà ăn nói thua thiệt, hay chịu thiệt về mình"
+      return "Thua thiệt, thiệt thòi"
     case "Vượng Tân":
-      return "Tốt về đất đai, nhà cửa"
+      return "Tốt về đất đai"
     case "Tấn Điền":
-      return "Sau khi ở đây mua được thêm đất cát, gia tăng điền sản"
+      return "Thêm đất"
     case "Khốc Khấp":
-      return "Trong nhà hay có người ốm vặt"
+      return "Ốm lặt vặt"
     case "Cô Quả":
-      return "Vợ chồng dễ chia ly, quả phụ hoặc kết hôn muộn"
+      return "Cô đơn, quả phụ"
     case "Vinh Phú":
-      return "Chủ về tài vận, làm ăn kinh doanh thuận lợi"
+      return "Phúc lộc"
     case "Thiếu Vong":
-      return "Trong nhà dễ có người liên quan đến cờ bạc, rượu chè"
+      return "Đỏ đen, cá cược"
     case "Xương Dâm":
-      return "Trong nhà dễ có người ngoại tình"
+      return "Đào hoa xấu"
   }
 }

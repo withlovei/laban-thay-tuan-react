@@ -51,8 +51,8 @@ export default function EditUserModal({ isVisible, onClose }: EditUserModalProps
   }, [isVisible])
 
   const resetState = () => {
-    setGender(null);
-    setBirthYear(null);
+    setGender(user?.gender ?? null);
+    setBirthYear(user?.birthYear ?? null);
     setShowYearPicker(false);
   }
 
@@ -160,8 +160,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#7B5C26",
-    fontSize: 16,
-    fontFamily: "Voltaire Regular",
+    fontSize: 18,
+    fontFamily: "Roboto Condensed Bold",
   },
   closeButton: {
     position: "absolute",

@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: "#7B5C26",
-    fontSize: 21,
-    fontFamily: "Voltaire Regular",
+    fontSize: 20,
+    fontFamily: "UTM Impact",
   },
 });
