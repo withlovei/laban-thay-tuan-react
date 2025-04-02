@@ -97,10 +97,6 @@ export default function MapScreen() {
   const compassHeadingStyle = useAnimatedStyle(() => ({
     opacity: compassOpacity.value,
     transform: [{ scale: compassScale.value }],
-    top:
-      screen.height / 2 -
-      COMPASS_HEADING_SIZE / 2 -
-      7 * compassScale.value * (COMPASS_HEADING_SIZE / 404),
   }));
   const [isLockCompass, toggleLockCompass] = useToggle(false);
   const [isFullCompass, toggleFullCompass] = useToggle(false);
@@ -122,8 +118,10 @@ export default function MapScreen() {
   }, [isLockCompass]);
 
   useEffect(() => {
-    updateCompassHeadingFnRef.current = updateCompassHeading;
-  }, [user?.gender, user?.birthYear]);
+    if (!isLockCompass) {
+      updateCompassHeadingFnRef.current = updateCompassHeading;
+    }
+  }, [user?.gender, user?.birthYear, isLockCompass]);
 
   useEffect(() => {
     if (isMapReady) {
@@ -149,7 +147,7 @@ export default function MapScreen() {
     const direction = getDirectionByCompassHeading(heading);
     const specialDirection = getSpecialDirectionByCompassHeading(heading);
     compassHeadingTextRef.current?.setNativeProps({
-      text: `Hướng ${specialDirection} ${heading.toFixed(3)}° ${direction}`,
+      text: `Hướng ${specialDirection} ${heading.toFixed(1)}° ${direction}`,
     });
 
     const backHeading = normalizeHeading(heading + 180);
@@ -161,7 +159,7 @@ export default function MapScreen() {
       text: `${genderText} - ${
         user?.birthYear
       }\nHướng ${backSpecialDirection} ${backHeading.toFixed(
-        3
+        1
       )}° ${backDirection}`,
     });
 
@@ -261,11 +259,12 @@ export default function MapScreen() {
         maxZoomLevel={22}
       >
         {searchLocation && <Marker coordinate={searchLocation} />}
-        <Marker coordinate={location}>
-          <Image
-            source={require("@/assets/images/user.png")}
-            style={{ width: 32, height: 32 }}
-          />
+        <Marker
+          style={{ width: 16, height: 16 }}
+          coordinate={location}
+          anchor={{ x: 0.5, y: 0.5 }}
+        >
+          <View style={styles.myLocation} />
         </Marker>
       </MapView>
       <View
@@ -423,7 +422,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: screen.width / 2 - COMPASS_HEADING_SIZE / 2,
     width: COMPASS_HEADING_SIZE,
-    height: COMPASS_HEADING_SIZE,
+    height: COMPASS_HEADING_SIZE * (423 / 390),
+    top: screen.height / 2 - (212 / 390) * COMPASS_HEADING_SIZE,
     zIndex: 1,
   },
   compassLogo: {
@@ -494,7 +494,7 @@ const styles = StyleSheet.create({
     transform: [{ rotate: "270deg" }],
     top: screen.height / 2 - SLIDER_HEIGHT / 2,
     right: -SLIDER_WIDTH / 2 + SLIDER_HEIGHT / 2 + 9,
-    zIndex: 1
+    zIndex: 1,
   },
   slider: {
     width: SLIDER_WIDTH,
@@ -518,5 +518,13 @@ const styles = StyleSheet.create({
     bottom: 125,
     width: screen.width,
     paddingHorizontal: 20,
+  },
+  myLocation: {
+    width: 16,
+    height: 16,
+    backgroundColor: "#3A83DF",
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: "#fff",
   },
 });

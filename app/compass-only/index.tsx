@@ -89,10 +89,6 @@ export default function CompassOnlyScreen() {
   const compassHeadingStyle = useAnimatedStyle(() => ({
     opacity: compassOpacity.value,
     transform: [{ scale: compassScale.value }],
-    top:
-      screen.height / 2 -
-      COMPASS_HEADING_SIZE / 2 -
-      7 * compassScale.value * (COMPASS_HEADING_SIZE / 404),
   }));
   const [isLockCompass, toggleLockCompass, setIsLockCompass] = useToggle(false);
   const [isFullCompass, toggleFullCompass] = useToggle(false);
@@ -110,8 +106,10 @@ export default function CompassOnlyScreen() {
   }, []);
 
   useEffect(() => {
-    updateCompassHeadingFnRef.current = updateCompassHeading;
-  }, [user?.gender, user?.birthYear]);
+    if (!isLockCompass) {
+      updateCompassHeadingFnRef.current = updateCompassHeading;
+    }
+  }, [user?.gender, user?.birthYear, isLockCompass]);
 
   useEffect(() => {
     if (isLockCompass) {
@@ -132,7 +130,7 @@ export default function CompassOnlyScreen() {
     const direction = getDirectionByCompassHeading(heading);
     const specialDirection = getSpecialDirectionByCompassHeading(heading);
     compassHeadingTextRef.current?.setNativeProps({
-      text: `Hướng ${specialDirection} ${heading.toFixed(3)}° ${direction}`,
+      text: `Hướng ${specialDirection} ${heading.toFixed(1)}° ${direction}`,
     });
 
     const backHeading = normalizeHeading(heading + 180);
@@ -144,7 +142,7 @@ export default function CompassOnlyScreen() {
       text: `${genderText} - ${
         user?.birthYear
       }\nHướng ${backSpecialDirection} ${backHeading.toFixed(
-        3
+        1
       )}° ${backDirection}`,
     });
     if (user) {
@@ -173,7 +171,7 @@ export default function CompassOnlyScreen() {
     }
 
     const remapHeading = heading > 180 ? heading - 360 : heading;
-    const roundedHeading = Number(remapHeading.toFixed(3));
+    const roundedHeading = Number(remapHeading.toFixed(1));
     compassHeading.value = animation
       ? withTiming(roundedHeading, { duration: 500 })
       : roundedHeading;
@@ -343,7 +341,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: screen.width / 2 - COMPASS_HEADING_SIZE / 2,
     width: COMPASS_HEADING_SIZE,
-    height: COMPASS_HEADING_SIZE,
+    height: COMPASS_HEADING_SIZE * (423 / 390),
+    top: screen.height / 2 - (212 / 390) * COMPASS_HEADING_SIZE,
     zIndex: 1,
   },
   compassLogo: {

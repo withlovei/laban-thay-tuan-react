@@ -30,9 +30,8 @@ export default function SearchLocationModal({
 }: SearchLocationModalProps) {
   const [searchText, setSearchText] = useState("");
   const [suggestions, setSuggestions] = useState<SearchLocation[]>([]);
-  const [selectedLocation, setSelectedLocation] = useState<SearchLocation | null>(
-    null
-  );
+  const [selectedLocation, setSelectedLocation] =
+    useState<SearchLocation | null>(null);
 
   const handleSearchLocation = async (text: string) => {
     setSearchText(text);
@@ -58,15 +57,10 @@ export default function SearchLocationModal({
       try {
         const reverseGeocode = await reverseGeocodeAsync(location);
         if (reverseGeocode.length > 0) {
-          const address = [
-            reverseGeocode[0].street,
-            reverseGeocode[0].district,
-            reverseGeocode[0].city,
-            reverseGeocode[0].country,
-          ]
-            .filter(Boolean)
-            .join(", ");
-          setSuggestions([{ ...location, address }]);
+          const address = reverseGeocode?.[0]?.formattedAddress;
+          if (address) {
+            setSuggestions([{ ...location, address: address }]);
+          }
         }
       } catch (error) {
         console.error("Error reverse geocoding:", error);
@@ -121,11 +115,16 @@ export default function SearchLocationModal({
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.input}
-            placeholder="Nhập tọa độ hoặc nhập địa chỉ để đến vị trí cần đo"
+            placeholder="Nhập vị trí"
             placeholderTextColor="rgba(123, 92, 38, 0.2)"
             value={searchText}
             onChangeText={handleSearchLocation}
           />
+
+          <Text style={styles.hintText}>
+            Nhập tọa độ (21.12312, 105.23123) hoặc nhập địa chỉ để đến vị trí
+            cần đo
+          </Text>
           {suggestions.length > 0 && (
             <ScrollView style={styles.suggestionsContainer}>
               {suggestions.map((suggestion, index) => (
@@ -203,7 +202,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: "Roboto Condensed",
     color: "#7B5C26",
-    marginBottom: 20,
+    marginBottom: 8,
+  },
+  hintText: {
+    fontSize: 14,
+    color: "rgba(123, 92, 38, 0.6)",
+    textAlign: "center",
+    marginTop: 5,
   },
   searchContainer: {
     width: "100%",
@@ -228,7 +233,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
     position: "absolute",
     top: 40,
-    zIndex: 100
+    zIndex: 100,
   },
   suggestionItem: {
     padding: 12,
