@@ -101,7 +101,9 @@ export const InformationContent: React.FC<Props> = ({
 const styles = StyleSheet.create({
   section: {
     backgroundColor: "#FFFFFF",
-    padding: 16,
+    paddingTop: 16,
+    paddingHorizontal: 16,
+    paddingBottom: 8,
     marginBottom: 2,
   },
   header: {
@@ -120,7 +122,7 @@ const styles = StyleSheet.create({
   },
   imageGrid: {
     flexDirection: "row",
-    marginBottom: 16,
+    marginBottom: 8,
     gap: 4,
   },
   imageWrapper: {
@@ -141,7 +143,6 @@ const styles = StyleSheet.create({
   infoRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 8,
   },
   iconContainer: {
     width: 24,

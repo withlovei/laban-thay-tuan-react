@@ -1,7 +1,5 @@
 import React from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
-import { IconContainer } from "@/components/ui/IconContainer";
-import { IconClose } from "@/components/ui/icons/IconClose";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 interface ImagePickerModalProps {
   setUri: (uri: string) => void;

@@ -2,7 +2,7 @@ import { IconContainer } from "@/components/ui/IconContainer";
 import { IconRightArrow } from "@/components/ui/icons/IconRightArrow";
 import { screen } from "@/constants/Dimensions";
 import { FC } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
 interface SectionItemProps {
   title: string;

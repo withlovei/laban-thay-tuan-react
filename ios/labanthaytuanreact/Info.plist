@@ -53,6 +53,14 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Chúng tôi cần quyền truy cập vị trí của bạn để sử dụng la bàn.</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Roboto Condensed Bold.ttf</string>
+		<string>Roboto Condensed.ttf</string>
+		<string>UTM Impact.ttf</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>SplashScreen.storyboard</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -79,13 +87,5 @@
 	<string>Automatic</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>UIAppFonts</key>
-	<array>
-		<string>Roboto Condensed Bold.ttf</string>
-		<string>Roboto Condensed.ttf</string>
-		<string>UTM Impact.ttf</string>
-	</array>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Chúng tôi cần quyền truy cập vị trí của bạn để sử dụng la bàn.</string>
 </dict>
 </plist>

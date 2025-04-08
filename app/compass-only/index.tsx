@@ -32,7 +32,6 @@ import { IconAdd } from "@/components/ui/icons/IconAdd";
 import { ImagePicker } from "@/components/ImagePicker";
 import { IconRotateRight } from "@/components/ui/icons/IconRotateRight";
 import { isNumberFinite, isNumberInRange } from "@/shared/validation";
-import { ScreenPlaceholder } from "@/components/ScreenPlaceholder";
 import { compassService } from "@/services/compass";
 import { useModal } from "@/hooks/useModal";
 import RotateCompassModal from "@/app/rotate-compass-modal";
@@ -138,10 +137,9 @@ export default function CompassOnlyScreen() {
     const backSpecialDirection =
       getSpecialDirectionByCompassHeading(backHeading);
     const genderText = mapGenderToText(user?.gender);
+    const userInfo = user ? `${genderText} - ${user?.birthYear}` : "";
     backCompassHeadingTextRef.current?.setNativeProps({
-      text: `${genderText} - ${
-        user?.birthYear
-      }\nHướng ${backSpecialDirection} ${backHeading.toFixed(
+      text: `${userInfo}\nHướng ${backSpecialDirection} ${backHeading.toFixed(
         1
       )}° ${backDirection}`,
     });
@@ -176,8 +174,6 @@ export default function CompassOnlyScreen() {
       ? withTiming(roundedHeading, { duration: 500 })
       : roundedHeading;
   };
-
-  if (user === null) return <ScreenPlaceholder />;
 
   return (
     <View style={styles.container}>
@@ -284,8 +280,8 @@ export default function CompassOnlyScreen() {
         pointerEvents="none"
       >
         <Compass
-          gender={user?.gender}
-          birthYear={user?.birthYear}
+          gender={user?.gender ?? null}
+          birthYear={user?.birthYear ?? null}
           full={isFullCompass}
         />
       </Animated.View>

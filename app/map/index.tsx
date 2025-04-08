@@ -33,7 +33,6 @@ import {
 } from "@/shared/compass";
 import { getDirectionByCompassHeading } from "@/shared/compass";
 import { mapGenderToText } from "@/shared/transform";
-import { ScreenPlaceholder } from "@/components/ScreenPlaceholder";
 import { useCheckSubscription } from "@/hooks/useCheckSubscription";
 import { compassService } from "@/services/compass";
 import { useModal } from "@/hooks/useModal";
@@ -46,7 +45,7 @@ import {
   LocationAccuracy,
   requestForegroundPermissionsAsync,
 } from "expo-location";
-import { Image } from "expo-image";
+import SplashScreen from "react-native-splash-screen";
 
 const COMPASS_SIZE = screen.width - 26;
 const COMPASS_HEADING_SIZE = screen.width;
@@ -129,6 +128,12 @@ export default function MapScreen() {
     }
   }, [location, isMapReady]);
 
+  useEffect(() => {
+    if (location !== undefined) {
+      SplashScreen.hide();
+    }
+  }, [location]);
+
   const updateMapCamera = (heading: number) => {
     if (mapRef.current && location) {
       mapRef.current.setCamera({
@@ -155,10 +160,9 @@ export default function MapScreen() {
     const backSpecialDirection =
       getSpecialDirectionByCompassHeading(backHeading);
     const genderText = mapGenderToText(user?.gender);
+    const userInfo = user ? `${genderText} - ${user?.birthYear}` : "";
     backCompassHeadingTextRef.current?.setNativeProps({
-      text: `${genderText} - ${
-        user?.birthYear
-      }\nHướng ${backSpecialDirection} ${backHeading.toFixed(
+      text: `${userInfo}\nHướng ${backSpecialDirection} ${backHeading.toFixed(
         1
       )}° ${backDirection}`,
     });
@@ -243,7 +247,7 @@ export default function MapScreen() {
     });
   };
 
-  if (user === null || location === undefined) return <ScreenPlaceholder />;
+  if (location === undefined) return null;
 
   return (
     <View style={styles.container}>
@@ -364,8 +368,8 @@ export default function MapScreen() {
         pointerEvents="none"
       >
         <Compass
-          gender={user?.gender}
-          birthYear={user?.birthYear}
+          gender={user?.gender ?? null}
+          birthYear={user?.birthYear ?? null}
           full={isFullCompass}
           color="#fff"
           map={true}

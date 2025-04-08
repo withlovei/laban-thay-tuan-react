@@ -31,16 +31,16 @@ export class FirebaseServices {
     verifiedAt: string;
   }): Promise<void> {
     try {
-      const usersDataRef = ref(database, `users/${user.phoneNumber}`);
-      const dataToUpdate = {
-        name: user.fullName,
-        phone: user.phoneNumber,
-        gender: user.gender,
-        yearOfBirth: user.birthYear,
-        verifiedAt,
-      };
+      // const usersDataRef = ref(database, `users/${user.phoneNumber}`);
+      // const dataToUpdate = {
+      //   name: user.fullName,
+      //   phone: user.phoneNumber,
+      //   gender: user.gender,
+      //   yearOfBirth: user.birthYear,
+      //   verifiedAt,
+      // };
       
-      await update(usersDataRef, dataToUpdate);
+      // await update(usersDataRef, dataToUpdate);
     } catch (error) {
       throw error;
     }

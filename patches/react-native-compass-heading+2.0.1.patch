@@ -18,7 +18,7 @@ index a2f47b6..28a8ed4 100644
 +    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
  </manifest>
 diff --git a/node_modules/react-native-compass-heading/android/src/main/java/com/compassheading/CompassHeadingModule.kt b/node_modules/react-native-compass-heading/android/src/main/java/com/compassheading/CompassHeadingModule.kt
-index d2bf0b2..a9744ab 100644
+index d2bf0b2..6174527 100644
 --- a/node_modules/react-native-compass-heading/android/src/main/java/com/compassheading/CompassHeadingModule.kt
 +++ b/node_modules/react-native-compass-heading/android/src/main/java/com/compassheading/CompassHeadingModule.kt
 @@ -1,156 +1,225 @@
@@ -55,7 +55,7 @@ index d2bf0b2..a9744ab 100644
 +// Main module class
 +class CompassHeadingModule(private val reactContext: ReactApplicationContext) : 
 +    ReactContextBaseJavaModule(), SensorEventListener, LocationListener {
-     
+ 
 -    private val mApplicationContext: Context = reactContext.applicationContext
 -    private var mAzimuth: Int = 0 // degree
 -    private var mFilter: Int = 1
@@ -108,7 +108,7 @@ index d2bf0b2..a9744ab 100644
 -            promise.reject("failed_start", e.message)
 +        Log.d(TAG, "Starting compass updates")
 +        rotationVectorSensor?.let { sensor ->
-+            sensorManager?.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
++            sensorManager?.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI)
 +        }
 +        
 +        if (hasLocationPermission()) {
@@ -182,7 +182,7 @@ index d2bf0b2..a9744ab 100644
 +                val magneticDeclination = getMagneticDeclination(location)
 +                trueAzimuth = magneticAzimuth.plus(magneticDeclination)
              }
-             
+ 
 -            val success = SensorManager.getRotationMatrix(R, I, mGravity, mGeomagnetic)
 -            if (success) {
 -                val orientation = FloatArray(3)
@@ -248,7 +248,7 @@ index d2bf0b2..a9744ab 100644
 +    override fun onLocationChanged(location: Location) {
 +        currentLocation = location
 +    }
-     
+ 
 -    private fun getDisplay(): Display? {
 -        return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
 -            reactApplicationContext.currentActivity?.display
@@ -360,7 +360,6 @@ index d2bf0b2..a9744ab 100644
 +    ROTATION_180,
 +    ROTATION_270
  }
-\ No newline at end of file
 diff --git a/node_modules/react-native-compass-heading/lib/commonjs/index.js b/node_modules/react-native-compass-heading/lib/commonjs/index.js
 index f7803c1..045da06 100644
 --- a/node_modules/react-native-compass-heading/lib/commonjs/index.js

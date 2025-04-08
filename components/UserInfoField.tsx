@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   },
   inputText: {
     fontSize: 16,
-    fontFamily: "Roboto Condensed",
+    fontFamily: "Roboto Condensed Bold",
     color: "#FEC41F",
   },
   placeholderText: {

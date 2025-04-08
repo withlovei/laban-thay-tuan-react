@@ -1,7 +1,5 @@
 import { useEffect } from "react";
-import UserInformationScreen from "./user-information";
 import MapScreen from "./map";
-import SplashScreen from "react-native-splash-screen";
 import Sidebar from "@/app/sidebar";
 import CompassOnlyScreen from "@/app/compass-only";
 import StarsPDFScreen from "@/app/stars-pdf";
@@ -23,8 +21,6 @@ import SolutionPDFScreen from "@/app/solution-pdf";
 function MainStack() {
   const { currentScreen } = useNavigation();
   switch (currentScreen) {
-    case "user-information":
-      return <UserInformationScreen />;
     case "map":
       return <MapScreen />;
     case "compass-only":
@@ -36,16 +32,12 @@ function MainStack() {
     case "solution-pdf":
       return <SolutionPDFScreen />;
     default:
-      return <UserInformationScreen />
+      return <MapScreen />;
   }
 }
 
 function NavigationContent() {
   const { isInformationVisible, hideInformation } = useInformation();
-
-  useEffect(() => {
-    SplashScreen.hide();
-  }, []);
 
   useEffect(() => {
     const onBackPress = () => {
@@ -131,7 +123,7 @@ function NavigationContent() {
                 Linking.openURL(`https://www.youtube.com/@Thaytuanphongthuy`),
             },
           ]}
-          description="Thầy Tuấn Phong Thủy - Chuyên gia tư vấn Phong Thủy và hóa giải lỗi phạm Phong Thủy nhà ở."
+          description="App La Bàn Thầy Tuấn dùng để đo tọa, hướng nhà qua vệ tinh và luận giải phong thủy nhà ở."
         />
       </InformationBottomSheet>
       <PaymentBottomSheet />

@@ -16,8 +16,7 @@ import {
 import { User } from "@/types/user";
 import { useUserStore } from "@/stores/useUserStore";
 import { GenderCheckBox } from "@/components/GenderCheckBox";
-import { Background } from "@/app/user-information/components/Background";
-import { RootStackParamList } from "@/types/navigation";
+import { Background } from "@/app/edit-user-modal/components/Background";
 import { IconContainer } from "@/components/ui/IconContainer";
 import { IconClose } from "@/components/ui/icons/IconClose";
 import { screen } from "@/constants/Dimensions";
@@ -34,7 +33,7 @@ interface EditUserModalProps {
 
 export default function EditUserModal({ isVisible, onClose }: EditUserModalProps) {
   const { top, bottom } = useSafeAreaInsets();
-  const updateUser = useUserStore((state) => state.updateUser);
+  const setUser = useUserStore((state) => state.setUser);
   const user = useUserStore((state) => state.user);
   const [birthYear, setBirthYear] = useState<number | null>(
     user?.birthYear ?? null
@@ -67,12 +66,12 @@ export default function EditUserModal({ isVisible, onClose }: EditUserModalProps
       return;
     }
 
-    const user: Partial<User> = {
+    const user: User = {
       gender,
       birthYear,
     };
 
-    updateUser(user);
+    setUser(user);
     onClose();
   };
 
@@ -113,7 +112,7 @@ export default function EditUserModal({ isVisible, onClose }: EditUserModalProps
             onPress={handleSave}
             activeOpacity={0.8}
           >
-            <Text style={styles.buttonText}>LƯU</Text>
+            <Text style={styles.buttonText}>XEM LA BÀN</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

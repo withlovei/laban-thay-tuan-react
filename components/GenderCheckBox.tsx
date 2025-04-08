@@ -112,7 +112,6 @@ const styles = StyleSheet.create({
   optionText: {
     color: "#FEC41F",
     fontSize: 16,
-    fontFamily: "Roboto Condensed",
-    fontWeight: 500,
+    fontFamily: "Roboto Condensed Bold",
   },
 });

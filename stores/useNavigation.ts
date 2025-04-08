@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type Screen = 'user-information' | 'map' | 'compass-only' | 'stars-pdf' | 'minh-tuan-book-pdf' | 'solution-pdf';
+export type Screen = 'map' | 'compass-only' | 'stars-pdf' | 'minh-tuan-book-pdf' | 'solution-pdf';
 interface NavigationState {
   // Current active screen or route
   currentScreen: Screen;
@@ -9,7 +9,7 @@ interface NavigationState {
 }
 
 const useNavigation = create<NavigationState>((set) => ({
-  currentScreen: 'user-information',
+  currentScreen: 'map',
   navigateTo: (screen: Screen) => set(() => ({
     currentScreen: screen,
   })),

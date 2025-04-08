@@ -130,9 +130,18 @@ export const Compass: FC<CompassProps> = ({
   gender,
   birthYear,
   full = false,
-  map = false
+  map = false,
 }) => {
-  if (birthYear === null || gender === null) return null;
+  if (birthYear === null || gender === null)
+    return (
+      <>
+        <Image
+          source={require("@/assets/images/compass/laban_default.png")}
+          style={{ width: "100%", height: "100%" }}
+          cachePolicy={"memory"}
+        />
+      </>
+    );
 
   const remainder = useMemo(() => {
     const sum = birthYear
@@ -142,7 +151,9 @@ export const Compass: FC<CompassProps> = ({
     return sum % 9;
   }, [birthYear]);
 
-  const CompassComponent = map ? CompassComponentForMap : CompassComponentsForImage;
+  const CompassComponent = map
+    ? CompassComponentForMap
+    : CompassComponentsForImage;
   return (
     <>
       <Image

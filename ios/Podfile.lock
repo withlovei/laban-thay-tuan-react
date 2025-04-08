@@ -23,6 +23,8 @@ PODS:
     - ExpoModulesCore
   - ExpoLinking (7.0.5):
     - ExpoModulesCore
+  - ExpoLocation (18.0.8):
+    - ExpoModulesCore
   - ExpoModulesCore (2.2.3):
     - DoubleConversion
     - glog
@@ -1418,8 +1420,6 @@ PODS:
     - react-native-config/App (= 1.5.5)
   - react-native-config/App (1.5.5):
     - React-Core
-  - react-native-geolocation-service (5.3.1):
-    - React
   - react-native-google-maps (1.18.0):
     - Google-Maps-iOS-Utils (= 4.2.2)
     - GoogleMaps (= 7.4.0)
@@ -1874,6 +1874,12 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - RNIap (12.16.2):
+    - RCT-Folly
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - ReactCommon/turbomodule/core
   - RNReanimated (3.16.7):
     - DoubleConversion
     - glog
@@ -1961,51 +1967,6 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (4.4.0):
-    - DoubleConversion
-    - glog
-    - hermes-engine
-    - RCT-Folly (= 2024.01.01.00)
-    - RCTRequired
-    - RCTTypeSafety
-    - React-Core
-    - React-debug
-    - React-Fabric
-    - React-featureflags
-    - React-graphics
-    - React-ImageManager
-    - React-NativeModulesApple
-    - React-RCTFabric
-    - React-RCTImage
-    - React-rendererdebug
-    - React-utils
-    - ReactCodegen
-    - ReactCommon/turbomodule/bridging
-    - ReactCommon/turbomodule/core
-    - RNScreens/common (= 4.4.0)
-    - Yoga
-  - RNScreens/common (4.4.0):
-    - DoubleConversion
-    - glog
-    - hermes-engine
-    - RCT-Folly (= 2024.01.01.00)
-    - RCTRequired
-    - RCTTypeSafety
-    - React-Core
-    - React-debug
-    - React-Fabric
-    - React-featureflags
-    - React-graphics
-    - React-ImageManager
-    - React-NativeModulesApple
-    - React-RCTFabric
-    - React-RCTImage
-    - React-rendererdebug
-    - React-utils
-    - ReactCodegen
-    - ReactCommon/turbomodule/bridging
-    - ReactCommon/turbomodule/core
-    - Yoga
   - RNSVG (15.8.0):
     - DoubleConversion
     - glog
@@ -2072,6 +2033,7 @@ DEPENDENCIES:
   - ExpoImage (from `../node_modules/expo-image/ios`)
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - ExpoLinking (from `../node_modules/expo-linking/ios`)
+  - ExpoLocation (from `../node_modules/expo-location/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - ExpoSplashScreen (from `../node_modules/expo-splash-screen/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
@@ -2113,7 +2075,6 @@ DEPENDENCIES:
   - react-native-blob-util (from `../node_modules/react-native-blob-util`)
   - react-native-compass-heading (from `../node_modules/react-native-compass-heading`)
   - react-native-config (from `../node_modules/react-native-config`)
-  - react-native-geolocation-service (from `../node_modules/react-native-geolocation-service`)
   - react-native-google-maps (from `../node_modules/react-native-maps`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-maps (from `../node_modules/react-native-maps`)
@@ -2151,8 +2112,8 @@ DEPENDENCIES:
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBDatabase (from `../node_modules/@react-native-firebase/database`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNIap (from `../node_modules/react-native-iap`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
-  - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -2199,6 +2160,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-keep-awake/ios"
   ExpoLinking:
     :path: "../node_modules/expo-linking/ios"
+  ExpoLocation:
+    :path: "../node_modules/expo-location/ios"
   ExpoModulesCore:
     :path: "../node_modules/expo-modules-core"
   ExpoSplashScreen:
@@ -2278,8 +2241,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-compass-heading"
   react-native-config:
     :path: "../node_modules/react-native-config"
-  react-native-geolocation-service:
-    :path: "../node_modules/react-native-geolocation-service"
   react-native-google-maps:
     :path: "../node_modules/react-native-maps"
   react-native-image-picker:
@@ -2354,10 +2315,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/database"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNIap:
+    :path: "../node_modules/react-native-iap"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
-  RNScreens:
-    :path: "../node_modules/react-native-screens"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   Yoga:
@@ -2375,6 +2336,7 @@ SPEC CHECKSUMS:
   ExpoImage: 36f2f4a3a530c1d1a2d349a1f0a0b400b0e1af47
   ExpoKeepAwake: 2a5f15dd4964cba8002c9a36676319a3394c85c7
   ExpoLinking: 0381341519ca7180a3a057d20edb1cf6a908aaf4
+  ExpoLocation: 4ed6ca57c68d82ecfeff1b04ad2c5b8dfe976b81
   ExpoModulesCore: 9566a9ca8f0882e12a7c24d43309773df80653b6
   ExpoSplashScreen: 643666b96a84e8d97d55fac43926fb4183c692d9
   FBLazyVector: ca8044c9df513671c85167838b4188791b6f37e1
@@ -2427,7 +2389,6 @@ SPEC CHECKSUMS:
   react-native-blob-util: d18fc3acedec6309daaef6166c3dfa208ae32b26
   react-native-compass-heading: 4038671e8bfe1e2ed1a527de5819152105581825
   react-native-config: 3367df9c1f25bb96197007ec531c7087ed4554c3
-  react-native-geolocation-service: 608e1da71a1ac31b4de64d9ef2815f697978c55b
   react-native-google-maps: ee48410bb3f1390abfa20592a44db5d6ada83e4d
   react-native-image-picker: 400323ff69c77bd7c4e25c4d33e41940d3a99216
   react-native-maps: 2e6e9896195781327ee15b33e3e84bf73c08207a
@@ -2465,8 +2426,8 @@ SPEC CHECKSUMS:
   RNFBApp: da6d44109d2a02d9656f7b15bf6c01ad5975563c
   RNFBDatabase: d3a72a3e48905cb6d39cf23de21eeaa679f7afc8
   RNGestureHandler: 598e45cedb905b157e9764acbef0b5e365693451
+  RNIap: daac81aa70fe3ac6d6967c1c8da3dc4b415b73d6
   RNReanimated: ddc60075b382b872662cadaf9972b07d52a8fce7
-  RNScreens: 8ae716a7e26b9ecee7f2856e6ff47b8e7e253ee8
   RNSVG: 568f3246803db2088000ed771eb21f7f75065ccf
   SDWebImage: 8a6b7b160b4d710e2a22b6900e25301075c34cb3
   SDWebImageAVIFCoder: 00310d246aab3232ce77f1d8f0076f8c4b021d90
