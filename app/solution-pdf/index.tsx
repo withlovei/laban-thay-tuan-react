@@ -1,17 +1,21 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import Pdf from 'react-native-pdf';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { NavigationBar } from '@/components/NavigationBar';
+import React from "react";
+import { Platform, StyleSheet, View } from "react-native";
+import Pdf from "react-native-pdf";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { NavigationBar } from "@/components/NavigationBar";
 
 const SolutionPDFScreen = () => {
-
   return (
     <SafeAreaView style={styles.container}>
       <NavigationBar />
       <View style={styles.pdfContainer}>
         <Pdf
-          source={{uri: 'bundle-assets://pdf/cach_hoa_giai.pdf', cache: true}}
+          source={Platform.select({
+            android: {
+              uri: "bundle-assets://pdf/cach_hoa_giai.pdf",
+            },
+            ios: require("@/assets/pdf/cach_hoa_giai.pdf"),
+          })}
           style={styles.pdf}
           onLoadComplete={(numberOfPages, filePath) => {
             console.log(`Number of pages: ${numberOfPages}`);
@@ -32,7 +36,7 @@ const SolutionPDFScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   pdfContainer: {
     flex: 1,
@@ -42,4 +46,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SolutionPDFScreen; 
+export default SolutionPDFScreen;

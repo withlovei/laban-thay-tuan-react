@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import Pdf from 'react-native-pdf';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NavigationBar } from '@/components/NavigationBar';
@@ -10,7 +10,12 @@ const StarsPDFScreen = () => {
       <NavigationBar />
       <View style={styles.pdfContainer}>
         <Pdf
-          source={{uri: 'bundle-assets://pdf/y_nghia_24_sao.pdf', cache: true}}
+          source={Platform.select({
+            android: {
+              uri: "bundle-assets://pdf/y_nghia_24_sao.pdf",
+            },
+            ios: require("@/assets/pdf/y_nghia_24_sao.pdf"),
+          })}
           style={styles.pdf}
           onLoadComplete={(numberOfPages, filePath) => {
             console.log(`Number of pages: ${numberOfPages}`);

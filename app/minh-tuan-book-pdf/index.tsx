@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import Pdf from "react-native-pdf";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NavigationBar } from "@/components/NavigationBar";
@@ -29,10 +29,12 @@ const MinhTuanBookPDFScreen = () => {
       </NavigationBar>
       <View style={styles.pdfContainer}>
         <Pdf
-          source={{
-            uri: "bundle-assets://pdf/sach_thay_tuan.pdf",
-            cache: true,
-          }}
+          source={Platform.select({
+            android: {
+              uri: "bundle-assets://pdf/sach_thay_tuan.pdf",
+            },
+            ios: require("@/assets/pdf/sach_thay_tuan.pdf"),
+          })}
           style={styles.pdf}
           onLoadComplete={(numberOfPages, filePath) => {
             console.log(`Number of pages: ${numberOfPages}`);
