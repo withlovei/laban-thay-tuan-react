@@ -260,7 +260,7 @@ export default function MapScreen() {
         rotateEnabled={false}
         showsMyLocationButton={false}
         onMapReady={() => setIsMapReady(true)}
-        maxZoomLevel={22}
+        pitchEnabled={false}
       >
         {searchLocation && <Marker coordinate={searchLocation} />}
         <Marker
