@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet, View, TextInput } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useToggle } from "@/hooks/useToggle";
@@ -52,6 +52,7 @@ export default function CompassOnlyScreen() {
   const compassScale = useSharedValue(1);
   const compassOpacity = useSharedValue(1);
   const [uri, setUri] = useState<string | null>(null);
+  const sliderRef = useRef<Slider>(null);
   const {
     top: paddingTop,
     bottom: paddingBottom,
@@ -91,6 +92,14 @@ export default function CompassOnlyScreen() {
   }));
   const [isLockCompass, toggleLockCompass, setIsLockCompass] = useToggle(false);
   const [isFullCompass, toggleFullCompass] = useToggle(false);
+
+  const setSliderTintColor = useCallback((isSliding: boolean) => {
+    sliderRef.current?.setNativeProps({
+      minimumTrackTintColor: isSliding ? "#C81B22" : "transparent",
+      maximumTrackTintColor: isSliding ? "#00000080" : "transparent",
+      thumbTintColor: isSliding ? "#C81B22" : "#C81B2270",
+    });
+  }, []);
 
   useEffect(() => {
     if (!rotate.isDone && isNumberFinite(rotate.degree)) {
@@ -295,6 +304,7 @@ export default function CompassOnlyScreen() {
       {/* compass scale slider */}
       <View style={styles.sliderContainer}>
         <Slider
+          ref={sliderRef as any}
           style={styles.slider}
           minimumValue={MIN_SCALE}
           maximumValue={MAX_SCALE}
@@ -302,9 +312,15 @@ export default function CompassOnlyScreen() {
           onValueChange={(value: number) => {
             compassScale.value = value;
           }}
-          minimumTrackTintColor="#C81B22"
-          maximumTrackTintColor="#00000080"
-          thumbTintColor="#C81B22"
+          minimumTrackTintColor="transparent"
+          maximumTrackTintColor="transparent"
+          thumbTintColor="#C81B2270"
+          onSlidingStart={() => {
+            setSliderTintColor(true);
+          }}
+          onSlidingComplete={() => {
+            setSliderTintColor(false);
+          }}
         />
       </View>
     </View>

@@ -13,6 +13,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { IconClose } from "@/components/ui/icons/IconClose";
 import { screen } from "@/constants/Dimensions";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Props = {
   isVisible: boolean;
@@ -28,6 +29,7 @@ export const InformationBottomSheet: React.FC<Props> = ({
   children,
 }) => {
   const translateY = useSharedValue(0);
+  const { bottom } = useSafeAreaInsets();
 
   const rBottomSheetStyle = useAnimatedStyle(() => {
     return {
@@ -37,11 +39,11 @@ export const InformationBottomSheet: React.FC<Props> = ({
 
   React.useEffect(() => {
     if (isVisible) {
-      translateY.value = withSpring(-340, { damping: 50 });
+      translateY.value = withSpring(-340 - bottom, { damping: 50 });
     } else {
       translateY.value = withTiming(0, { duration: 200 });
     }
-  }, [isVisible]);
+  }, [isVisible, bottom]);
 
   if (!isVisible) return null;
 

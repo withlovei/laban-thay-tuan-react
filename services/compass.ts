@@ -1,5 +1,5 @@
 import CompassHeading from "react-native-compass-heading";
-import { AppState } from "react-native";
+// import { AppState } from "react-native";
 
 type CompassCallback = (heading: number) => void;
 
@@ -9,7 +9,7 @@ class CompassService {
   private isStarted: boolean = false;
 
   private constructor() {
-    AppState.addEventListener("change", this.handleAppStateChange);
+    this.startIfNeeded();
   }
 
   public static getInstance(): CompassService {
@@ -19,20 +19,23 @@ class CompassService {
     return CompassService.instance;
   }
 
-  private handleAppStateChange = (nextAppState: string) => {
-    if (nextAppState === "active") {
-      this.startIfNeeded();
-    } else if (nextAppState === "background" || nextAppState === "inactive") {
-      this.stop();
-    }
-  };
+  // private handleAppStateChange = (nextAppState: string) => {
+  //   if (nextAppState === "active") {
+  //     this.startIfNeeded();
+  //   } else if (nextAppState === "background" || nextAppState === "inactive") {
+  //     this.stop();
+  //   }
+  // };
 
   private startIfNeeded() {
     if (this.callbacks.size > 0 && !this.isStarted) {
       const degree_update_rate = 0.001;
-      CompassHeading.start(degree_update_rate, ({ heading }: { heading: number }) => {
-        this.callbacks.forEach(callback => callback(heading));
-      });
+      CompassHeading.start(
+        degree_update_rate,
+        ({ heading }: { heading: number }) => {
+          this.callbacks.forEach((callback) => callback(heading));
+        }
+      );
       this.isStarted = true;
     }
   }

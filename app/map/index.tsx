@@ -1,5 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
-import { StyleSheet, View, TextInput, TouchableOpacity } from "react-native";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import {
+  StyleSheet,
+  View,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useToggle } from "@/hooks/useToggle";
@@ -52,6 +57,14 @@ const COMPASS_HEADING_SIZE = screen.width;
 const MIN_SCALE = 0.5;
 const MAX_SCALE = 2;
 
+const cache: {
+  currentLocation: Location | null;
+  isShowSplashScreen: boolean;
+} = {
+  currentLocation: null,
+  isShowSplashScreen: true,
+};
+
 interface Location {
   latitude: number;
   longitude: number;
@@ -59,6 +72,7 @@ interface Location {
 
 export default function MapScreen() {
   const user = useUserStore((state) => state.user);
+  const sliderRef = useRef<Slider>(null);
   const { isVisible, onClose, onOpen } = useModal();
   const {
     isVisible: isSearchModalVisible,
@@ -130,9 +144,25 @@ export default function MapScreen() {
 
   useEffect(() => {
     if (location !== undefined) {
-      SplashScreen.hide();
+      if (cache.isShowSplashScreen) {
+        SplashScreen.hide();
+        cache.isShowSplashScreen = false;
+      }
+    } else {
+      if (!cache.isShowSplashScreen) {
+        SplashScreen.show();
+        cache.isShowSplashScreen = true;
+      }
     }
   }, [location]);
+
+  const setSliderTintColor = useCallback((isSliding: boolean) => {
+    sliderRef.current?.setNativeProps({
+      minimumTrackTintColor: isSliding ? "#C81B22" : "transparent",
+      maximumTrackTintColor: isSliding ? "#00000080" : "transparent",
+      thumbTintColor: isSliding ? "#C81B22" : "#C81B2270",
+    });
+  }, []);
 
   const updateMapCamera = (heading: number) => {
     if (mapRef.current && location) {
@@ -237,6 +267,10 @@ export default function MapScreen() {
   };
 
   const getCurrentLocation = () => {
+    if (cache.currentLocation) {
+      setLocation(cache.currentLocation);
+      return;
+    }
     getCurrentPositionAsync({
       accuracy: LocationAccuracy.High,
     }).then((location) => {
@@ -244,6 +278,10 @@ export default function MapScreen() {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
       });
+      cache.currentLocation = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
     });
   };
 
@@ -385,6 +423,7 @@ export default function MapScreen() {
       {/* compass scale slider */}
       <View style={styles.sliderContainer}>
         <Slider
+          ref={sliderRef as any}
           style={styles.slider}
           minimumValue={MIN_SCALE}
           maximumValue={MAX_SCALE}
@@ -392,9 +431,15 @@ export default function MapScreen() {
           onValueChange={(value: number) => {
             compassScale.value = value;
           }}
-          minimumTrackTintColor="#C81B22"
-          maximumTrackTintColor="#00000080"
-          thumbTintColor="#C81B22"
+          minimumTrackTintColor="transparent"
+          maximumTrackTintColor="transparent"
+          thumbTintColor="#C81B2270"
+          onSlidingStart={() => {
+            setSliderTintColor(true);
+          }}
+          onSlidingComplete={() => {
+            setSliderTintColor(false);
+          }}
         />
       </View>
     </View>
@@ -420,7 +465,7 @@ const styles = StyleSheet.create({
     width: COMPASS_SIZE,
     height: COMPASS_SIZE,
     borderRadius: COMPASS_SIZE / 2,
-    zIndex: 1,
+    // zIndex: 1,
   },
   compassHeading: {
     position: "absolute",
@@ -428,7 +473,7 @@ const styles = StyleSheet.create({
     width: COMPASS_HEADING_SIZE,
     height: COMPASS_HEADING_SIZE * (423 / 390),
     top: screen.height / 2 - (212 / 390) * COMPASS_HEADING_SIZE,
-    zIndex: 1,
+    // zIndex: 1,
   },
   compassLogo: {
     position: "absolute",
@@ -484,7 +529,7 @@ const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
     backgroundColor: "transparent",
-    zIndex: 2,
+    // zIndex: 2,
   },
   bottomCompassDescription: {
     alignItems: "center",
@@ -498,7 +543,7 @@ const styles = StyleSheet.create({
     transform: [{ rotate: "270deg" }],
     top: screen.height / 2 - SLIDER_HEIGHT / 2,
     right: -SLIDER_WIDTH / 2 + SLIDER_HEIGHT / 2 + 9,
-    zIndex: 1,
+    // zIndex: 1,
   },
   slider: {
     width: SLIDER_WIDTH,

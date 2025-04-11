@@ -1,3 +1,16 @@
+diff --git a/node_modules/react-native-splash-screen/android/src/main/java/org/devio/rn/splashscreen/SplashScreen.java b/node_modules/react-native-splash-screen/android/src/main/java/org/devio/rn/splashscreen/SplashScreen.java
+index f316efe..7680d55 100644
+--- a/node_modules/react-native-splash-screen/android/src/main/java/org/devio/rn/splashscreen/SplashScreen.java
++++ b/node_modules/react-native-splash-screen/android/src/main/java/org/devio/rn/splashscreen/SplashScreen.java
+@@ -56,7 +56,7 @@ public class SplashScreen {
+      * 打开启动屏
+      */
+     public static void show(final Activity activity) {
+-        show(activity, false);
++        show(activity, true);
+     }
+ 
+     /**
 diff --git a/node_modules/react-native-splash-screen/ios/RNSplashScreen.m b/node_modules/react-native-splash-screen/ios/RNSplashScreen.m
 index 02bf3e5..e5a4ab9 100644
 --- a/node_modules/react-native-splash-screen/ios/RNSplashScreen.m

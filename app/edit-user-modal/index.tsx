@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   content: {
-    marginTop: 393,
+    marginTop: 392,
     alignItems: "center",
     marginBottom: 142,
   },

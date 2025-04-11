@@ -63,7 +63,7 @@ export const PaymentBottomSheet = () => {
       <View
         style={[
           styles.bottomSheetContainer,
-          { top: screen.height + top - 535 },
+          { top: screen.height + top - 510 },
         ]}
       >
         <View style={styles.header}>
@@ -125,6 +125,7 @@ export const PaymentBottomSheet = () => {
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
+    zIndex: 10,
   },
   backdrop: {
     ...StyleSheet.absoluteFillObject,
