@@ -299,6 +299,17 @@ export default function MapScreen() {
         showsMyLocationButton={false}
         onMapReady={() => setIsMapReady(true)}
         pitchEnabled={false}
+        onPanDrag={() => {}}
+        // onRegionChangeComplete={(_region, { isGesture }) => {
+        //   if (isGesture) {
+        //     updateCompassHeadingFnRef.current = updateCompassHeading;
+        //   }
+        // }}
+        // onRegionChange={(_region, { isGesture }) => {
+        //   if (isGesture) {
+        //     updateCompassHeadingFnRef.current = () => {};
+        //   }
+        // }}
       >
         {searchLocation && <Marker coordinate={searchLocation} />}
         <Marker

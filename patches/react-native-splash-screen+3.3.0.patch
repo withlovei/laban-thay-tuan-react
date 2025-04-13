@@ -11,20 +11,3 @@ index f316efe..7680d55 100644
      }
  
      /**
-diff --git a/node_modules/react-native-splash-screen/ios/RNSplashScreen.m b/node_modules/react-native-splash-screen/ios/RNSplashScreen.m
-index 02bf3e5..e5a4ab9 100644
---- a/node_modules/react-native-splash-screen/ios/RNSplashScreen.m
-+++ b/node_modules/react-native-splash-screen/ios/RNSplashScreen.m
-@@ -26,10 +26,8 @@ + (void)show {
-         addedJsLoadErrorObserver = true;
-     }
- 
--    while (waiting) {
--        NSDate* later = [NSDate dateWithTimeIntervalSinceNow:0.1];
--        [[NSRunLoop mainRunLoop] runUntilDate:later];
--    }
-+    NSDate* later = [NSDate dateWithTimeIntervalSinceNow:3]; // 3 seconds timer
-+    [[NSRunLoop mainRunLoop] runUntilDate:later];
- }
- 
- + (void)showSplash:(NSString*)splashScreen inRootView:(UIView*)rootView {
