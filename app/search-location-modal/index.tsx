@@ -78,7 +78,15 @@ export default function SearchLocationModal({
             latitude,
             longitude,
           });
-          const address = reverseGeocode?.[0]?.formattedAddress;
+          const patchAddress = [
+            reverseGeocode?.[0]?.street,
+            reverseGeocode?.[0]?.district,
+            reverseGeocode?.[0]?.city,
+            reverseGeocode?.[0]?.country,
+          ]
+            .filter(Boolean)
+            .join(", ");
+          const address = reverseGeocode?.[0]?.formattedAddress || patchAddress;
           return { latitude, longitude, address };
         })
       );

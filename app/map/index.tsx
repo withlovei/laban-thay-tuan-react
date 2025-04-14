@@ -235,7 +235,7 @@ export default function MapScreen() {
     if (mapRef.current && searchLocation) {
       mapRef.current.setCamera({
         center: searchLocation,
-        zoom: 22,
+        zoom: 19,
         pitch: 0,
       });
     }
@@ -248,7 +248,7 @@ export default function MapScreen() {
     if (mapRef.current && location) {
       mapRef.current.setCamera({
         center: location,
-        zoom: 22,
+        zoom: 19,
         pitch: 0,
       });
     }
@@ -299,17 +299,6 @@ export default function MapScreen() {
         showsMyLocationButton={false}
         onMapReady={() => setIsMapReady(true)}
         pitchEnabled={false}
-        onPanDrag={() => {}}
-        // onRegionChangeComplete={(_region, { isGesture }) => {
-        //   if (isGesture) {
-        //     updateCompassHeadingFnRef.current = updateCompassHeading;
-        //   }
-        // }}
-        // onRegionChange={(_region, { isGesture }) => {
-        //   if (isGesture) {
-        //     updateCompassHeadingFnRef.current = () => {};
-        //   }
-        // }}
       >
         {searchLocation && <Marker coordinate={searchLocation} />}
         <Marker
