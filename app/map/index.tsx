@@ -4,6 +4,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -69,6 +70,7 @@ interface Location {
   latitude: number;
   longitude: number;
 }
+const timeSet = 0;
 
 export default function MapScreen() {
   const user = useUserStore((state) => state.user);
@@ -299,6 +301,16 @@ export default function MapScreen() {
         showsMyLocationButton={false}
         onMapReady={() => setIsMapReady(true)}
         pitchEnabled={false}
+        onTouchStart={() => {
+          Platform.OS === "ios" &&
+            !isLockCompass &&
+            (updateCompassHeadingFnRef.current = () => {});
+        }}
+        onTouchEnd={() => {
+          Platform.OS === "ios" &&
+            !isLockCompass &&
+            (updateCompassHeadingFnRef.current = updateCompassHeading);
+        }}
       >
         {searchLocation && <Marker coordinate={searchLocation} />}
         <Marker

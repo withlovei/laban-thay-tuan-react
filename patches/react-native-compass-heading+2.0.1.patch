@@ -360,43 +360,6 @@ index d2bf0b2..6174527 100644
 +    ROTATION_180,
 +    ROTATION_270
  }
-diff --git a/node_modules/react-native-compass-heading/ios/CompassHeading.swift b/node_modules/react-native-compass-heading/ios/CompassHeading.swift
-index e259a70..d38a1b1 100644
---- a/node_modules/react-native-compass-heading/ios/CompassHeading.swift
-+++ b/node_modules/react-native-compass-heading/ios/CompassHeading.swift
-@@ -6,6 +6,7 @@ import React
- class CompassHeading: RCTEventEmitter, CLLocationManagerDelegate {
-     private var locationManager: CLLocationManager?
-     private var hasListeners = false
-+    private var lastUpdate: TimeInterval = 0  // Track last update time
- 
-     override init() {
-         super.init()
-@@ -54,13 +55,18 @@ class CompassHeading: RCTEventEmitter, CLLocationManagerDelegate {
-     }
- 
-     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
--        // Only send event if there are listeners
-+        // Only send event if there are listeners and enough time has passed
-+        let currentTime = Date().timeIntervalSince1970
-         if hasListeners && newHeading.headingAccuracy >= 0 {
--            let headingData: [String: Any] = [
--                "heading": newHeading.magneticHeading,
--                "accuracy": newHeading.headingAccuracy
--            ]
--            sendEvent(withName: "HeadingUpdated", body: headingData)
-+            // Check if 100ms (0.1 seconds) has passed since last update
-+            if currentTime - lastUpdate >= 0.1 {
-+                let headingData: [String: Any] = [
-+                    "heading": newHeading.magneticHeading,
-+                    "accuracy": newHeading.headingAccuracy
-+                ]
-+                sendEvent(withName: "HeadingUpdated", body: headingData)
-+                lastUpdate = currentTime
-+            }
-         }
-     }
- 
 diff --git a/node_modules/react-native-compass-heading/lib/commonjs/index.js b/node_modules/react-native-compass-heading/lib/commonjs/index.js
 index f7803c1..045da06 100644
 --- a/node_modules/react-native-compass-heading/lib/commonjs/index.js
