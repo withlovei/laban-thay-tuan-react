@@ -10,7 +10,7 @@ export const Background = () => {
         style={styles.footer}
       />
       <Image
-        source={require("@/assets/images/table-of-contents/avt.png")}
+        source={require("@/assets/images/user-information/avatar_shadow.png")}
         style={styles.avt}
       />
       <Text style={styles.title}>LA BÀN THẦY TUẤN</Text>
@@ -28,11 +28,11 @@ const styles = StyleSheet.create({
     right: 0,
   },
   avt: {
-    height: 180,
-    width: 180,
+    height: 164,
+    width: 164,
     position: "absolute",
-    bottom: 148,
-    left: screen.width / 2 - 90,
+    bottom: 164,
+    left: screen.width / 2 - 82,
   },
   title: {
     fontSize: 26,

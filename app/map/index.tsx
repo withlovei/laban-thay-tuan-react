@@ -482,8 +482,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: screen.width / 2 - COMPASS_HEADING_SIZE / 2,
     width: COMPASS_HEADING_SIZE,
-    height: COMPASS_HEADING_SIZE * (423 / 390),
-    top: screen.height / 2 - (212 / 390) * COMPASS_HEADING_SIZE,
+    height: COMPASS_HEADING_SIZE * (388 / 380),
+    top: screen.height / 2 - (194 / 380) * COMPASS_HEADING_SIZE,
     // zIndex: 1,
   },
   compassLogo: {
