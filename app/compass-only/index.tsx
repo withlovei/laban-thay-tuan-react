@@ -39,7 +39,7 @@ import EditUserModal from "@/app/edit-user-modal";
 import ImagePickerModal from "@/app/image-picker-modal";
 
 const COMPASS_SIZE = screen.width - 26;
-const COMPASS_HEADING_SIZE = screen.width;
+const COMPASS_HEADING_SIZE = screen.width - 10;
 const MIN_SCALE = 0.5;
 const MAX_SCALE = 2;
 

@@ -29,6 +29,8 @@ export function Picker({
   const handleDone = () => {
     if (selectedRef.current) {
       onSelectValue(selectedRef.current);
+    } else {
+      onSelectValue(data[0]);
     }
     onClose();
   };
