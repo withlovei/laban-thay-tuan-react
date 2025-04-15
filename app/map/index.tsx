@@ -54,7 +54,7 @@ import {
 import SplashScreen from "react-native-splash-screen";
 
 const COMPASS_SIZE = screen.width - 26;
-const COMPASS_HEADING_SIZE = screen.width;
+const COMPASS_HEADING_SIZE = screen.width - 10;
 const MIN_SCALE = 0.5;
 const MAX_SCALE = 2;
 
@@ -70,7 +70,6 @@ interface Location {
   latitude: number;
   longitude: number;
 }
-const timeSet = 0;
 
 export default function MapScreen() {
   const user = useUserStore((state) => state.user);
@@ -301,16 +300,22 @@ export default function MapScreen() {
         showsMyLocationButton={false}
         onMapReady={() => setIsMapReady(true)}
         pitchEnabled={false}
-        onTouchStart={() => {
+        onStartShouldSetResponder={() => true}
+        onResponderGrant={(e) => {
+          const isTouch = e.nativeEvent.touches.length > 0;
           Platform.OS === "ios" &&
+            isTouch &&
             !isLockCompass &&
             (updateCompassHeadingFnRef.current = () => {});
         }}
-        onTouchEnd={() => {
+        onResponderRelease={(e) => {
+          const isRelease = e.nativeEvent.touches.length === 0;
           Platform.OS === "ios" &&
+            isRelease &&
             !isLockCompass &&
             (updateCompassHeadingFnRef.current = updateCompassHeading);
         }}
+        onResponderTerminationRequest={() => true}
       >
         {searchLocation && <Marker coordinate={searchLocation} />}
         <Marker

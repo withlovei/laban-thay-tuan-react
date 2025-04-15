@@ -134,7 +134,10 @@ export default function SearchLocationModal({
             cần đo
           </Text>
           {suggestions.length > 0 && (
-            <ScrollView style={styles.suggestionsContainer}>
+            <ScrollView
+              style={styles.suggestionsContainer}
+              keyboardShouldPersistTaps="always"
+            >
               {suggestions.map((suggestion, index) => (
                 <TouchableOpacity
                   key={index}
