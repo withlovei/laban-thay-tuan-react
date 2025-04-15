@@ -309,9 +309,7 @@ export default function MapScreen() {
             (updateCompassHeadingFnRef.current = () => {});
         }}
         onResponderRelease={(e) => {
-          const isRelease = e.nativeEvent.touches.length === 0;
           Platform.OS === "ios" &&
-            isRelease &&
             !isLockCompass &&
             (updateCompassHeadingFnRef.current = updateCompassHeading);
         }}
