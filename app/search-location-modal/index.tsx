@@ -54,17 +54,21 @@ export default function SearchLocationModal({
         latitude: Number(latitude),
         longitude: Number(longitude),
       };
-      try {
-        const reverseGeocode = await reverseGeocodeAsync(location);
-        if (reverseGeocode.length > 0) {
-          const address = reverseGeocode?.[0]?.formattedAddress;
-          if (address) {
-            setSuggestions([{ ...location, address: address }]);
-          }
-        }
-      } catch (error) {
-        console.error("Error reverse geocoding:", error);
-      }
+      setSelectedLocation({
+        ...location,
+        address: text
+      })
+      // try {
+      //   const reverseGeocode = await reverseGeocodeAsync(location);
+      //   if (reverseGeocode.length > 0) {
+      //     const address = reverseGeocode?.[0]?.formattedAddress;
+      //     if (address) {
+      //       setSuggestions([{ ...location, address: address }]);
+      //     }
+      //   }
+      // } catch (error) {
+      //   console.error("Error reverse geocoding:", error);
+      // }
       return;
     }
 
