@@ -32,6 +32,7 @@ import { useUserStore } from "@/stores/useUserStore";
 import { Compass } from "@/components/Compass";
 import { isNumberInRange } from "@/shared/validation";
 import {
+  getDescriptionByHeading,
   getSpecialDirectionByCompassHeading,
   getStar,
   getStarMeaning,
@@ -207,19 +208,10 @@ export default function MapScreen() {
     }
 
     const forwardHeading = normalizeHeading(heading);
-    if (isNumberInRange(forwardHeading, 141, 144)) {
-      homeDirectionTextRef.current?.setNativeProps({
-        text: "Tiểu không vong",
-      });
-    } else if (isNumberInRange(forwardHeading, 154.5, 160.5)) {
-      homeDirectionTextRef.current?.setNativeProps({
-        text: "Đại không vong",
-      });
-    } else {
-      homeDirectionTextRef.current?.setNativeProps({
-        text: "",
-      });
-    }
+    const description = getDescriptionByHeading(forwardHeading);
+    homeDirectionTextRef.current?.setNativeProps({
+      text: description,
+    })
 
     const remapHeading = heading > 180 ? heading - 360 : heading;
     const roundedHeading = Number(remapHeading.toFixed(1));

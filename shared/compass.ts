@@ -269,3 +269,41 @@ export const getStarMeaning = (star: CompassStar) => {
       return "Đào hoa xấu"
   }
 }
+
+export const getDescriptionByHeading = (heading: number) => {
+  const tieuKhongVong =
+    isNumberInRange(heading, 6, 9) ||
+    isNumberInRange(heading, 21, 24) ||
+    isNumberInRange(heading, 36, 39) ||
+    isNumberInRange(heading, 51, 54) ||
+    isNumberInRange(heading, 66, 69) ||
+    isNumberInRange(heading, 111, 114) || 
+    isNumberInRange(heading, 126, 129) ||
+    isNumberInRange(heading, 141, 144) ||
+    isNumberInRange(heading, 156, 159) ||
+    isNumberInRange(heading, 201, 204) ||
+    isNumberInRange(heading, 216, 219) ||
+    isNumberInRange(heading, 231, 234) ||
+    isNumberInRange(heading, 246, 249) ||
+    isNumberInRange(heading, 291, 294) ||
+    isNumberInRange(heading, 306, 309) ||
+    isNumberInRange(heading, 351, 354) 
+  
+  const daiKhongVong =
+    isNumberInRange(heading, 19.5, 25.5) ||
+    isNumberInRange(heading, 64.5, 70.5) ||
+    isNumberInRange(heading, 109.5, 115.5) ||
+    isNumberInRange(heading, 154.5, 160.5) ||
+    isNumberInRange(heading, 199.5, 205.5) ||
+    isNumberInRange(heading, 244.5, 250.5) ||
+    isNumberInRange(heading, 289.5, 295.5) ||
+    isNumberInRange(heading, 349.5, 355.5)
+    
+  if (tieuKhongVong) {
+    return "Tiểu không vong"
+  }
+  if (daiKhongVong) {
+    return "Đại không vong"
+  }
+  return ""
+}
