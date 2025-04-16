@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#C81B22",
     zIndex: 10,
+    elevation: 10,
   },
   backgroundImage: {
     width: "100%",
