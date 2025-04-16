@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+} from "react";
 import {
   initConnection,
   purchaseErrorListener,
@@ -7,11 +13,16 @@ import {
   PurchaseError,
   finishTransaction,
   getProducts,
+  getAvailablePurchases,
 } from "react-native-iap";
-import { Alert } from "react-native";
+import { Alert, Platform } from "react-native";
 import { useUserStore } from "@/stores/useUserStore";
 import { FirebaseServices } from "@/services/firebase";
 
+const DELAY_TIME_TO_CHECK_SUBSCRIPTION = 60000;
+const storage = {
+  isCheckSubscription: false,
+};
 interface ProductInfo {
   name: string;
   description: string;
@@ -81,17 +92,23 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     );
 
-    initIAP();
+    if (Platform.OS === "android") {
+      initIAP();
+    }
 
     return () => {
       purchaseUpdateSubscription.remove();
       purchaseErrorSubscription.remove();
     };
   }, []);
-  
+
   useEffect(() => {
     if (isInitialized) {
-        getProductInfo();
+      getProductInfo();
+      if (storage.isCheckSubscription) return;
+      setTimeout(() => {
+        checkSubscription();
+      }, DELAY_TIME_TO_CHECK_SUBSCRIPTION);
     }
   }, [isInitialized]);
 
@@ -101,11 +118,24 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [user]);
 
+  async function checkSubscription() {
+    try {
+      const purchases = await getAvailablePurchases();
+      storage.isCheckSubscription = true;
+      if (purchases && purchases.length > 0) {
+        console.log("Purchase info:", purchases);
+      } else {
+        showPayment();
+      }
+    } catch (error) {
+      console.warn(error);
+    }
+  }
   const getProductInfo = async () => {
     const products = await getProducts({ skus: productIds });
     setProductInfo(products[0] as any);
-  }
-  
+  };
+
   const showPayment = () => setIsPaymentVisible(true);
 
   const hidePayment = () => setIsPaymentVisible(false);

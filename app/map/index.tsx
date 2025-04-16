@@ -39,7 +39,6 @@ import {
 } from "@/shared/compass";
 import { getDirectionByCompassHeading } from "@/shared/compass";
 import { mapGenderToText } from "@/shared/transform";
-import { useCheckSubscription } from "@/hooks/useCheckSubscription";
 import { compassService } from "@/services/compass";
 import { useModal } from "@/hooks/useModal";
 import EditUserModal from "@/app/edit-user-modal";
@@ -115,7 +114,6 @@ export default function MapScreen() {
   const [isLockCompass, toggleLockCompass] = useToggle(false);
   const [isFullCompass, toggleFullCompass] = useToggle(false);
 
-  useCheckSubscription();
   useEffect(() => {
     requestLocationPermission();
     compassService.subscribe((heading: number) => {
