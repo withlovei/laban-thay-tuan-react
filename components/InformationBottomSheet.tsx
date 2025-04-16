@@ -70,7 +70,8 @@ export const InformationBottomSheet: React.FC<Props> = ({
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    zIndex: 10,
+    zIndex: 100,
+    elevation: 100,
   },
   backdrop: {
     ...StyleSheet.absoluteFillObject,

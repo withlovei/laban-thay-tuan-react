@@ -139,7 +139,8 @@ export default function Sidebar() {
 const styles = StyleSheet.create({
   sidebarWrapper: {
     ...StyleSheet.absoluteFillObject,
-    zIndex: 5,
+    zIndex: 10,
+    elevation: 10,
   },
   backdrop: {
     ...StyleSheet.absoluteFillObject,

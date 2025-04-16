@@ -125,7 +125,8 @@ export const PaymentBottomSheet = () => {
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    zIndex: 10,
+    zIndex: 1000,
+    elevation: 1000,
   },
   backdrop: {
     ...StyleSheet.absoluteFillObject,

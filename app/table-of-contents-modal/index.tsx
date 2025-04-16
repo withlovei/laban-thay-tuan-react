@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#C81B22",
     ...StyleSheet.absoluteFillObject,
     zIndex: 10,
+    elevation: 10,
   },
   scrollView: {
     // flex: 1,
