@@ -273,20 +273,20 @@ export const getStarMeaning = (star: CompassStar) => {
 export const getDescriptionByHeading = (heading: number) => {
   const tieuKhongVong =
     isNumberInRange(heading, 6, 9) ||
-    isNumberInRange(heading, 21, 24) ||
     isNumberInRange(heading, 36, 39) ||
     isNumberInRange(heading, 51, 54) ||
-    isNumberInRange(heading, 66, 69) ||
-    isNumberInRange(heading, 111, 114) || 
+    isNumberInRange(heading, 81, 84) ||
+    isNumberInRange(heading, 96, 99) ||
     isNumberInRange(heading, 126, 129) ||
     isNumberInRange(heading, 141, 144) ||
     isNumberInRange(heading, 156, 159) ||
-    isNumberInRange(heading, 201, 204) ||
+    isNumberInRange(heading, 171, 174) ||
     isNumberInRange(heading, 216, 219) ||
     isNumberInRange(heading, 231, 234) ||
-    isNumberInRange(heading, 246, 249) ||
-    isNumberInRange(heading, 291, 294) ||
+    isNumberInRange(heading, 261, 264) ||
+    isNumberInRange(heading, 276, 279) ||
     isNumberInRange(heading, 306, 309) ||
+    isNumberInRange(heading, 321, 324) ||
     isNumberInRange(heading, 351, 354) 
   
   const daiKhongVong =
@@ -297,7 +297,7 @@ export const getDescriptionByHeading = (heading: number) => {
     isNumberInRange(heading, 199.5, 205.5) ||
     isNumberInRange(heading, 244.5, 250.5) ||
     isNumberInRange(heading, 289.5, 295.5) ||
-    isNumberInRange(heading, 349.5, 355.5)
+    isNumberInRange(heading, 334.5, 340.5)
     
   if (tieuKhongVong) {
     return "Tiểu không vong"

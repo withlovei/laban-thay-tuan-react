@@ -75,29 +75,37 @@ export default function SearchLocationModal({
     // Search for address
     try {
       const results = await geocodeAsync(text);
-      const suggestionsWithAddress = await Promise.all(
-        results.map(async (result) => {
-          const { latitude, longitude } = result;
-          const reverseGeocode = await reverseGeocodeAsync({
-            latitude,
-            longitude,
-          });
-          const patchAddress = [
-            reverseGeocode?.[0]?.street,
-            reverseGeocode?.[0]?.district,
-            reverseGeocode?.[0]?.city,
-            reverseGeocode?.[0]?.country,
-          ]
-            .filter(Boolean)
-            .join(", ");
-          const address = reverseGeocode?.[0]?.formattedAddress || patchAddress;
-          return { latitude, longitude, address };
+      // const suggestionsWithAddress = await Promise.all(
+      //   results.map(async (result) => {
+      //     const { latitude, longitude } = result;
+      //     const reverseGeocode = await reverseGeocodeAsync({
+      //       latitude,
+      //       longitude,
+      //     });
+      //     const patchAddress = [
+      //       reverseGeocode?.[0]?.street,
+      //       reverseGeocode?.[0]?.district,
+      //       reverseGeocode?.[0]?.city,
+      //       reverseGeocode?.[0]?.country,
+      //     ]
+      //       .filter(Boolean)
+      //       .join(", ");
+      //     const address = reverseGeocode?.[0]?.formattedAddress || patchAddress;
+      //     return { latitude, longitude, address };
+      //   })
+      // );
+      // const nonNullSuggestions = suggestionsWithAddress.filter(
+      //   (res) => res.address !== null
+      // ) as SearchLocation[];
+      if (results.length > 0) {
+        setSelectedLocation({
+          latitude: results[0].latitude,
+          longitude: results[0].longitude,
+          address: text,
         })
-      );
-      const nonNullSuggestions = suggestionsWithAddress.filter(
-        (res) => res.address !== null
-      ) as SearchLocation[];
-      setSuggestions(nonNullSuggestions);
+      } else {
+        setSelectedLocation(null);
+      }
     } catch (error) {
       console.error("Error geocoding:", error);
     }
