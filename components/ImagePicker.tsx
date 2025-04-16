@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef, useImperativeHandle } from "react";
 import { View, StyleSheet, ViewStyle, StyleProp } from "react-native";
 import {
   GestureHandlerRootView,
@@ -9,15 +9,22 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  withTiming,
+  cancelAnimation,
 } from "react-native-reanimated";
 import { screen } from "@/constants/Dimensions";
+
+export interface ImagePickerHandle {
+  rotateRight: () => void;
+  rotateLeft: () => void;
+}
 
 interface ImagePickerProps {
   uri?: string;
   style?: StyleProp<ViewStyle>;
 }
 
-export const ImagePicker = ({ style, uri }: ImagePickerProps) => {
+export const ImagePicker = forwardRef<ImagePickerHandle, ImagePickerProps>(({ style, uri }, ref) => {
   // Animated values for gestures
   const scale = useSharedValue(1);
   const savedScale = useSharedValue(1);
@@ -25,6 +32,43 @@ export const ImagePicker = ({ style, uri }: ImagePickerProps) => {
   const translateY = useSharedValue(0);
   const savedTranslateX = useSharedValue(0);
   const savedTranslateY = useSharedValue(0);
+  const rotation = useSharedValue(0);
+  const isRotating = useSharedValue(false);
+
+  useImperativeHandle(ref, () => ({
+    rotateRight: () => {
+      'worklet';
+      if (isRotating.value) {
+        cancelAnimation(rotation);
+      }
+      isRotating.value = true;
+      rotation.value = withTiming(Math.ceil(rotation.value / 90) * 90 + 90, {
+        duration: 300,
+      }, (finished) => {
+        if (finished) {
+          isRotating.value = false;
+          // Normalize the rotation value to prevent floating point errors
+          rotation.value = Math.ceil(rotation.value / 90) * 90;
+        }
+      });
+    },
+    rotateLeft: () => {
+      'worklet';
+      if (isRotating.value) {
+        cancelAnimation(rotation);
+      }
+      isRotating.value = true;
+      rotation.value = withTiming(Math.floor(rotation.value / 90) * 90 - 90, {
+        duration: 300,
+      }, (finished) => {
+        if (finished) {
+          isRotating.value = false;
+          // Normalize the rotation value to prevent floating point errors
+          rotation.value = Math.floor(rotation.value / 90) * 90;
+        }
+      });
+    },
+  }));
 
   // Create pinch gesture
   const pinchGesture = Gesture.Pinch()
@@ -68,6 +112,7 @@ export const ImagePicker = ({ style, uri }: ImagePickerProps) => {
         { translateX: translateX.value },
         { translateY: translateY.value },
         { scale: scale.value },
+        { rotate: `${rotation.value}deg` },
       ],
     };
   });
@@ -87,7 +132,7 @@ export const ImagePicker = ({ style, uri }: ImagePickerProps) => {
       )}
     </GestureHandlerRootView>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

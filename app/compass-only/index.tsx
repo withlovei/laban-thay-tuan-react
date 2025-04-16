@@ -29,7 +29,7 @@ import { getDirectionByCompassHeading } from "@/shared/compass";
 import { mapGenderToText } from "@/shared/transform";
 import { Background } from "@/app/compass-only/components/Background";
 import { IconAdd } from "@/components/ui/icons/IconAdd";
-import { ImagePicker } from "@/components/ImagePicker";
+import { ImagePicker, ImagePickerHandle } from "@/components/ImagePicker";
 import { IconRotateRight } from "@/components/ui/icons/IconRotateRight";
 import { isNumberFinite, isNumberInRange } from "@/shared/validation";
 import { compassService } from "@/services/compass";
@@ -37,6 +37,7 @@ import { useModal } from "@/hooks/useModal";
 import RotateCompassModal from "@/app/rotate-compass-modal";
 import EditUserModal from "@/app/edit-user-modal";
 import ImagePickerModal from "@/app/image-picker-modal";
+import { IconRightArrow } from "../../components/ui/icons/IconRightArrow";
 
 const COMPASS_SIZE = screen.width - 26;
 const COMPASS_HEADING_SIZE = screen.width - 10;
@@ -45,6 +46,7 @@ const MAX_SCALE = 2;
 
 export default function CompassOnlyScreen() {
   const user = useUserStore((state) => state.user);
+  const imagePickerRef = useRef<ImagePickerHandle>(null);
   const [isShowRect, toggleShowRect] = useToggle(true);
   const compassStarMeaningTextRef = useRef<TextInput>(null);
   const homeDirectionTextRef = useRef<TextInput>(null);
@@ -189,6 +191,7 @@ export default function CompassOnlyScreen() {
       <Background />
       {uri && (
         <ImagePicker
+          ref={imagePickerRef}
           style={[StyleSheet.absoluteFillObject, { top: paddingTop + 64 }]}
           uri={uri}
         />
@@ -275,8 +278,17 @@ export default function CompassOnlyScreen() {
           <IconContainer onPress={onOpenRotateCompass}>
             <IconRotateRight />
           </IconContainer>
+          <IconContainer
+            onPress={() => imagePickerRef.current?.rotateLeft()}
+            style={styles.rotateIcon}
+          >
+            <IconRightArrow opacity={1} />
+          </IconContainer>
           <IconContainer onPress={toggleLockCompass} width={56} height={56}>
             {isLockCompass ? <IconLock /> : <IconLockOpenRight />}
+          </IconContainer>
+          <IconContainer onPress={() => imagePickerRef.current?.rotateRight()}>
+            <IconRightArrow opacity={1} />
           </IconContainer>
           <IconContainer onPress={onOpenEditUser}>
             <IconEditDocument />
@@ -423,7 +435,7 @@ const styles = StyleSheet.create({
     transform: [{ rotate: "270deg" }],
     top: screen.height / 2 - SLIDER_HEIGHT / 2,
     right: -SLIDER_WIDTH / 2 + SLIDER_HEIGHT / 2 + 9,
-    zIndex: 1
+    zIndex: 1,
   },
   slider: {
     width: SLIDER_WIDTH,
@@ -453,5 +465,8 @@ const styles = StyleSheet.create({
     bottom: 125,
     width: screen.width,
     paddingHorizontal: 20,
+  },
+  rotateIcon: {
+    transform: [{ rotate: "180deg" }],
   },
 });
