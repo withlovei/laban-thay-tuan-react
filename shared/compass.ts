@@ -226,7 +226,7 @@ export const getStarMeaning = (star: CompassStar) => {
     case "Bại Tuyệt":
       return "Kinh tế suy kém"
     case "Vượng Tài":
-      return "Tài Lộc"
+      return "Tài lộc"
     case "Phúc Đức":
       return "Tốt gia đạo"
     case "Ôn Hoàng":
@@ -246,9 +246,9 @@ export const getStarMeaning = (star: CompassStar) => {
     case "Vượng Trang":
       return "Tốt về đất đai"
     case "Hưng Phúc":
-      return "Hạnh Phúc"
+      return "Hạnh phúc"
     case "Pháp Trường":
-      return "Pháp Luật"
+      return "Pháp luật"
     case "Điên Cuồng":
       return "Nóng nảy, hung hãn"
     case "Khẩu Thiệt":
