@@ -285,9 +285,17 @@ export default function MapScreen() {
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         mapType="satellite"
-        showsCompass={false}
         rotateEnabled={false}
         showsMyLocationButton={false}
+        showsCompass={false}
+        showsTraffic={false}
+        showsBuildings={false}
+        showsIndoorLevelPicker={false}
+        showsPointsOfInterest={false}
+        showsUserLocation={false}
+        showsIndoors={false}
+        showsScale={false}
+        toolbarEnabled={false}
         onMapReady={() => setIsMapReady(true)}
         pitchEnabled={false}
         onStartShouldSetResponder={() => true}
