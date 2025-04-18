@@ -5,11 +5,10 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
-  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { isNumberFinite } from "@/shared/validation";
-import { geocodeAsync, reverseGeocodeAsync } from "expo-location";
+import { geocodeAsync } from "expo-location";
 
 interface SearchLocationModalProps {
   isVisible: boolean;
@@ -29,18 +28,11 @@ export default function SearchLocationModal({
   onConfirm,
 }: SearchLocationModalProps) {
   const [searchText, setSearchText] = useState("");
-  const [suggestions, setSuggestions] = useState<SearchLocation[]>([]);
   const [selectedLocation, setSelectedLocation] =
     useState<SearchLocation | null>(null);
 
   const handleSearchLocation = async (text: string) => {
     setSearchText(text);
-
-    // Clear suggestions when input is empty
-    if (!text) {
-      setSuggestions([]);
-      return;
-    }
 
     // Check if input is coordinates
     const [latitude, longitude] = text.split(",").map((item) => item.trim());
@@ -58,45 +50,12 @@ export default function SearchLocationModal({
         ...location,
         address: text
       })
-      // try {
-      //   const reverseGeocode = await reverseGeocodeAsync(location);
-      //   if (reverseGeocode.length > 0) {
-      //     const address = reverseGeocode?.[0]?.formattedAddress;
-      //     if (address) {
-      //       setSuggestions([{ ...location, address: address }]);
-      //     }
-      //   }
-      // } catch (error) {
-      //   console.error("Error reverse geocoding:", error);
-      // }
       return;
     }
 
     // Search for address
     try {
       const results = await geocodeAsync(text);
-      // const suggestionsWithAddress = await Promise.all(
-      //   results.map(async (result) => {
-      //     const { latitude, longitude } = result;
-      //     const reverseGeocode = await reverseGeocodeAsync({
-      //       latitude,
-      //       longitude,
-      //     });
-      //     const patchAddress = [
-      //       reverseGeocode?.[0]?.street,
-      //       reverseGeocode?.[0]?.district,
-      //       reverseGeocode?.[0]?.city,
-      //       reverseGeocode?.[0]?.country,
-      //     ]
-      //       .filter(Boolean)
-      //       .join(", ");
-      //     const address = reverseGeocode?.[0]?.formattedAddress || patchAddress;
-      //     return { latitude, longitude, address };
-      //   })
-      // );
-      // const nonNullSuggestions = suggestionsWithAddress.filter(
-      //   (res) => res.address !== null
-      // ) as SearchLocation[];
       if (results.length > 0) {
         setSelectedLocation({
           latitude: results[0].latitude,
@@ -114,13 +73,11 @@ export default function SearchLocationModal({
   const handleSelectLocation = (location: SearchLocation) => {
     setSelectedLocation(location);
     setSearchText(location.address);
-    setSuggestions([]);
   };
 
   useEffect(() => {
     if (!isVisible) {
       setSearchText("");
-      setSuggestions([]);
       setSelectedLocation(null);
     }
   }, [isVisible]);
@@ -145,24 +102,6 @@ export default function SearchLocationModal({
             Nhập tọa độ (21.12312, 105.23123) hoặc nhập địa chỉ để đến vị trí
             cần đo
           </Text>
-          {suggestions.length > 0 && (
-            <ScrollView
-              style={styles.suggestionsContainer}
-              keyboardShouldPersistTaps="always"
-            >
-              {suggestions.map((suggestion, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.suggestionItem}
-                  onPress={() => handleSelectLocation(suggestion)}
-                >
-                  <Text style={styles.suggestionText}>
-                    {suggestion.address}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          )}
         </View>
 
         <View style={styles.buttonContainer}>

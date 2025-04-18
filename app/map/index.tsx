@@ -220,18 +220,16 @@ export default function MapScreen() {
 
   const handleSearchLocationTextChange = (location: SearchLocation) => {
     setSearchLocation(location);
+    goToSearchLocation(location);
   };
 
-  const goToSearchLocation = () => {
-    if (mapRef.current && searchLocation) {
+  const goToSearchLocation = (location: SearchLocation) => {
+    if (mapRef.current && location) {
       mapRef.current.setCamera({
-        center: searchLocation,
+        center: location,
         zoom: 19,
         pitch: 0,
       });
-    }
-    if (!searchLocation) {
-      alert("Vui lòng nhập đúng tọa độ");
     }
   };
 
@@ -361,9 +359,6 @@ export default function MapScreen() {
               editable={false}
             />
           </TouchableOpacity>
-          <IconContainer onPress={goToSearchLocation}>
-            <IconDoubleArrow />
-          </IconContainer>
           <IconContainer onPress={toggleFullCompass}>
             <IconFlexStart />
           </IconContainer>
