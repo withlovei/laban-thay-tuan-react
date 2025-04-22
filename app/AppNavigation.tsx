@@ -17,6 +17,9 @@ import useNavigation from "@/stores/useNavigation";
 import { SidebarProvider } from "@/contexts/SidebarContext";
 import MinhTuanBookPDFScreen from "@/app/minh-tuan-book-pdf";
 import SolutionPDFScreen from "@/app/solution-pdf";
+import MatPhapBookPDFScreen from "./mat-phap-book-pdf";
+import PhongThuyNhaOBookPDFScreen from "./phong-thuy-nha-o-book-pdf";
+import HuongNhaBookPDFScreen from "./huong-nha-book-pdf";
 
 function MainStack() {
   const { currentScreen } = useNavigation();
@@ -31,6 +34,12 @@ function MainStack() {
       return <MinhTuanBookPDFScreen />;
     case "solution-pdf":
       return <SolutionPDFScreen />;
+    case "mat-phap-book-pdf":
+      return <MatPhapBookPDFScreen />;
+    case "phong-thuy-nha-o-book-pdf":
+      return <PhongThuyNhaOBookPDFScreen />;
+    case "huong-nha-book.pdf":
+      return <HuongNhaBookPDFScreen />;
     default:
       return <MapScreen />;
   }

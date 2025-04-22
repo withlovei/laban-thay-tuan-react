@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
+  ScrollView,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useInformation } from "@/contexts/InformationContext";
@@ -44,11 +45,11 @@ export default function Sidebar() {
       translateX.value = withTiming(0, { duration: 200 });
     }
   }, [isSidebarVisible]);
-  
+
   const navigate = (screen: Screen) => {
     hideSidebar();
     navigateTo(screen);
-  }
+  };
 
   if (!isSidebarVisible) return null;
   return (
@@ -62,74 +63,109 @@ export default function Sidebar() {
           <View style={styles.header}>
             <Text style={styles.title}>LA BÀN THẦY TUẤN</Text>
           </View>
-          <View style={styles.content}>
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={() => {
-                navigate("map");
-              }}
-            >
-              <IconContainer style={styles.iconContainer}>
-                <IconCompass />
-              </IconContainer>
-              <Text style={styles.menuText}>Lập cực</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={() => {
-                navigate("compass-only");
-              }}
-            >
-              <IconContainer style={styles.iconContainer}>
-                <IconCameraCompass />
-              </IconContainer>
-              <Text style={styles.menuText}>Tải ảnh</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={() => {
-                navigate("stars-pdf");
-              }}
-            >
-              <IconContainer style={styles.iconContainer}>
-                <IconStar fill={"#7B5C26"} />
-              </IconContainer>
-              <Text style={styles.menuText}>24 sao</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={() => {
-                navigate("solution-pdf");
-              }}
-            >
-              <IconContainer style={styles.iconContainer}>
-                <IconBagua />
-              </IconContainer>
-              <Text style={styles.menuText}>Hóa giải</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={() => {
-                navigate("minh-tuan-book-pdf");
-              }}
-            >
-              <IconContainer style={styles.iconContainer}>
-                <IconFile />
-              </IconContainer>
-              <Text style={styles.menuText}>Tham khảo</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={() => {
-                showInformation();
-              }}
-            >
-              <IconContainer style={styles.iconContainer}>
-                <IconEmail />
-              </IconContainer>
-              <Text style={styles.menuText}>Liên hệ</Text>
-            </TouchableOpacity>
-          </View>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.content}>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  navigate("map");
+                }}
+              >
+                <IconContainer style={styles.iconContainer}>
+                  <IconCompass />
+                </IconContainer>
+                <Text style={styles.menuText}>Lập cực</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  navigate("compass-only");
+                }}
+              >
+                <IconContainer style={styles.iconContainer}>
+                  <IconCameraCompass />
+                </IconContainer>
+                <Text style={styles.menuText}>Tải ảnh</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  navigate("stars-pdf");
+                }}
+              >
+                <IconContainer style={styles.iconContainer}>
+                  <IconStar fill={"#7B5C26"} />
+                </IconContainer>
+                <Text style={styles.menuText}>24 sao</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  navigate("solution-pdf");
+                }}
+              >
+                <IconContainer style={styles.iconContainer}>
+                  <IconBagua />
+                </IconContainer>
+                <Text style={styles.menuText}>Hóa giải</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  navigate("minh-tuan-book-pdf");
+                }}
+              >
+                <IconContainer style={styles.iconContainer}>
+                  <IconFile />
+                </IconContainer>
+                <Text style={styles.menuText}>Tham khảo</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  navigate("mat-phap-book-pdf");
+                }}
+              >
+                <IconContainer style={styles.iconContainer}>
+                  <IconFile />
+                </IconContainer>
+                <Text style={styles.menuText}>Mật pháp</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  navigate("phong-thuy-nha-o-book-pdf");
+                }}
+              >
+                <IconContainer style={styles.iconContainer}>
+                  <IconFile />
+                </IconContainer>
+                <Text style={styles.menuText}>Nhà ở</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  navigate("huong-nha-book.pdf");
+                }}
+              >
+                <IconContainer style={styles.iconContainer}>
+                  <IconFile />
+                </IconContainer>
+                <Text style={styles.menuText}>Hướng nhà</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  showInformation();
+                }}
+              >
+                <IconContainer style={styles.iconContainer}>
+                  <IconEmail />
+                </IconContainer>
+                <Text style={styles.menuText}>Liên hệ</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
         </ImageBackground>
       </Animated.View>
     </View>
