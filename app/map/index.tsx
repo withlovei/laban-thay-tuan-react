@@ -225,11 +225,13 @@ export default function MapScreen() {
 
   const goToSearchLocation = (location: SearchLocation) => {
     if (mapRef.current && location) {
+      updateCompassHeadingFnRef.current = () => {}
       mapRef.current.setCamera({
         center: location,
         zoom: 19,
         pitch: 0,
       });
+      updateCompassHeadingFnRef.current = updateCompassHeading
     }
   };
 
