@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Pdf from "react-native-pdf";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NavigationBar } from "@/components/NavigationBar";
+import { LoadingDialog } from "@/components/ui/LoadingDialog";
 
 const HuongNhaBookPDFScreen = () => {
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
     <SafeAreaView style={styles.container}>
       <NavigationBar/>
@@ -15,18 +19,29 @@ const HuongNhaBookPDFScreen = () => {
             cache: true,
           }}
           style={styles.pdf}
+          onLoadProgress={(percent) => {
+            setLoadingProgress(percent);
+          }}
           onLoadComplete={(numberOfPages, filePath) => {
             console.log(`Number of pages: ${numberOfPages}, file path: ${filePath}`);
+            setIsLoading(false);
           }}
           onPageChanged={(page, numberOfPages) => {
             console.log(`Current page: ${page}`);
           }}
           onError={(error) => {
             console.log(error);
+            setIsLoading(false);
           }}
           trustAllCerts={false}
         />
       </View>
+
+      <LoadingDialog
+        visible={isLoading}
+        progress={loadingProgress}
+        message="Đang tải sách, vui lòng chờ..."
+      />
     </SafeAreaView>
   );
 };
@@ -56,7 +71,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-  },
+  }
 });
 
 export default HuongNhaBookPDFScreen;
