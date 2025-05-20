@@ -21,7 +21,7 @@ import { FirebaseServices } from "@/services/firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DeviceInfo from 'react-native-device-info';
 
-const DELAY_TIME_TO_CHECK_SUBSCRIPTION = 0;
+const DELAY_TIME_TO_CHECK_SUBSCRIPTION = 60000;
 const STORAGE_KEY_PROMOTION_ACTIVE = "hasActivePromotion";
 const storage = {
   isCheckSubscription: false,
