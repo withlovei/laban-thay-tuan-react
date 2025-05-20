@@ -6,18 +6,28 @@ import {
   TouchableOpacity,
   Linking,
   Alert,
+  Modal,
 } from "react-native";
 import { requestPurchase } from "react-native-iap";
-import { screen } from "@/constants/Dimensions";
 import { usePayment } from "@/contexts/PaymentContext";
 import { IconCheckMark } from "@/components/ui/icons/IconCheckMark";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import PromoCodeInputSheet from "./PromoCodeInputSheet";
+
 const productIds = ["laban.full.access"];
 
 export const PaymentBottomSheet = () => {
   const [loading, setLoading] = useState(false);
-  const { top } = useSafeAreaInsets();
-  const { isInitialized, productInfo, isPaymentVisible: isVisible } = usePayment();
+  const { bottom } = useSafeAreaInsets();
+  const {
+    isInitialized,
+    productInfo,
+    isPaymentVisible: isVisible,
+    hidePayment,
+    setSubmissionError
+  } = usePayment();
+
+  const [isPromoInputVisible, setIsPromoInputVisible] = useState(false);
 
   const handlePurchase = async () => {
     if (!isInitialized) {
@@ -54,18 +64,24 @@ export const PaymentBottomSheet = () => {
 
   if (!isVisible || !productInfo) return null;
 
+  const openPromoInput = () => {
+    setIsPromoInputVisible(true);
+  };
+
+  const closePromoInput = () => {
+    setSubmissionError(null);
+    setIsPromoInputVisible(false);
+  };
+
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.backdrop}
-        activeOpacity={1}
-      />
-      <View
-        style={[
-          styles.bottomSheetContainer,
-          { top: screen.height + top - 510 },
-        ]}
-      >
+    <Modal
+      transparent={true}
+      visible={isVisible}
+      animationType="fade"
+      onRequestClose={hidePayment}
+    >
+      <TouchableOpacity style={styles.modalBackdrop} activeOpacity={1} />
+      <View style={[styles.bottomSheetContainer, { paddingBottom: bottom }]}>
         <View style={styles.header}>
           <Text style={styles.title}>{productInfo?.name}</Text>
         </View>
@@ -101,6 +117,12 @@ export const PaymentBottomSheet = () => {
                 {loading ? "Đang xử lý..." : "Mua ngay"}
               </Text>
             </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button, styles.promoCodeEntryButton]}
+              onPress={openPromoInput}
+            >
+              <Text style={styles.buttonText}>Nhập mã khuyến mãi</Text>
+            </TouchableOpacity>
 
             <TouchableOpacity
               style={[styles.button, styles.zaloButton]}
@@ -118,26 +140,29 @@ export const PaymentBottomSheet = () => {
           </View>
         </View>
       </View>
-    </View>
+
+      <PromoCodeInputSheet
+        isVisible={isPromoInputVisible}
+        onClose={closePromoInput}
+      />
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 1000,
-    elevation: 1000,
-  },
-  backdrop: {
-    ...StyleSheet.absoluteFillObject,
+  modalBackdrop: {
+    flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   bottomSheetContainer: {
-    width: "100%",
-    backgroundColor: "#FFF",
     position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#FFF",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    paddingHorizontal: 20,
   },
   header: {
     height: 40,
@@ -148,22 +173,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     position: "relative",
   },
-  line: {
-    width: 40,
-    height: 4,
-    backgroundColor: "#E5E5E5",
-    borderRadius: 2,
-    position: "absolute",
-    top: 8,
-  },
   title: {
     fontFamily: "Roboto Condensed",
     fontSize: 16,
     color: "#27272A",
-  },
-  closeText: {
-    fontSize: 24,
-    color: "#272729",
   },
   content: {
     padding: 20,
@@ -226,5 +239,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
+  },
+  promoCodeEntryButton: {
+    backgroundColor: "green",
   },
 });

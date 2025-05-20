@@ -18,8 +18,11 @@ import {
 import { Alert, Platform } from "react-native";
 import { useUserStore } from "@/stores/useUserStore";
 import { FirebaseServices } from "@/services/firebase";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import DeviceInfo from 'react-native-device-info';
 
-const DELAY_TIME_TO_CHECK_SUBSCRIPTION = 60000;
+const DELAY_TIME_TO_CHECK_SUBSCRIPTION = 0;
+const STORAGE_KEY_PROMOTION_ACTIVE = "hasActivePromotion";
 const storage = {
   isCheckSubscription: false,
 };
@@ -37,6 +40,10 @@ interface PaymentContextType {
   hidePayment: () => void;
   isInitialized: boolean;
   productInfo: ProductInfo | null;
+  submitPromotionCode: (promotionCode: string, emailToUse?: string) => Promise<boolean>;
+  setSubmissionError: (error: string | null) => void;
+  isSubmittingCode: boolean;
+  submissionError: string | null;
 }
 
 const PaymentContext = createContext<PaymentContextType>({
@@ -45,6 +52,10 @@ const PaymentContext = createContext<PaymentContextType>({
   hidePayment: () => {},
   productInfo: null,
   isInitialized: false,
+  submitPromotionCode: async () => false,
+  setSubmissionError: () => {},
+  isSubmittingCode: false,
+  submissionError: null,
 });
 
 const productIds = ["laban.full.access"];
@@ -56,6 +67,8 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isPaymentVisible, setIsPaymentVisible] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
   const [productInfo, setProductInfo] = useState<ProductInfo | null>(null);
+  const [isSubmittingCode, setIsSubmittingCode] = useState(false);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
   const updateUserRef = useRef<() => void>(() => {});
   const user = useUserStore((state) => state.user);
 
@@ -114,7 +127,11 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (user) {
-        updateUserRef.current = () => FirebaseServices.updateUser({user, verifiedAt: new Date().toString()});
+      updateUserRef.current = () =>
+        FirebaseServices.updateUser({
+          user,
+          verifiedAt: new Date().toString(),
+        });
     }
   }, [user]);
 
@@ -122,13 +139,29 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const purchases = await getAvailablePurchases();
       storage.isCheckSubscription = true;
+
+      let hasPromotion = false;
+      try {
+        const promoStatus = await AsyncStorage.getItem(
+          STORAGE_KEY_PROMOTION_ACTIVE
+        );
+        if (promoStatus === "true") {
+          hasPromotion = true;
+        }
+      } catch (e) {
+        console.warn("Failed to read promotion status from AsyncStorage", e);
+      }
+
       if (purchases && purchases.length > 0) {
-        console.log("Purchase info:", purchases);
+        console.log("User has active IAP:", purchases);
+      } else if (hasPromotion) {
+        console.log("User has an active promotion code from local storage.");
       } else {
         showPayment();
       }
     } catch (error) {
-      console.warn(error);
+      console.warn("Error checking subscription/promotion:", error);
+      showPayment();
     }
   }
   const getProductInfo = async () => {
@@ -140,6 +173,60 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const hidePayment = () => setIsPaymentVisible(false);
 
+  const submitPromotionCode = async (promotionCode: string, emailToUse?: string): Promise<boolean> => {
+    if (!promotionCode) {
+      Alert.alert("Lỗi", "Vui lòng nhập mã khuyến mãi.");
+      return false;
+    }
+
+    setIsSubmittingCode(true);
+    setSubmissionError(null);
+
+    const brand = DeviceInfo.getBrand();
+
+    try {
+      const response = await fetch(
+        "https://api.labanthaytuan.vn/api/public/promote-code/use",
+        {
+          method: "POST",
+          headers: {
+            accept: "*/*",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            code: promotionCode,
+            email: emailToUse || "",
+            device: brand,
+          }),
+        }
+      );
+      if (response.ok) {
+        Alert.alert("Thành công", "Mã khuyến mãi đã được áp dụng!");
+        try {
+          await AsyncStorage.setItem(STORAGE_KEY_PROMOTION_ACTIVE, "true");
+        } catch (e) {
+          console.warn("Failed to save promotion status to AsyncStorage", e);
+        }
+        const res = await response.json()
+        hidePayment();
+        setIsSubmittingCode(false);
+        return true;
+      } else {
+        const errorData = await response.json();
+        const errorMessage = errorData.error || "Không thể áp dụng mã khuyến mãi. Vui lòng thử lại.";
+        setSubmissionError(errorMessage);
+        setIsSubmittingCode(false);
+        return false;
+      }
+    } catch (error) {
+      const defaultMessage = "Lỗi kết nối. Vui lòng kiểm tra mạng và thử lại.";
+      const errorMessage = (error as Error).message || defaultMessage;
+      setSubmissionError(errorMessage);
+      setIsSubmittingCode(false);
+      return false;
+    }
+  };
+
   return (
     <PaymentContext.Provider
       value={{
@@ -148,6 +235,10 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({
         hidePayment,
         isInitialized,
         productInfo,
+        submitPromotionCode,
+        isSubmittingCode,
+        submissionError,
+        setSubmissionError
       }}
     >
       {children}
