@@ -43,7 +43,7 @@ export const PaymentBottomSheet = () => {
     try {
       setLoading(true);
       if (productIds) {
-        await requestPurchase({ skus: productIds });
+        await requestPurchase({ skus: productIds, sku: productIds[0] });
       }
     } catch (err) {
       console.warn(err);
