@@ -75,7 +75,9 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const initIAP = async () => {
       try {
+        console.log('Initializing IAP...');
         await initConnection();
+        console.log('IAP initialized successfully');
         setIsInitialized(true);
       } catch (err) {
         console.warn("IAP init error:", err);
@@ -105,9 +107,8 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     );
 
-    if (Platform.OS === "android") {
-      initIAP();
-    }
+    // Initialize on both Android and iOS
+    initIAP();
 
     return () => {
       purchaseUpdateSubscription.remove();
@@ -117,8 +118,12 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (isInitialized) {
+      console.log('Payment system initialized, fetching product info...');
       getProductInfo();
-      if (storage.isCheckSubscription) return;
+      if (storage.isCheckSubscription) {
+        console.log('Subscription already checked, skipping...');
+        return;
+      }
       setTimeout(() => {
         checkSubscription();
       }, DELAY_TIME_TO_CHECK_SUBSCRIPTION);
@@ -165,13 +170,46 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }
   const getProductInfo = async () => {
-    const products = await getProducts({ skus: productIds });
-    setProductInfo(products[0] as any);
+    console.log('Fetching product info for SKUs:', productIds);
+    try {
+      const products = await getProducts({ skus: productIds });
+      console.log('Products fetched successfully:', products);
+      if (products && products.length > 0) {
+        setProductInfo(products[0] as any);
+        console.log('Product info set:', products[0]);
+      } else {
+        console.warn('No products found, using development fallback');
+        // Use fallback product info for development
+        setProductInfo({
+          name: "Gói La Bàn",
+          description: "Truy cập tất cả các tính năng",
+          price: "299000",
+          currency: "VND",
+          localizedPrice: "299.000 ₫"
+        });
+      }
+    } catch (error) {
+      console.warn('Error fetching products:', error);
+      // Use fallback product info on error
+      setProductInfo({
+        name: "Gói La Bàn",
+        description: "Truy cập tất cả các tính năng",
+        price: "299000",
+        currency: "VND",
+        localizedPrice: "299.000 ₫"
+      });
+    }
   };
 
-  const showPayment = () => setIsPaymentVisible(true);
+  const showPayment = () => {
+    console.log('showPayment called, setting isPaymentVisible to true');
+    setIsPaymentVisible(true);
+  };
 
-  const hidePayment = () => setIsPaymentVisible(false);
+  const hidePayment = () => {
+    console.log('hidePayment called, setting isPaymentVisible to false');
+    setIsPaymentVisible(false);
+  };
 
   const submitPromotionCode = async (promotionCode: string, emailToUse?: string): Promise<boolean> => {
     if (!promotionCode) {

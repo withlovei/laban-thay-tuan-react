@@ -8,9 +8,15 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/splash/ic_launcher.png",
+      "imageWidth": 200,
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.lbtt.laban.thaytuan.dev",
+      "bundleIdentifier": "com.laban.thaytuan",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }

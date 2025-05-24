@@ -29,6 +29,8 @@ export const PaymentBottomSheet = () => {
 
   const [isPromoInputVisible, setIsPromoInputVisible] = useState(false);
 
+  console.log('PaymentBottomSheet render:', { isVisible, isInitialized, hasProductInfo: !!productInfo });
+
   const handlePurchase = async () => {
     if (!isInitialized) {
       Alert.alert(

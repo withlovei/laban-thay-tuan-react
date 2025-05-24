@@ -53,12 +53,12 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Chúng tôi cần quyền truy cập vào camera của bạn để chụp hình ảnh.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Chúng tôi cần quyền truy cập vị trí của bạn để sử dụng la bàn.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Chúng tôi cần quyền truy cập vào thư viện hình ảnh của bạn để chọn hình ảnh.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Chúng tôi cần quyền truy cập vào camera của bạn để chụp hình ảnh.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Roboto Condensed Bold.ttf</string>
@@ -66,7 +66,7 @@
 		<string>UTM Impact.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
-	<string>SplashScreen.storyboard</string>
+	<string>SplashScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>arm64</string>

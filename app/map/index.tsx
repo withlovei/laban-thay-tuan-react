@@ -19,6 +19,7 @@ import { IconFlexStart } from "@/components/ui/icons/IconFlexStart";
 import { IconPinDrop } from "@/components/ui/icons/IconPinDrop";
 import { IconEditDocument } from "@/components/ui/icons/IconEditDocument";
 import { IconLockOpenRight } from "@/components/ui/icons/IconLockOpenRight";
+import { IconInventory } from "@/components/ui/icons/IconInventory";
 import CompassHeadingUI from "@/components/ui/CompassHeading";
 import Animated, {
   useAnimatedStyle,
@@ -52,6 +53,7 @@ import {
   requestForegroundPermissionsAsync,
 } from "expo-location";
 import SplashScreen from "react-native-splash-screen";
+import { usePayment } from "@/contexts/PaymentContext";
 
 const COMPASS_SIZE = screen.width - 26;
 const COMPASS_HEADING_SIZE = screen.width - 10;
@@ -114,6 +116,7 @@ export default function MapScreen() {
   }));
   const [isLockCompass, toggleLockCompass] = useToggle(false);
   const [isFullCompass, toggleFullCompass] = useToggle(false);
+  const { showPayment } = usePayment();
 
   useEffect(() => {
     requestLocationPermission();
@@ -408,6 +411,9 @@ export default function MapScreen() {
           <IconContainer onPress={onOpen}>
             <IconEditDocument />
           </IconContainer>
+          {/* <IconContainer onPress={showPayment}>
+            <IconInventory />
+          </IconContainer> */}
         </View>
       </View>
       {/* compass */}

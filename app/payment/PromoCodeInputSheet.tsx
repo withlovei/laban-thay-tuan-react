@@ -9,7 +9,10 @@ import {
   Alert,
   Modal,
   Keyboard,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { usePayment } from "@/contexts/PaymentContext";
 import { useUserStore } from "@/stores/useUserStore";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -41,14 +44,11 @@ const PromoCodeInputSheet: React.FC<PromoCodeInputSheetProps> = ({
       return;
     }
     const promotionCode = localPromotionCode.trim().toUpperCase();
-    const success = await submitPromotionCode(promotionCode, email.trim() || undefined); // Get success status
+    const success = await submitPromotionCode(promotionCode, email.trim() || undefined);
 
     if (success && isVisible) {
-      // If successful and this modal is still visible
-      onClose(); // Close this promo input sheet
+      onClose();
     }
-    // submitPromotionCode in context handles success (alerts, hides payment)
-    // If submission was successful (no error) and the sheet is still visible, close it.
   };
 
   return (
@@ -63,49 +63,62 @@ const PromoCodeInputSheet: React.FC<PromoCodeInputSheetProps> = ({
         activeOpacity={1}
         onPress={onClose}
       />
-      <View
-        style={[
-          styles.bottomSheetContainer,
-          { paddingBottom: top + 20, maxHeight: screen.height * 0.6 },
-        ]}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={styles.keyboardAvoidingView}
       >
-        <View style={styles.header}>
-          <Text style={styles.title}>Nhập Mã Khuyến Mãi</Text>
-        </View>
-        <View style={styles.content}>
-          <TextInput
-            style={styles.input}
-            placeholder="Mã khuyến mãi"
-            value={localPromotionCode}
-            onChangeText={(text) => setLocalPromotionCode(text.toUpperCase())}
-            autoCapitalize="characters"
-            placeholderTextColor="#888"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            placeholderTextColor="#888"
-          />
-          {submissionError && (
-            <Text style={styles.errorText}>{submissionError}</Text>
-          )}
-          <TouchableOpacity
-            style={[styles.button, styles.submitButton]}
-            onPress={handleSubmit}
-            disabled={isSubmittingCode || !localPromotionCode.trim()}
+        <View
+          style={[
+            styles.bottomSheetContainer,
+            { paddingBottom: top + 20, maxHeight: screen.height * 0.5 },
+          ]}
+        >
+          <View style={styles.header}>
+            <Text style={styles.title}>Nhập Mã Khuyến Mãi</Text>
+          </View>
+          <KeyboardAwareScrollView
+            contentContainerStyle={styles.content}
+            enableOnAndroid={true}
+            enableAutomaticScroll={false}
+            extraScrollHeight={0}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            scrollEnabled={false}
           >
-            {isSubmittingCode ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>Lưu</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Mã khuyến mãi"
+              value={localPromotionCode}
+              onChangeText={(text) => setLocalPromotionCode(text.toUpperCase())}
+              autoCapitalize="characters"
+              placeholderTextColor="#888"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              placeholderTextColor="#888"
+            />
+            {submissionError && (
+              <Text style={styles.errorText}>{submissionError}</Text>
             )}
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button, styles.submitButton]}
+              onPress={handleSubmit}
+              disabled={isSubmittingCode || !localPromotionCode.trim()}
+            >
+              {isSubmittingCode ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.buttonText}>Lưu</Text>
+              )}
+            </TouchableOpacity>
+          </KeyboardAwareScrollView>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
@@ -115,33 +128,35 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
-  bottomSheetContainer: {
-    position: "absolute",
+  keyboardAvoidingView: {
+    position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
+  },
+  bottomSheetContainer: {
     backgroundColor: "#FFF",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingHorizontal: 20,
-    paddingTop: 10, // Adjusted padding
+    paddingTop: 10,
   },
   header: {
-    height: 40, // Reduced height
+    height: 40,
     borderBottomWidth: 1,
     borderBottomColor: "#E5E5E5",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 15, // Added margin
+    marginBottom: 15,
   },
   title: {
     fontFamily: "Roboto Condensed",
-    fontSize: 18, // Increased size
+    fontSize: 18,
     fontWeight: "bold",
     color: "#27272A",
   },
   content: {
-    // Removed flex:1 to allow sheet to size to content up to maxHeight
+    paddingVertical: 10,
   },
   input: {
     width: "100%",
@@ -152,19 +167,19 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     fontSize: 16,
     fontFamily: "Roboto Condensed",
-    marginBottom: 15, // Increased margin
+    marginBottom: 15,
     color: "#333",
   },
   button: {
     width: "100%",
-    paddingVertical: 15, // Increased padding
+    paddingVertical: 15,
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
   },
   submitButton: {
-    backgroundColor: "#28a745", // Green color
-    marginTop: 10, // Added margin
+    backgroundColor: "#28a745",
+    marginTop: 10,
   },
   buttonText: {
     color: "#fff",
