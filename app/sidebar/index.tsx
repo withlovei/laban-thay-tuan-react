@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ImageBackground,
   ScrollView,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useInformation } from "@/contexts/InformationContext";
@@ -24,6 +25,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { screen } from "@/constants/Dimensions";
+import { usePayment } from "../../contexts/PaymentContext";
 
 export default function Sidebar() {
   const insets = useSafeAreaInsets();
@@ -31,6 +33,8 @@ export default function Sidebar() {
   const { navigateTo } = useNavigation();
   const translateX = useSharedValue(0);
   const { isSidebarVisible, hideSidebar } = useSidebar();
+  const tapCount = useRef(0);
+  const { showPayment } = usePayment();
 
   const sidebarStyle = useAnimatedStyle(() => {
     return {
@@ -51,6 +55,18 @@ export default function Sidebar() {
     navigateTo(screen);
   };
 
+  const handleTitlePress = () => {
+    tapCount.current++;
+
+    if (tapCount.current >= 15) {
+      // Reset counter
+      tapCount.current = 0;
+      // Call showPayment function
+      // Replace this with actual payment function when available
+      showPayment(); // Uncomment and replace when actual function is available
+    }
+  };
+
   if (!isSidebarVisible) return null;
   return (
     <View style={styles.sidebarWrapper}>
@@ -61,7 +77,9 @@ export default function Sidebar() {
           style={[styles.container, { paddingTop: insets.top }]}
         >
           <View style={styles.header}>
-            <Text style={styles.title}>LA BÀN THẦY TUẤN</Text>
+            <TouchableWithoutFeedback onPress={handleTitlePress}>
+              <Text style={styles.title}>LA BÀN THẦY TUẤN</Text>
+            </TouchableWithoutFeedback>
           </View>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.content}>

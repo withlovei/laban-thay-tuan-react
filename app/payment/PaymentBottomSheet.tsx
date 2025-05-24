@@ -24,12 +24,16 @@ export const PaymentBottomSheet = () => {
     productInfo,
     isPaymentVisible: isVisible,
     hidePayment,
-    setSubmissionError
+    setSubmissionError,
   } = usePayment();
 
   const [isPromoInputVisible, setIsPromoInputVisible] = useState(false);
 
-  console.log('PaymentBottomSheet render:', { isVisible, isInitialized, hasProductInfo: !!productInfo });
+  console.log("PaymentBottomSheet render:", {
+    isVisible,
+    isInitialized,
+    hasProductInfo: !!productInfo,
+  });
 
   const handlePurchase = async () => {
     if (!isInitialized) {
@@ -76,12 +80,7 @@ export const PaymentBottomSheet = () => {
   };
 
   return (
-    <Modal
-      transparent={true}
-      visible={isVisible}
-      animationType="fade"
-      onRequestClose={hidePayment}
-    >
+    <View style={styles.modal}>
       <TouchableOpacity style={styles.modalBackdrop} activeOpacity={1} />
       <View style={[styles.bottomSheetContainer, { paddingBottom: bottom }]}>
         <View style={styles.header}>
@@ -147,11 +146,19 @@ export const PaymentBottomSheet = () => {
         isVisible={isPromoInputVisible}
         onClose={closePromoInput}
       />
-    </Modal>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  modal: {
+    flex: 1,
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    top: 0
+  },
   modalBackdrop: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
