@@ -124,9 +124,15 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({
         console.log('Subscription already checked, skipping...');
         return;
       }
-      setTimeout(() => {
-        checkSubscription();
-      }, DELAY_TIME_TO_CHECK_SUBSCRIPTION);
+      (async () => {
+        const setting = await getSetting();
+        console.log('Setting:', setting);
+        if(setting){
+          setTimeout(() => {
+            checkSubscription();
+          }, DELAY_TIME_TO_CHECK_SUBSCRIPTION);
+        }
+      })();
     }
   }, [isInitialized]);
 
@@ -139,6 +145,12 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({
         });
     }
   }, [user]);
+
+  async function getSetting() {
+    const setting = await fetch('https://api.labanthaytuan.vn/api/public/setting');
+    const settingData = await setting.json();
+    return settingData.showPayment;
+  }
 
   async function checkSubscription() {
     try {
@@ -162,13 +174,20 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({
       } else if (hasPromotion) {
         console.log("User has an active promotion code from local storage.");
       } else {
-        showPayment();
+        const shouldShowPayment = await getSetting();
+        if (shouldShowPayment) {
+          showPayment();
+        }
       }
     } catch (error) {
       console.warn("Error checking subscription/promotion:", error);
-      showPayment();
+      const shouldShowPayment = await getSetting();
+      if (shouldShowPayment) {
+        showPayment();
+      }
     }
   }
+
   const getProductInfo = async () => {
     console.log('Fetching product info for SKUs:', productIds);
     try {
