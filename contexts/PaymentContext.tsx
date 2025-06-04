@@ -147,7 +147,7 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [user]);
 
   async function getSetting() {
-    const setting = await fetch('https://api.labanthaytuan.vn/api/public/setting');
+    const setting = await fetch('https://api.labanthaytuan.vn/api/public/settings');
     const settingData = await setting.json();
     return settingData.showPayment;
   }
