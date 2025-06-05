@@ -27,14 +27,14 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>myapp</string>
-				<string>com.lbtt.laban.thaytuan.dev</string>
+				<string>labanthaytuan</string>
+				<string>com.laban.thaytuan</string>
 			</array>
 		</dict>
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>exp+laban-thay-tuan-react</string>
+				<string>exp+laban-thay-tuan</string>
 			</array>
 		</dict>
 	</array>
@@ -56,7 +56,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Chúng tôi cần quyền truy cập vào camera của bạn để chụp hình ảnh.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Chúng tôi cần quyền truy cập vị trí của bạn để sử dụng la bàn.</string>
+	<string>Ứng dụng cần quyền truy cập vị trí để xác định hướng nhà một cách chính xác khi bạn sử dụng chức năng la bàn, đồng thời hiển thị vị trí hiện tại trên bản đồ để phục vụ đo đạc phong thủy.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Chúng tôi cần quyền truy cập vào thư viện hình ảnh của bạn để chọn hình ảnh.</string>
 	<key>UIAppFonts</key>

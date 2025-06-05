@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "laban-thay-tuan-react",
-    "slug": "laban-thay-tuan-react",
+    "name": "La Ban Thay Tuan",
+    "slug": "la-ban-thay-tuan",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "la-ban-thay-tuan",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -15,7 +15,7 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.laban.thaytuan",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
