@@ -1,11 +1,11 @@
 {
   "expo": {
     "name": "La Ban Thay Tuan",
-    "slug": "la-ban-thay-tuan",
+    "slug": "laban-thay-tuan-react",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "la-ban-thay-tuan",
+    "scheme": "laban-thay-tuan-react",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {

@@ -16,3 +16,6 @@ android/app/google-services.json
 # Keystore
 android/key.properties
 android/app/upload-keystore.jks
+
+credentials.json
+.expo/
