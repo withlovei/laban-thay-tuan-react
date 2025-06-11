@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "La Ban Thay Tuan",
-    "slug": "la-ban-thay-tuan",
+    "name": "Phong Thuy Nguyen Dinh Tuan",
+    "slug": "phong-thuy-nguyen-dinh-tuan",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "la-ban-thay-tuan",
+    "scheme": "phong-thuy-nguyen-dinh-tuan",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -16,7 +16,7 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.laban.thaytuan",
+      "bundleIdentifier": "vn.labanthaytuan.phongthuy",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
