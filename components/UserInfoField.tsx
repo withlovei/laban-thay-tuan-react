@@ -1,11 +1,11 @@
 import React from "react";
 import {
+  KeyboardTypeOptions,
   StyleSheet,
-  View,
+  Text,
   TextInput,
   TouchableOpacity,
-  Text,
-  KeyboardTypeOptions,
+  View,
 } from "react-native";
 
 interface UserInfoFieldProps {

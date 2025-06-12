@@ -1,25 +1,27 @@
-import { useEffect } from "react";
-import MapScreen from "./map";
-import Sidebar from "@/app/sidebar";
 import CompassOnlyScreen from "@/app/compass-only";
+import MinhTuanBookPDFScreen from "@/app/minh-tuan-book-pdf";
+import { PaymentBottomSheet } from "@/app/payment/PaymentBottomSheet";
+import Sidebar from "@/app/sidebar";
+import SolutionPDFScreen from "@/app/solution-pdf";
 import StarsPDFScreen from "@/app/stars-pdf";
-import { InformationProvider } from "@/contexts/InformationContext";
 import { InformationBottomSheet } from "@/components/InformationBottomSheet";
 import { InformationContent } from "@/components/InformationContent";
-import { useInformation } from "@/contexts/InformationContext";
-import { Alert, BackHandler, Linking, StyleSheet, View } from "react-native";
 import { IconCall } from "@/components/ui/icons/IconCall";
-import { IconPinDrop } from "@/components/ui/icons/IconPinDrop";
 import { IconCaptivePortal } from "@/components/ui/icons/IconCaptivePortal";
+import { IconPinDrop } from "@/components/ui/icons/IconPinDrop";
+import {
+  InformationProvider,
+  useInformation,
+} from "@/contexts/InformationContext";
 import { PaymentProvider } from "@/contexts/PaymentContext";
-import { PaymentBottomSheet } from "@/app/payment/PaymentBottomSheet";
-import useNavigation from "@/stores/useNavigation";
 import { SidebarProvider } from "@/contexts/SidebarContext";
-import MinhTuanBookPDFScreen from "@/app/minh-tuan-book-pdf";
-import SolutionPDFScreen from "@/app/solution-pdf";
+import useNavigation from "@/stores/useNavigation";
+import { useEffect } from "react";
+import { Alert, BackHandler, Linking, StyleSheet, View } from "react-native";
+import HuongNhaBookPDFScreen from "./huong-nha-book-pdf";
+import MapScreen from "./map";
 import MatPhapBookPDFScreen from "./mat-phap-book-pdf";
 import PhongThuyNhaOBookPDFScreen from "./phong-thuy-nha-o-book-pdf";
-import HuongNhaBookPDFScreen from "./huong-nha-book-pdf";
 
 function MainStack() {
   const { currentScreen } = useNavigation();

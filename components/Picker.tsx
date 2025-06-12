@@ -1,7 +1,7 @@
-import React, { useRef } from "react";
-import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
+import { BOTTOM_BAR_HEIGHT, screen } from "@/constants/Dimensions";
 import WheelPicker from "@quidone/react-native-wheel-picker";
-import { screen } from "@/constants/Dimensions";
+import React, { useRef } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface PickerProps {
@@ -19,7 +19,7 @@ export function Picker({
   title,
   data,
 }: PickerProps) {
-  const { top } = useSafeAreaInsets();
+  const { top, bottom } = useSafeAreaInsets();
   const selectedRef = useRef<string | undefined>();
 
   const handleSelect = (value: string) => {
@@ -45,7 +45,9 @@ export function Picker({
       <View
         style={[
           styles.bottomSheetContainer,
-          { top: screen.height + top - 280 },
+          {
+            top: screen.height - top - 280 - bottom - BOTTOM_BAR_HEIGHT,
+          },
         ]}
       >
         <View style={styles.header}>

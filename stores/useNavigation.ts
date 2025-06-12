@@ -8,7 +8,8 @@ export type Screen =
   | "solution-pdf"
   | "mat-phap-book-pdf"
   | "phong-thuy-nha-o-book-pdf"
-  | "huong-nha-book.pdf";
+  | "huong-nha-book.pdf"
+  | "contact";
 interface NavigationState {
   // Current active screen or route
   currentScreen: Screen;

@@ -1,16 +1,11 @@
-import React from "react"
-import Svg, { Path, SvgProps } from "react-native-svg"
+import React from "react";
+import Svg, { Path, SvgProps } from "react-native-svg";
 const SvgComponent = (props: SvgProps) => (
-  <Svg
-    width={16}
-    height={21}
-    fill="none"
-    {...props}
-  >
+  <Svg width={16} height={21} fill="none" {...props}>
     <Path
-      fill="#FFFFFF"
+      fill={props.fill || "#FFFFFF"}
       d="M2 21c-.55 0-1.02-.196-1.413-.587A1.926 1.926 0 0 1 0 19V9c0-.55.196-1.02.588-1.412A1.926 1.926 0 0 1 2 7h1V5c0-1.383.487-2.563 1.463-3.538C5.437.488 6.617 0 8 0s2.563.487 3.537 1.462C12.512 2.438 13 3.617 13 5v2h1c.55 0 1.02.196 1.412.588.392.391.588.862.588 1.412v10c0 .55-.196 1.02-.588 1.413A1.926 1.926 0 0 1 14 21H2Zm0-2h12V9H2v10Zm6-3c.55 0 1.02-.196 1.412-.588.392-.391.588-.862.588-1.412 0-.55-.196-1.02-.588-1.412A1.926 1.926 0 0 0 8 12c-.55 0-1.02.196-1.412.588A1.926 1.926 0 0 0 6 14c0 .55.196 1.02.588 1.412.391.392.862.588 1.412.588ZM5 7h6V5c0-.833-.292-1.542-.875-2.125A2.893 2.893 0 0 0 8 2c-.833 0-1.542.292-2.125.875A2.893 2.893 0 0 0 5 5v2Z"
     />
   </Svg>
-)
-export { SvgComponent as IconLock }
+);
+export { SvgComponent as IconLock };

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
-import { TextStyles } from "../constants/TextStyles";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface GenderCheckBoxProps {
   selectedGender: "MALE" | "FEMALE" | null;

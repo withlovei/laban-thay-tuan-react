@@ -1,6 +1,11 @@
-import { StyleProp, View, ViewStyle } from "react-native";
 import { FC } from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import {
+  StyleProp,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 
 interface IconContainerProps {
   children: React.ReactNode;
@@ -31,7 +36,8 @@ export const IconContainer: FC<IconContainerProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#C81B22",
+    // backgroundColor: "#C81B22",
+    backgroundColor: "#db2778",
     borderRadius: 50,
     alignItems: "center",
     justifyContent: "center",
