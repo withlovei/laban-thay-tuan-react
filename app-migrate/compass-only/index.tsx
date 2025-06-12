@@ -12,7 +12,6 @@ import { IconFlexStart } from "@/components/ui/icons/IconFlexStart";
 import { IconLock } from "@/components/ui/icons/IconLock";
 import { IconLockOpenRight } from "@/components/ui/icons/IconLockOpenRight";
 import { IconRotateRight } from "@/components/ui/icons/IconRotateRight";
-import { COLORS } from "@/constants/Colors";
 import {
   BOTTOM_BAR_HEIGHT,
   screen,
@@ -43,7 +42,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { IconRightArrow } from "../../components/ui/icons/IconRightArrow";
-import EditUserV2Modal from "../modals/edit-user-v2";
+import EditUserV2Modal from "../modals/edit-user";
 
 const COMPASS_SIZE = screen.width - 26;
 const COMPASS_HEADING_SIZE = screen.width - 10;
@@ -98,11 +97,9 @@ export default function CompassOnlyScreen() {
 
   const setSliderTintColor = useCallback((isSliding: boolean) => {
     sliderRef.current?.setNativeProps({
-      minimumTrackTintColor: isSliding
-        ? COLORS.sliderThumbActive
-        : "transparent",
-      maximumTrackTintColor: isSliding ? COLORS.sliderTrack : "transparent",
-      thumbTintColor: isSliding ? COLORS.sliderThumbActive : COLORS.sliderThumb,
+      minimumTrackTintColor: isSliding ? "#C81B22" : "transparent",
+      maximumTrackTintColor: isSliding ? "#00000080" : "transparent",
+      thumbTintColor: isSliding ? "#C81B22" : "#C81B2270",
     });
   }, []);
 
@@ -190,15 +187,15 @@ export default function CompassOnlyScreen() {
           uri={uri}
         />
       )}
+      <EditUserV2Modal
+        isVisible={isVisibleEditUser}
+        onClose={onCloseEditUser}
+      />
       <View style={[styles.safeAreaView]} pointerEvents="box-none">
         <RotateCompassModal
           isVisible={isVisibleRotateCompass}
           onClose={onCloseRotateCompass}
           onConfirm={(degree) => setRotate({ degree, isDone: false })}
-        />
-        <EditUserV2Modal
-          isVisible={isVisibleEditUser}
-          onClose={onCloseEditUser}
         />
         <ImagePickerModal
           isVisible={isVisibleImagePicker}
@@ -214,15 +211,14 @@ export default function CompassOnlyScreen() {
                 { duration: 200 }
               );
             }}
-            style={styles.iconButton}
           >
-            <IconEyeSlash fill={COLORS.secondary} />
+            <IconEyeSlash />
           </IconContainer>
-          <IconContainer onPress={onOpenImagePicker} style={styles.iconButton}>
-            <IconAdd fill={COLORS.secondary} />
+          <IconContainer onPress={onOpenImagePicker}>
+            <IconAdd />
           </IconContainer>
-          <IconContainer onPress={toggleFullCompass} style={styles.iconButton}>
-            <IconFlexStart fill={COLORS.secondary} />
+          <IconContainer onPress={toggleFullCompass}>
+            <IconFlexStart />
           </IconContainer>
         </View>
         {/* compass description */}
@@ -263,38 +259,23 @@ export default function CompassOnlyScreen() {
           {/* <IconContainer onPress={toggleShowRect}>
             <IconSquare />
           </IconContainer> */}
-          <IconContainer
-            onPress={onOpenRotateCompass}
-            style={styles.iconButton}
-          >
-            <IconRotateRight fill={COLORS.secondary} />
+          <IconContainer onPress={onOpenRotateCompass}>
+            <IconRotateRight />
           </IconContainer>
           <IconContainer
             onPress={() => imagePickerRef.current?.rotateLeft()}
-            style={[styles.rotateIcon, styles.iconButton]}
+            style={styles.rotateIcon}
           >
-            <IconRightArrow opacity={1} stroke={COLORS.secondary} />
+            <IconRightArrow opacity={1} />
           </IconContainer>
-          <IconContainer
-            onPress={toggleLockCompass}
-            width={56}
-            height={56}
-            style={styles.lockButton}
-          >
-            {isLockCompass ? (
-              <IconLock fill={COLORS.secondary} />
-            ) : (
-              <IconLockOpenRight fill={COLORS.secondary} />
-            )}
+          <IconContainer onPress={toggleLockCompass} width={56} height={56}>
+            {isLockCompass ? <IconLock /> : <IconLockOpenRight />}
           </IconContainer>
-          <IconContainer
-            onPress={() => imagePickerRef.current?.rotateRight()}
-            style={styles.iconButton}
-          >
-            <IconRightArrow opacity={1} stroke={COLORS.secondary} />
+          <IconContainer onPress={() => imagePickerRef.current?.rotateRight()}>
+            <IconRightArrow opacity={1} />
           </IconContainer>
-          <IconContainer onPress={onOpenEditUser} style={styles.iconButton}>
-            <IconEditDocument fill={COLORS.secondary} />
+          <IconContainer onPress={onOpenEditUser}>
+            <IconEditDocument />
           </IconContainer>
         </View>
       </View>
@@ -356,7 +337,7 @@ export default function CompassOnlyScreen() {
           }}
           minimumTrackTintColor="transparent"
           maximumTrackTintColor="transparent"
-          thumbTintColor={COLORS.sliderThumb}
+          thumbTintColor="#C81B2270"
           onSlidingStart={() => {
             setSliderTintColor(true);
           }}
@@ -372,9 +353,33 @@ export default function CompassOnlyScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "#FEC41F",
-    backgroundColor: "#fff",
+    backgroundColor: "#FEC41F",
     marginBottom: BOTTOM_BAR_HEIGHT,
+  },
+  map: {
+    flex: 1,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  compass: {
+    position: "absolute",
+    left: screen.width / 2 - COMPASS_SIZE / 2,
+    top: screen.height / 2 - COMPASS_SIZE / 2,
+    width: COMPASS_SIZE,
+    height: COMPASS_SIZE,
+    borderRadius: COMPASS_SIZE / 2,
+    zIndex: 1,
+  },
+  compassHeading: {
+    position: "absolute",
+    left: screen.width / 2 - COMPASS_HEADING_SIZE / 2,
+    width: COMPASS_HEADING_SIZE,
+    height: COMPASS_HEADING_SIZE * (388 / 380),
+    top: screen.height / 2 - (194 / 380) * COMPASS_HEADING_SIZE,
+    zIndex: 1,
   },
   compassLogo: {
     position: "absolute",
@@ -395,28 +400,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  iconButton: {
-    backgroundColor: COLORS.controlBackground,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-  },
-  lockButton: {
-    backgroundColor: COLORS.controlBackground,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
   textInput: {
     flex: 1,
     height: 32,
-    backgroundColor: COLORS.background,
+    backgroundColor: "white",
     borderRadius: 4,
     padding: 8,
-    color: COLORS.primary,
+    color: "#7B5C26",
     fontSize: 14,
   },
   footerBar: {
@@ -433,16 +423,12 @@ const styles = StyleSheet.create({
   topCompassDescription: {
     alignItems: "center",
     justifyContent: "center",
-    // backgroundColor: COLORS.overlayBackground,
   },
   compassDescriptionText: {
-    color: COLORS.textLight,
+    color: "#553D13",
     fontSize: 20,
     fontFamily: "Roboto Condensed Bold",
     textAlign: "center",
-    // textShadowColor: "rgba(0, 0, 0, 0.75)",
-    // textShadowOffset: { width: 1, height: 1 },
-    // textShadowRadius: 2,
   },
   safeAreaView: {
     flex: 1,
@@ -455,10 +441,6 @@ const styles = StyleSheet.create({
     bottom: 80,
     position: "absolute",
     width: screen.width,
-    // backgroundColor: COLORS.overlayBackground,
-    // paddingHorizontal: 12,
-    // paddingVertical: 4,
-    // borderRadius: 16,
   },
   sliderContainer: {
     position: "absolute",
@@ -483,29 +465,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "80%",
     alignSelf: "center",
-    // backgroundColor: COLORS.overlayBackground,
-    // paddingHorizontal: 12,
-    // paddingVertical: 4,
-    // borderRadius: 16,
-    // marginTop: 8,
   },
   compassStarMeaningText: {
-    color: COLORS.textLight,
+    color: "#553D13",
     fontSize: 18,
     fontFamily: "Roboto Condensed",
     textAlign: "center",
-    // textShadowColor: "rgba(0, 0, 0, 0.75)",
-    // textShadowOffset: { width: 1, height: 1 },
-    // textShadowRadius: 2,
   },
   homeDirection: {
     position: "absolute",
     bottom: 125,
     width: screen.width,
     paddingHorizontal: 20,
-    // backgroundColor: COLORS.overlayBackground,
-    // paddingVertical: 4,
-    // borderRadius: 16,
   },
   rotateIcon: {
     transform: [{ rotate: "180deg" }],

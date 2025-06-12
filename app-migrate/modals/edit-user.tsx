@@ -16,6 +16,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 // Temporary type definition for User
 const currentYear = new Date().getFullYear();
@@ -31,6 +32,7 @@ export default function EditUserModal({
   isVisible,
   onClose,
 }: EditUserModalProps) {
+  const insets = useSafeAreaInsets();
   const setUser = useUserStore((state) => state.setUser);
   const user = useUserStore((state) => state.user);
   const [birthYear, setBirthYear] = useState<number | null>(
@@ -76,7 +78,7 @@ export default function EditUserModal({
   if (!isVisible) return null;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <ScrollView
         contentContainerStyle={{ minHeight: screen.height }}
         showsVerticalScrollIndicator={false}

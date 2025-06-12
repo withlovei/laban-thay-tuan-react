@@ -36,8 +36,7 @@ export const IconContainer: FC<IconContainerProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: "#C81B22",
-    backgroundColor: "#db2778",
+    backgroundColor: "#C81B22",
     borderRadius: 50,
     alignItems: "center",
     justifyContent: "center",

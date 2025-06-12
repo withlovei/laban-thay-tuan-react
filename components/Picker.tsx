@@ -46,7 +46,7 @@ export function Picker({
         style={[
           styles.bottomSheetContainer,
           {
-            top: screen.height - top - 280 - bottom - BOTTOM_BAR_HEIGHT,
+            top: screen.height - 280 - bottom - BOTTOM_BAR_HEIGHT,
           },
         ]}
       >

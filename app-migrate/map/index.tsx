@@ -1,4 +1,4 @@
-import EditUserModal from "@/app-migrate/modals/edit-user-v2";
+import EditUserModal from "@/app-migrate/modals/edit-user";
 import SearchLocationModal, {
   SearchLocation,
 } from "@/app-migrate/modals/search-location";
@@ -159,11 +159,9 @@ export default function MapScreen() {
 
   const setSliderTintColor = useCallback((isSliding: boolean) => {
     sliderRef.current?.setNativeProps({
-      minimumTrackTintColor: isSliding
-        ? COLORS.sliderThumbActive
-        : "transparent",
-      maximumTrackTintColor: isSliding ? COLORS.sliderTrack : "transparent",
-      thumbTintColor: isSliding ? COLORS.sliderThumbActive : COLORS.sliderThumb,
+      minimumTrackTintColor: isSliding ? "#C81B22" : "transparent",
+      maximumTrackTintColor: isSliding ? "#00000080" : "transparent",
+      thumbTintColor: isSliding ? "#C81B22" : "#C81B2270",
     });
   }, []);
 
@@ -316,13 +314,7 @@ export default function MapScreen() {
         }}
         onResponderTerminationRequest={() => true}
       >
-        {searchLocation && (
-          <Marker coordinate={searchLocation}>
-            <View style={styles.searchLocationMarker}>
-              <View style={styles.searchLocationMarkerInner} />
-            </View>
-          </Marker>
-        )}
+        {searchLocation && <Marker coordinate={searchLocation} />}
         <Marker
           style={{ width: 16, height: 16 }}
           coordinate={location}
@@ -331,8 +323,8 @@ export default function MapScreen() {
           <View style={styles.myLocation} />
         </Marker>
       </MapView>
+      <EditUserModal isVisible={isVisible} onClose={onClose} />
       <View style={[styles.safeAreaView]} pointerEvents="box-none">
-        <EditUserModal isVisible={isVisible} onClose={onClose} />
         <SearchLocationModal
           isVisible={isSearchModalVisible}
           onClose={onCloseSearchModal}
@@ -347,7 +339,6 @@ export default function MapScreen() {
                 { duration: 200 }
               );
             }}
-            style={styles.iconButton}
           >
             <IconEyeSlash fill={COLORS.secondary} />
           </IconContainer>
@@ -357,15 +348,15 @@ export default function MapScreen() {
           >
             <TextInput
               style={styles.textInputInner}
-              placeholderTextColor={"rgba(123, 92, 38, 0.5)"}
+              placeholderTextColor={"rgba(123, 92, 38, 0.2)"}
               placeholder={`Nhập địa chỉ hoặc toạ độ`}
               pointerEvents="none"
               value={searchLocation?.address}
               editable={false}
             />
           </TouchableOpacity>
-          <IconContainer onPress={toggleFullCompass} style={styles.iconButton}>
-            <IconFlexStart fill={COLORS.secondary} />
+          <IconContainer onPress={toggleFullCompass}>
+            <IconFlexStart />
           </IconContainer>
         </View>
 
@@ -404,27 +395,18 @@ export default function MapScreen() {
               editable={false}
             />
           </View>
-
-          <View style={styles.footerControls}>
-            <IconContainer onPress={goToMyLocation} style={styles.iconButton}>
-              <IconPinDrop fill={COLORS.secondary} />
-            </IconContainer>
-            <IconContainer
-              onPress={toggleLockCompass}
-              width={56}
-              height={56}
-              style={styles.lockButton}
-            >
-              {isLockCompass ? (
-                <IconLock fill={COLORS.secondary} />
-              ) : (
-                <IconLockOpenRight fill={COLORS.secondary} />
-              )}
-            </IconContainer>
-            <IconContainer onPress={onOpen} style={styles.iconButton}>
-              <IconEditDocument fill={COLORS.secondary} />
-            </IconContainer>
-          </View>
+          <IconContainer onPress={goToMyLocation}>
+            <IconPinDrop />
+          </IconContainer>
+          <IconContainer onPress={toggleLockCompass} width={56} height={56}>
+            {isLockCompass ? <IconLock /> : <IconLockOpenRight />}
+          </IconContainer>
+          <IconContainer onPress={onOpen}>
+            <IconEditDocument />
+          </IconContainer>
+          {/* <IconContainer onPress={showPayment}>
+            <IconInventory />
+          </IconContainer> */}
         </View>
       </View>
 
@@ -454,7 +436,6 @@ export default function MapScreen() {
           map={true}
         />
       </Animated.View>
-
       {/* compass heading */}
       <Animated.View
         pointerEvents="none"
@@ -488,7 +469,7 @@ export default function MapScreen() {
           }}
           minimumTrackTintColor="transparent"
           maximumTrackTintColor="transparent"
-          thumbTintColor={COLORS.sliderThumb}
+          thumbTintColor="#C81B2270"
           onSlidingStart={() => {
             setSliderTintColor(true);
           }}
@@ -535,45 +516,24 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  iconButton: {
-    backgroundColor: COLORS.controlBackground,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-  },
-  lockButton: {
-    backgroundColor: COLORS.controlBackground,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
   textInput: {
     flex: 1,
-    height: 40,
-    backgroundColor: COLORS.background,
-    borderRadius: 8,
+    height: 32,
+    backgroundColor: "white",
+    borderRadius: 4,
     justifyContent: "center",
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
   },
   textInputInner: {
     padding: 8,
-    color: COLORS.primary,
+    color: "#7B5C26",
     fontSize: 14,
-    fontFamily: "Roboto Condensed",
   },
   footerBar: {
     position: "absolute",
     width: screen.width,
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     paddingVertical: 8,
     paddingHorizontal: 16,
     bottom: 32,
@@ -587,24 +547,17 @@ const styles = StyleSheet.create({
   topCompassDescription: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: COLORS.overlayBackground,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 16,
-    marginHorizontal: 16,
   },
   compassDescriptionText: {
-    color: COLORS.textLight,
-    fontSize: 18,
+    color: "white",
+    fontSize: 20,
     fontFamily: "Roboto Condensed Bold",
     textAlign: "center",
-    textShadowColor: "rgba(0, 0, 0, 0.75)",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
   },
   safeAreaView: {
     flex: 1,
     backgroundColor: "transparent",
+    // zIndex: 2,
   },
   bottomCompassDescription: {
     alignItems: "center",
@@ -612,16 +565,13 @@ const styles = StyleSheet.create({
     bottom: 80,
     position: "absolute",
     width: screen.width,
-    backgroundColor: COLORS.overlayBackground,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 16,
   },
   sliderContainer: {
     position: "absolute",
     transform: [{ rotate: "270deg" }],
     top: screen.height / 2 - SLIDER_HEIGHT / 2,
     right: -SLIDER_WIDTH / 2 + SLIDER_HEIGHT / 2 + 9,
+    // zIndex: 1,
   },
   slider: {
     width: SLIDER_WIDTH,
@@ -630,33 +580,21 @@ const styles = StyleSheet.create({
   compassStarMeaning: {
     alignItems: "center",
     justifyContent: "center",
-    width: "90%",
+    width: "80%",
     alignSelf: "center",
-    marginTop: 8,
-    backgroundColor: COLORS.overlayBackground,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 16,
   },
   compassStarMeaningText: {
-    color: COLORS.textLight,
-    fontSize: 16,
+    color: "white",
+    fontSize: 18,
     fontFamily: "Roboto Condensed",
     textAlign: "center",
-    fontWeight: "400",
-    textShadowColor: "rgba(0, 0, 0, 0.75)",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
+    fontWeight: 400,
   },
   homeDirection: {
     position: "absolute",
     bottom: 125,
     width: screen.width,
     paddingHorizontal: 20,
-    backgroundColor: COLORS.overlayBackground,
-    paddingVertical: 4,
-    borderRadius: 16,
-    marginHorizontal: 16,
   },
   myLocation: {
     width: 16,
@@ -665,26 +603,5 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 2,
     borderColor: "#fff",
-  },
-  searchLocationMarker: {
-    width: 24,
-    height: 24,
-    backgroundColor: COLORS.primary,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: COLORS.markerBorder,
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 2,
-    elevation: 5,
-  },
-  searchLocationMarkerInner: {
-    width: 10,
-    height: 10,
-    backgroundColor: COLORS.accent,
-    borderRadius: 5,
   },
 });

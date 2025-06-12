@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    color: "#000",
+    color: "#7B5C26",
     fontSize: 24,
     fontFamily: "Roboto Condensed",
   },
@@ -101,22 +101,22 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     minWidth: 120,
     alignItems: "center",
-    backgroundColor: "#db2778",
+    backgroundColor: "#FEC41F",
     marginBottom: 12,
   },
   cancelButton: {
     backgroundColor: "transparent",
     borderWidth: 1,
-    borderColor: "#db2778",
+    borderColor: "#FEC41F",
   },
   buttonText: {
     textAlign: "center",
     fontSize: 16,
     fontWeight: "600",
-    color: "#fff",
+    color: "#7B5C26",
     fontFamily: "Roboto Condensed",
   },
   cancelButtonText: {
-    color: "#db2778",
+    color: "#FEC41F",
   },
 });
