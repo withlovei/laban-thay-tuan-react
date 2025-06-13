@@ -59,6 +59,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 // Color theme constants to match books section
 const COMPASS_SIZE = screen.width - 26;
 const COMPASS_HEADING_SIZE = screen.width - 10;
+const DIMENSION_GAP = 26;
 const MIN_SCALE = 0.5;
 const MAX_SCALE = 2;
 
@@ -407,10 +408,7 @@ export default function MapScreen() {
           {
             position: "absolute",
             left: screen.width / 2 - COMPASS_SIZE / 2,
-            top:
-              (screen.height - BOTTOM_BAR_HEIGHT - insets.top - insets.bottom) /
-                2 -
-              COMPASS_SIZE / 2,
+            top: (screen.height + DIMENSION_GAP) / 2 - COMPASS_SIZE / 2,
             width: COMPASS_SIZE,
             height: COMPASS_SIZE,
             borderRadius: COMPASS_SIZE / 2,
@@ -437,8 +435,7 @@ export default function MapScreen() {
             width: COMPASS_HEADING_SIZE,
             height: COMPASS_HEADING_SIZE * (388 / 380),
             top:
-              (screen.height - BOTTOM_BAR_HEIGHT - insets.top - insets.bottom) /
-                2 -
+              (screen.height + DIMENSION_GAP) / 2 -
               (194 / 380) * COMPASS_HEADING_SIZE,
           },
           compassHeadingStyle,
