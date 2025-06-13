@@ -110,9 +110,12 @@ export default function CompassOnlyScreen() {
   }, [rotate]);
 
   useEffect(() => {
-    compassService.subscribe((heading: number) => {
+    const callback = compassService.subscribe((heading: number) => {
       updateCompassHeadingFnRef.current(heading);
     });
+    return () => {
+      compassService.unsubscribe(callback);
+    };
   }, []);
 
   useEffect(() => {

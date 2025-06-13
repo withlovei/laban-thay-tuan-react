@@ -117,9 +117,12 @@ export default function MapScreen() {
 
   useEffect(() => {
     requestLocationPermission();
-    compassService.subscribe((heading: number) => {
+    const callback = compassService.subscribe((heading: number) => {
       updateCompassHeadingFnRef.current(heading);
     });
+    return () => {
+      compassService.unsubscribe(callback);
+    };
   }, []);
 
   useEffect(() => {

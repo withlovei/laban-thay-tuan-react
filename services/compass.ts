@@ -41,13 +41,14 @@ class CompassService {
   }
 
   public subscribe(callback: CompassCallback) {
-    // only one callback at a time
-    this.callbacks.clear();
+    console.log("CompassService subscribe");
     this.callbacks.add(callback);
     this.startIfNeeded();
+    return callback;
   }
 
   public unsubscribe(callback: CompassCallback) {
+    console.log("CompassService unsubscribe");
     this.callbacks.delete(callback);
     if (this.callbacks.size === 0) {
       this.stop();
