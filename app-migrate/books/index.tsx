@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    marginBottom: BOTTOM_BAR_HEIGHT,
+    paddingBottom: BOTTOM_BAR_HEIGHT,
   },
   scrollView: {
     flex: 1,

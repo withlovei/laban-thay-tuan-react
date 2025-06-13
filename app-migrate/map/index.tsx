@@ -312,7 +312,10 @@ export default function MapScreen() {
         </Marker>
       </MapView>
       <EditUserModal isVisible={isVisible} onClose={onClose} />
-      <View style={[styles.safeAreaView]} pointerEvents="box-none">
+      <View
+        style={[styles.safeAreaView, { marginBottom: BOTTOM_BAR_HEIGHT }]}
+        pointerEvents="box-none"
+      >
         <SearchLocationModal
           isVisible={isSearchModalVisible}
           onClose={onCloseSearchModal}
@@ -473,7 +476,6 @@ export default function MapScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginBottom: BOTTOM_BAR_HEIGHT,
   },
   map: {
     flex: 1,

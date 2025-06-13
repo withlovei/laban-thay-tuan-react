@@ -66,12 +66,18 @@ export function Picker({
             onValueChanging={({ item: { value } }) => handleSelect(value)}
           />
         </View>
+        {/* To prevent gap between bottom sheet and bottom bar */}
+        <View style={styles.footer} />
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  footer: {
+    height: 100,
+    backgroundColor: "#F5F5F7",
+  },
   cancelButton: {
     color: "#007AFF",
     fontSize: 16,

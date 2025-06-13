@@ -194,7 +194,10 @@ export default function CompassOnlyScreen() {
         isVisible={isVisibleEditUser}
         onClose={onCloseEditUser}
       />
-      <View style={[styles.safeAreaView]} pointerEvents="box-none">
+      <View
+        style={[styles.safeAreaView, { marginBottom: BOTTOM_BAR_HEIGHT }]}
+        pointerEvents="box-none"
+      >
         <RotateCompassModal
           isVisible={isVisibleRotateCompass}
           onClose={onCloseRotateCompass}
@@ -357,7 +360,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FEC41F",
-    marginBottom: BOTTOM_BAR_HEIGHT,
   },
   map: {
     flex: 1,

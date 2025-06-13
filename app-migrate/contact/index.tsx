@@ -1,6 +1,7 @@
 import { IconCall } from "@/components/ui/icons/IconCall";
 import { IconCaptivePortal } from "@/components/ui/icons/IconCaptivePortal";
 import { IconPinDrop } from "@/components/ui/icons/IconPinDrop";
+import { BOTTOM_BAR_HEIGHT } from "@/constants/Dimensions";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import {
@@ -107,6 +108,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    paddingBottom: BOTTOM_BAR_HEIGHT,
   },
   header: {
     paddingHorizontal: 16,

@@ -1,4 +1,3 @@
-import { BOTTOM_BAR_HEIGHT } from "@/constants/Dimensions";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -26,7 +25,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    marginBottom: BOTTOM_BAR_HEIGHT,
   },
   webview: {
     flex: 1,
