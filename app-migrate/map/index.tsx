@@ -55,6 +55,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import LoadingScreen from "./loading-screen";
 
 // Color theme constants to match books section
 const COMPASS_SIZE = screen.width - 26;
@@ -266,7 +267,7 @@ export default function MapScreen() {
     });
   };
 
-  if (location === undefined) return null;
+  if (location === undefined) return <LoadingScreen />;
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
