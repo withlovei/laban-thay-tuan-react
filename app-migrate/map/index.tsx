@@ -55,7 +55,6 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import SplashScreen from "react-native-splash-screen";
 
 // Color theme constants to match books section
 const COMPASS_SIZE = screen.width - 26;
@@ -142,20 +141,6 @@ export default function MapScreen() {
       goToMyLocation();
     }
   }, [location, isMapReady]);
-
-  useEffect(() => {
-    if (location !== undefined) {
-      if (cache.isShowSplashScreen) {
-        SplashScreen.hide();
-        cache.isShowSplashScreen = false;
-      }
-    } else {
-      if (!cache.isShowSplashScreen) {
-        SplashScreen.show();
-        cache.isShowSplashScreen = true;
-      }
-    }
-  }, [location]);
 
   const setSliderTintColor = useCallback((isSliding: boolean) => {
     sliderRef.current?.setNativeProps({
@@ -340,7 +325,7 @@ export default function MapScreen() {
               );
             }}
           >
-            <IconEyeSlash fill={COLORS.secondary} />
+            <IconEyeSlash />
           </IconContainer>
           <TouchableOpacity
             style={styles.textInput}

@@ -1,9 +1,10 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { NavigationContainer } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect } from "react";
 import { Animated, StyleSheet, TouchableOpacity, View } from "react-native";
 import { CurvedBottomBar } from "react-native-curved-bottom-bar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import SplashScreen from "react-native-splash-screen";
 import BooksNavigator from "./books";
 import CompassOnlyScreen from "./compass-only";
 import ContactScreen from "./contact";
@@ -56,6 +57,9 @@ export default function App() {
     );
   };
 
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
       <NavigationContainer>
