@@ -1,5 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { NavigationContainer } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
 import { Animated, StyleSheet, TouchableOpacity, View } from "react-native";
 import { CurvedBottomBar } from "react-native-curved-bottom-bar";
@@ -62,6 +63,7 @@ export default function App() {
   }, []);
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
+      <StatusBar backgroundColor="transparent" />
       <NavigationContainer>
         <CurvedBottomBar.Navigator
           type="UP"
