@@ -1,4 +1,4 @@
-import { Background } from "@/app/edit-user-modal/components/Background";
+import { Background } from "@/app-migrate/modals/edit-user-background";
 import { GenderCheckBox } from "@/components/GenderCheckBox";
 import { Picker } from "@/components/Picker";
 import { IconContainer } from "@/components/ui/IconContainer";
