@@ -43,6 +43,7 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { IconRightArrow } from "../../components/ui/icons/IconRightArrow";
 import EditUserV2Modal from "../modals/edit-user";
+import { PaymentBottomSheet } from "@/app-migrate/payment/PaymentBottomSheet";
 
 const COMPASS_SIZE = screen.width - 26;
 const COMPASS_HEADING_SIZE = screen.width - 10;
@@ -349,6 +350,7 @@ export default function CompassOnlyScreen() {
           }}
         />
       </View>
+      <PaymentBottomSheet />
     </View>
   );
 }

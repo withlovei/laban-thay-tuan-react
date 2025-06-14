@@ -14,6 +14,7 @@ import {
   View,
 } from "react-native";
 import BookPDFViewer from "./pdf-viewer";
+import { PaymentBottomSheet } from "@/app-migrate/payment/PaymentBottomSheet";
 
 const Stack = createStackNavigator();
 
@@ -135,6 +136,7 @@ const BooksScreen = () => {
           />
         )}
       </ScrollView>
+      <PaymentBottomSheet />
     </View>
   );
 };

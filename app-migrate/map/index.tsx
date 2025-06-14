@@ -56,6 +56,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import LoadingScreen from "./loading-screen";
+import { PaymentBottomSheet } from "@/app-migrate/payment/PaymentBottomSheet";
 
 // Color theme constants to match books section
 const COMPASS_SIZE = screen.width - 26;
@@ -467,6 +468,7 @@ export default function MapScreen() {
           }}
         />
       </View>
+      <PaymentBottomSheet />
     </View>
   );
 }

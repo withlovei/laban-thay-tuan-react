@@ -3,6 +3,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Pdf from "react-native-pdf";
+import { PaymentBottomSheet } from "../payment/PaymentBottomSheet";
 
 const BookPDFViewer = () => {
   const [loadingProgress, setLoadingProgress] = useState(0);
@@ -50,6 +51,7 @@ const BookPDFViewer = () => {
         progress={loadingProgress}
         message="Đang tải sách, vui lòng chờ..."
       />
+      <PaymentBottomSheet />
     </View>
   );
 };
