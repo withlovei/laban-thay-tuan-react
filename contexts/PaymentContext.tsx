@@ -58,7 +58,11 @@ const PaymentContext = createContext<PaymentContextType>({
   submissionError: null,
 });
 
-const productIds = ["laban.full.access"];
+const productIds = Platform.select({
+  ios: ["vn.labanthaytuan.book"],
+  android: ["laban.full.access"],
+}) || [];
+
 export const usePayment = () => useContext(PaymentContext);
 
 export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({
