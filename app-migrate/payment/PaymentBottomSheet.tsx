@@ -1,21 +1,25 @@
+import { IconCheckMark } from "@/components/ui/icons/IconCheckMark";
+import { usePayment } from "@/contexts/PaymentContext";
 import React, { useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Linking,
   Alert,
-  Modal,
+  Linking,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { requestPurchase } from "react-native-iap";
-import { usePayment } from "@/contexts/PaymentContext";
-import { IconCheckMark } from "@/components/ui/icons/IconCheckMark";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import PromoCodeInputSheet from "./PromoCodeInputSheet";
 import { BOTTOM_BAR_HEIGHT } from "../../constants/Dimensions";
+import PromoCodeInputSheet from "./PromoCodeInputSheet";
 
-const productIds = ["laban.full.access"];
+const productIds =
+  Platform.select({
+    ios: ["vn.labanthaytuan.book"],
+    android: ["laban.full.access"],
+  }) || [];
 
 export const PaymentBottomSheet = () => {
   const [loading, setLoading] = useState(false);
@@ -83,7 +87,12 @@ export const PaymentBottomSheet = () => {
   return (
     <View style={styles.modal}>
       <TouchableOpacity style={styles.modalBackdrop} activeOpacity={1} />
-      <View style={[styles.bottomSheetContainer, { paddingBottom: bottom + BOTTOM_BAR_HEIGHT }]}>
+      <View
+        style={[
+          styles.bottomSheetContainer,
+          { paddingBottom: bottom + BOTTOM_BAR_HEIGHT },
+        ]}
+      >
         <View style={styles.header}>
           <Text style={styles.title}>{productInfo?.name}</Text>
         </View>
@@ -158,7 +167,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    top: 0, 
+    top: 0,
     zIndex: 1000,
   },
   modalBackdrop: {
@@ -254,4 +263,4 @@ const styles = StyleSheet.create({
   promoCodeEntryButton: {
     backgroundColor: "green",
   },
-}); 
+});
