@@ -2,6 +2,7 @@ import EditUserModal from "@/app-migrate/modals/edit-user";
 import SearchLocationModal, {
   SearchLocation,
 } from "@/app-migrate/modals/search-location";
+import { PaymentBottomSheet } from "@/app-migrate/payment/PaymentBottomSheet";
 import { Compass } from "@/components/Compass";
 import CompassHeadingUI from "@/components/ui/CompassHeading";
 import { IconContainer } from "@/components/ui/IconContainer";
@@ -18,7 +19,6 @@ import {
   SLIDER_HEIGHT,
   SLIDER_WIDTH,
 } from "@/constants/Dimensions";
-import { usePayment } from "@/contexts/PaymentContext";
 import { useModal } from "@/hooks/useModal";
 import { useToggle } from "@/hooks/useToggle";
 import { compassService } from "@/services/compass";
@@ -56,7 +56,6 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import LoadingScreen from "./loading-screen";
-import { PaymentBottomSheet } from "@/app-migrate/payment/PaymentBottomSheet";
 
 // Color theme constants to match books section
 const COMPASS_SIZE = screen.width - 26;
@@ -64,14 +63,6 @@ const COMPASS_HEADING_SIZE = screen.width - 10;
 const DIMENSION_GAP = 26;
 const MIN_SCALE = 0.5;
 const MAX_SCALE = 2;
-
-const cache: {
-  currentLocation: Location | null;
-  isShowSplashScreen: boolean;
-} = {
-  currentLocation: null,
-  isShowSplashScreen: true,
-};
 
 interface Location {
   latitude: number;
@@ -116,7 +107,7 @@ export default function MapScreen() {
   }));
   const [isLockCompass, toggleLockCompass] = useToggle(false);
   const [isFullCompass, toggleFullCompass] = useToggle(false);
-  const { showPayment } = usePayment();
+  const isInitMyLocation = useRef(false);
 
   useEffect(() => {
     requestLocationPermission();
@@ -157,7 +148,7 @@ export default function MapScreen() {
   }, []);
 
   const updateMapCamera = (heading: number) => {
-    if (mapRef.current && location) {
+    if (mapRef.current && location && isInitMyLocation.current) {
       mapRef.current.setCamera({
         heading: heading,
       });
@@ -234,6 +225,9 @@ export default function MapScreen() {
         zoom: 19,
         pitch: 0,
       });
+      setTimeout(() => {
+        isInitMyLocation.current = true;
+      }, 1000);
     }
   };
 
@@ -250,22 +244,14 @@ export default function MapScreen() {
   };
 
   const getCurrentLocation = () => {
-    if (cache.currentLocation) {
-      setLocation(cache.currentLocation);
-      return;
-    }
     getCurrentPositionAsync({
       accuracy: LocationAccuracy.High,
-    }).then((location) => {
+    }).then((location) =>
       setLocation({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
-      });
-      cache.currentLocation = {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      };
-    });
+      })
+    );
   };
 
   if (location === undefined) return <LoadingScreen />;
