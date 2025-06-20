@@ -286,7 +286,7 @@ export default function MapScreen() {
       });
   };
 
-  if (location === undefined && !showPermissionDialog && !locationError) return <LoadingScreen />;
+  const showLoadingScreen = location === undefined && !showPermissionDialog && !locationError;
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -334,6 +334,9 @@ export default function MapScreen() {
           </Marker>
         )}
       </MapView>
+      
+      {showLoadingScreen && <LoadingScreen />}
+      
       <EditUserModal isVisible={isVisible} onClose={onClose} />
       <View
         style={[styles.safeAreaView, { marginBottom: BOTTOM_BAR_HEIGHT }]}

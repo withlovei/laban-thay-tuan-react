@@ -138,30 +138,44 @@ export default function LoadingScreen() {
 
   return (
     <View style={styles.container}>
-      {Platform.OS === "ios" ? (
-        // iOS spinner
-        <Animated.View style={[styles.spinner, spinnerStyle]}>
-          <View style={styles.spinnerInner} />
-        </Animated.View>
-      ) : (
-        // Android dots spinner
-        <View style={styles.dotsContainer}>
-          <Animated.View style={[styles.dot, styles.dot1, dot1Style]} />
-          <Animated.View style={[styles.dot, styles.dot2, dot2Style]} />
-          <Animated.View style={[styles.dot, styles.dot3, dot3Style]} />
-        </View>
-      )}
-      <Animated.Text style={[styles.text, textStyle]}>Loading...</Animated.Text>
+      <View style={styles.loaderContainer}>
+        {Platform.OS === "ios" ? (
+          // iOS spinner
+          <Animated.View style={[styles.spinner, spinnerStyle]}>
+            <View style={styles.spinnerInner} />
+          </Animated.View>
+        ) : (
+          // Android dots spinner
+          <View style={styles.dotsContainer}>
+            <Animated.View style={[styles.dot, styles.dot1, dot1Style]} />
+            <Animated.View style={[styles.dot, styles.dot2, dot2Style]} />
+            <Animated.View style={[styles.dot, styles.dot3, dot3Style]} />
+          </View>
+        )}
+        <Animated.Text style={[styles.text, textStyle]}>Loading...</Animated.Text>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f5f5f5",
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    zIndex: 10,
+  },
+  loaderContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 15,
+    padding: 20,
   },
   // iOS spinner styles
   spinner: {
