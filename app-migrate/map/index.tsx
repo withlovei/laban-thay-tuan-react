@@ -40,11 +40,15 @@ import {
 } from "expo-location";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
+  Alert,
+  Linking,
   Platform,
   StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
   View,
+  Modal,
 } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import Animated, {
@@ -56,6 +60,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import LoadingScreen from "./loading-screen";
+import { useFocusEffect } from "@react-navigation/native";
 
 // Color theme constants to match books section
 const COMPASS_SIZE = screen.width - 26;
@@ -81,6 +86,8 @@ export default function MapScreen() {
   } = useModal();
   const [isMapReady, setIsMapReady] = useState(false);
   const [location, setLocation] = useState<Location>();
+  const [showPermissionDialog, setShowPermissionDialog] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
   const [searchLocation, setSearchLocation] = useState<SearchLocation | null>(
     null
   );
@@ -109,8 +116,13 @@ export default function MapScreen() {
   const [isFullCompass, toggleFullCompass] = useToggle(false);
   const isInitMyLocation = useRef(false);
 
+  useFocusEffect(
+    useCallback(() => {
+      requestLocationPermission();
+    }, [])
+  );
+  
   useEffect(() => {
-    requestLocationPermission();
     const callback = compassService.subscribe((heading: number) => {
       updateCompassHeadingFnRef.current(heading);
     });
@@ -231,30 +243,50 @@ export default function MapScreen() {
     }
   };
 
+  const openSettings = () => {
+    Linking.openSettings().catch(() => {
+      Alert.alert(
+        "Không thể mở cài đặt",
+        "Vui lòng mở cài đặt thiết bị và cấp quyền vị trí cho ứng dụng."
+      );
+    });
+  };
+
   const requestLocationPermission = async () => {
     try {
       const { status } = await requestForegroundPermissionsAsync();
       if (status !== "granted") {
+        setShowPermissionDialog(true);
         return;
       }
       getCurrentLocation();
     } catch (err) {
       console.warn(err);
+      setShowPermissionDialog(true);
     }
   };
 
   const getCurrentLocation = () => {
     getCurrentPositionAsync({
       accuracy: LocationAccuracy.High,
-    }).then((location) =>
-      setLocation({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
+    })
+      .then((location) => {
+        setLocation({
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        });
       })
-    );
+      .catch((error) => {
+        console.warn("Error getting current location:", error);
+        let errorMessage = "Không thể xác định vị trí của bạn.";
+        if (error.message) {
+          errorMessage = `Lỗi xác định vị trí: ${error.message}`;
+        }
+        setLocationError(errorMessage);
+      });
   };
 
-  if (location === undefined) return <LoadingScreen />;
+  // if (location === undefined) return <LoadingScreen />;
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -292,13 +324,15 @@ export default function MapScreen() {
         onResponderTerminationRequest={() => true}
       >
         {searchLocation && <Marker coordinate={searchLocation} />}
-        <Marker
-          style={{ width: 16, height: 16 }}
-          coordinate={location}
-          anchor={{ x: 0.5, y: 0.5 }}
-        >
-          <View style={styles.myLocation} />
-        </Marker>
+        {location && (
+          <Marker
+            style={{ width: 16, height: 16 }}
+            coordinate={location}
+            anchor={{ x: 0.5, y: 0.5 }}
+          >
+            <View style={styles.myLocation} />
+          </Marker>
+        )}
       </MapView>
       <EditUserModal isVisible={isVisible} onClose={onClose} />
       <View
@@ -413,6 +447,7 @@ export default function MapScreen() {
           map={true}
         />
       </Animated.View>
+
       {/* compass heading */}
       <Animated.View
         pointerEvents="none"
@@ -454,6 +489,81 @@ export default function MapScreen() {
           }}
         />
       </View>
+
+      {/* Permission Dialog Modal */}
+      <Modal
+        visible={showPermissionDialog}
+        transparent={true}
+        animationType="fade"
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.dialogContainer}>
+            <Text style={styles.dialogTitle}>Cần quyền truy cập vị trí</Text>
+            <Text style={styles.dialogText}>
+              Ứng dụng cần quyền truy cập vị trí để hiển thị bản đồ và la bàn
+              chính xác.
+            </Text>
+            <View style={styles.dialogButtons}>
+              <TouchableOpacity
+                style={styles.dialogButton}
+                onPress={() => setShowPermissionDialog(false)}
+              >
+                <Text style={styles.buttonText}>Để sau</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.dialogButton, styles.primaryButton]}
+                onPress={() => {
+                  setShowPermissionDialog(false);
+                  requestLocationPermission();
+                }}
+              >
+                <Text style={styles.buttonText}>Thử lại</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.dialogButton, styles.settingsButton]}
+                onPress={() => {
+                  // setShowPermissionDialog(false);
+                  openSettings();
+                }}
+              >
+                <Text style={styles.buttonText}>Mở cài đặt</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Location Error Dialog */}
+      <Modal
+        visible={locationError !== null}
+        transparent={true}
+        animationType="fade"
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.dialogContainer}>
+            <Text style={styles.dialogTitle}>Lỗi xác định vị trí</Text>
+            <Text style={styles.dialogText}>{locationError}</Text>
+            <View style={styles.dialogButtons}>
+              <TouchableOpacity
+                style={styles.dialogButton}
+                onPress={() => setLocationError(null)}
+              >
+                <Text style={styles.buttonText}>Đóng</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.dialogButton, styles.primaryButton]}
+                onPress={() => {
+                  setLocationError(null);
+                  getCurrentLocation();
+                }}
+              >
+                <Text style={styles.buttonText}>Thử lại</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
       <PaymentBottomSheet />
     </View>
   );
@@ -579,5 +689,57 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 2,
     borderColor: "#fff",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  dialogContainer: {
+    width: "80%",
+    backgroundColor: "#7B5C26",
+    borderRadius: 10,
+    padding: 20,
+    alignItems: "center",
+  },
+  dialogTitle: {
+    color: "white",
+    fontSize: 20,
+    fontFamily: "Roboto Condensed Bold",
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  dialogText: {
+    color: "white",
+    fontSize: 16,
+    fontFamily: "Roboto Condensed",
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  dialogButtons: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: 10,
+  },
+  dialogButton: {
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+    minWidth: 80,
+    alignItems: "center",
+  },
+  primaryButton: {
+    backgroundColor: "rgba(255, 255, 255, 0.3)",
+  },
+  settingsButton: {
+    backgroundColor: "#C81B22",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 14,
+    fontFamily: "Roboto Condensed Bold",
   },
 });
