@@ -286,7 +286,7 @@ export default function MapScreen() {
       });
   };
 
-  // if (location === undefined) return <LoadingScreen />;
+  if (location === undefined && !showPermissionDialog && !locationError) return <LoadingScreen />;
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
