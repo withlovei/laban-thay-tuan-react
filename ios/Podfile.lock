@@ -1464,6 +1464,8 @@ PODS:
     - react-native-config/App (= 1.5.5)
   - react-native-config/App (1.5.5):
     - React-Core
+  - react-native-get-random-values (1.11.0):
+    - React-Core
   - react-native-google-maps (1.18.0):
     - Google-Maps-iOS-Utils (= 4.2.2)
     - GoogleMaps (= 7.4.0)
@@ -1973,6 +1975,27 @@ PODS:
     - RCTTypeSafety
     - React-Core
     - ReactCommon/turbomodule/core
+  - RNKeychain (10.0.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.10.14.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - RNReanimated (3.16.7):
     - DoubleConversion
     - glog
@@ -2214,6 +2237,7 @@ DEPENDENCIES:
   - react-native-blob-util (from `../node_modules/react-native-blob-util`)
   - react-native-compass-heading (from `../node_modules/react-native-compass-heading`)
   - react-native-config (from `../node_modules/react-native-config`)
+  - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-google-maps (from `../node_modules/react-native-maps`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-maps (from `../node_modules/react-native-maps`)
@@ -2255,6 +2279,7 @@ DEPENDENCIES:
   - "RNFBDatabase (from `../node_modules/@react-native-firebase/database`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNIap (from `../node_modules/react-native-iap`)
+  - RNKeychain (from `../node_modules/react-native-keychain`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -2386,6 +2411,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-compass-heading"
   react-native-config:
     :path: "../node_modules/react-native-config"
+  react-native-get-random-values:
+    :path: "../node_modules/react-native-get-random-values"
   react-native-google-maps:
     :path: "../node_modules/react-native-maps"
   react-native-image-picker:
@@ -2468,6 +2495,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNIap:
     :path: "../node_modules/react-native-iap"
+  RNKeychain:
+    :path: "../node_modules/react-native-keychain"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -2543,6 +2572,7 @@ SPEC CHECKSUMS:
   react-native-blob-util: 326977f4f01e927ede9016ab1b27860ff8802815
   react-native-compass-heading: d26c64c9946eefa8dd2705f8f5ebd1c45a45bffd
   react-native-config: 644074ab88db883fcfaa584f03520ec29589d7df
+  react-native-get-random-values: d16467cf726c618e9c7a8c3c39c31faa2244bbba
   react-native-google-maps: a3a01acdc5e15d1b74d600ba270c454bac6239b4
   react-native-image-picker: 29233703ef6b6fdb006210a0673ce644d3b8da18
   react-native-maps: 3b0c8378ff774053bdd8954c820e987fdd7b4d72
@@ -2584,6 +2614,7 @@ SPEC CHECKSUMS:
   RNFBDatabase: d04cde8392a11d84687fe7dd22615694b48b315f
   RNGestureHandler: de2b7ccdbf18766609fb9490c7f11c18805705a3
   RNIap: d73cedfb73b396cad75f90f4ed7d64352d6381cf
+  RNKeychain: 471ceef8c13f15a5534c3cd2674dbbd9d0680e52
   RNReanimated: 758e433dea58eb219208bd209ef91a6f8ee096fb
   RNScreens: 3a5bdfab16deda3b06195a77438030951b88c49e
   RNSVG: d332ea2a8540218eadc5c8f31c2b58dfba6b14b5
