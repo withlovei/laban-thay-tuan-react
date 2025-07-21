@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Dimensions, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
 import { getOrCreateAppUniqueId } from "../../shared/device-id";
 
 const GoodDayScreen = () => {
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState("");
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
@@ -13,10 +13,12 @@ const GoodDayScreen = () => {
     const fetchDeviceId = async () => {
       try {
         const deviceId = await getOrCreateAppUniqueId();
-        setUrl(`https://cms.labanthaytuan.vn/good-day?date=${today}&deviceId=${deviceId}`);
+        setUrl(
+          `https://cms.labanthaytuan.vn/good-day?date=${today}&deviceId=${deviceId}`
+        );
       } catch (error) {
         // Fallback if unable to get device ID
-        console.log('error', error);
+        console.log("error", error);
         setUrl(`https://cms.labanthaytuan.vn/good-day?date=${today}`);
       }
     };
@@ -24,8 +26,12 @@ const GoodDayScreen = () => {
     fetchDeviceId();
   }, []);
 
-  const INJECTEDJAVASCRIPT = `const meta = document.createElement('meta'); meta.setAttribute('content', 'width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=0'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta); `
-  
+  const INJECTEDJAVASCRIPT = `
+  const meta = document.createElement('meta');
+  meta.setAttribute('name', 'viewport');
+  meta.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
+  document.head.appendChild(meta);
+`;
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {url ? (
