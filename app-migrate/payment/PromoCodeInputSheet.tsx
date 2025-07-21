@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   Modal,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { usePayment } from "@/contexts/PaymentContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -41,59 +43,62 @@ const PromoCodeInputSheet = ({
 
   return (
     <Modal transparent animationType="slide" visible={isVisible}>
-      <View style={styles.container}>
+      <KeyboardAvoidingView 
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
         <View style={[styles.content, { paddingBottom: bottom + 20 }]}>
-          <Text style={styles.title}>Nhập mã khuyến mãi</Text>
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Mã khuyến mãi</Text>
-            <TextInput
-              style={styles.input}
-              value={promoCode}
-              onChangeText={setPromoCode}
-              placeholder="Nhập mã khuyến mãi"
-              placeholderTextColor="#999"
-              autoCapitalize="none"
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Email (không bắt buộc)</Text>
-            <TextInput
-              style={styles.input}
-              value={email}
-              onChangeText={setEmail}
-              placeholder="Nhập email của bạn"
-              placeholderTextColor="#999"
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-          </View>
+            <Text style={styles.title}>Nhập mã khuyến mãi</Text>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Mã khuyến mãi</Text>
+              <TextInput
+                style={styles.input}
+                value={promoCode}
+                onChangeText={setPromoCode}
+                placeholder="Nhập mã khuyến mãi"
+                placeholderTextColor="#999"
+                autoCapitalize="none"
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Email (không bắt buộc)</Text>
+              <TextInput
+                style={styles.input}
+                value={email}
+                onChangeText={setEmail}
+                placeholder="Nhập email của bạn"
+                placeholderTextColor="#999"
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+            </View>
 
-          {submissionError ? (
-            <Text style={styles.errorText}>{submissionError}</Text>
-          ) : null}
+            {submissionError ? (
+              <Text style={styles.errorText}>{submissionError}</Text>
+            ) : null}
 
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={[styles.button, styles.cancelButton]}
-              onPress={onClose}
-              disabled={isSubmittingCode}
-            >
-              <Text style={styles.cancelButtonText}>Huỷ</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={handleSubmit}
-              disabled={isSubmittingCode || promoCode.trim() === ""}
-            >
-              {isSubmittingCode ? (
-                <ActivityIndicator color="#fff" size="small" />
-              ) : (
-                <Text style={styles.buttonText}>Áp dụng</Text>
-              )}
-            </TouchableOpacity>
-          </View>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={[styles.button, styles.cancelButton]}
+                onPress={onClose}
+                disabled={isSubmittingCode}
+              >
+                <Text style={styles.cancelButtonText}>Huỷ</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleSubmit}
+                disabled={isSubmittingCode || promoCode.trim() === ""}
+              >
+                {isSubmittingCode ? (
+                  <ActivityIndicator color="#fff" size="small" />
+                ) : (
+                  <Text style={styles.buttonText}>Áp dụng</Text>
+                )}
+              </TouchableOpacity>
+            </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
@@ -109,6 +114,9 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 20,
+  },
+  scrollContent: {
+    flexGrow: 1,
   },
   title: {
     fontSize: 18,

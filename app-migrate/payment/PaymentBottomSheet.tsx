@@ -220,7 +220,6 @@ const styles = StyleSheet.create({
   },
   benefit: {
     fontSize: 16,
-    marginBottom: 8,
     color: "#666",
     fontFamily: "Roboto Condensed",
   },
@@ -259,6 +258,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
+    marginBottom: 8,
   },
   promoCodeEntryButton: {
     backgroundColor: "green",
