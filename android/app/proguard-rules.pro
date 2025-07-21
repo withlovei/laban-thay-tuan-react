@@ -12,3 +12,6 @@
 -keep class com.facebook.react.turbomodule.** { *; }
 
 # Add any project specific keep options here:
+# When Proguard is enabled (which it is by default for Android release builds), it can rename 
+# the BuildConfig Java class in the minification process and prevent React Native Config from referencing it
+-keep class com.lbtt.laban.thaytuan.dev.BuildConfig { *; }
