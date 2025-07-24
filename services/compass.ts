@@ -1,5 +1,5 @@
 import CompassHeading from "react-native-compass-heading";
-// import { AppState } from "react-native";
+import { AppState } from "react-native";
 
 type CompassCallback = (heading: number) => void;
 
@@ -7,9 +7,10 @@ class CompassService {
   private static instance: CompassService;
   private callbacks: Set<CompassCallback> = new Set();
   private isStarted: boolean = false;
+  private appStateListener: any = null;
 
   private constructor() {
-    this.startIfNeeded();
+    this.setupAppStateListener();
   }
 
   public static getInstance(): CompassService {
@@ -19,13 +20,18 @@ class CompassService {
     return CompassService.instance;
   }
 
-  // private handleAppStateChange = (nextAppState: string) => {
-  //   if (nextAppState === "active") {
-  //     this.startIfNeeded();
-  //   } else if (nextAppState === "background" || nextAppState === "inactive") {
-  //     this.stop();
-  //   }
-  // };
+  private setupAppStateListener() {
+    this.appStateListener = AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
+  private handleAppStateChange = (nextAppState: string) => {
+    console.log("CompassService AppState changed to:", nextAppState);
+    if (nextAppState === "active") {
+      this.startIfNeeded();
+    } else if (nextAppState === "background" || nextAppState === "inactive") {
+      this.stop();
+    }
+  };
 
   private startIfNeeded() {
     if (this.callbacks.size > 0 && !this.isStarted) {
@@ -37,6 +43,7 @@ class CompassService {
         }
       );
       this.isStarted = true;
+      console.log("CompassService started");
     }
   }
 
@@ -59,7 +66,16 @@ class CompassService {
     if (this.isStarted) {
       CompassHeading.stop();
       this.isStarted = false;
+      console.log("CompassService stopped");
     }
+  }
+
+  public destroy() {
+    if (this.appStateListener) {
+      this.appStateListener.remove();
+      this.appStateListener = null;
+    }
+    this.stop();
   }
 }
 
