@@ -79,6 +79,9 @@ const BooksScreen = () => {
         <Text style={styles.bookTitle} numberOfLines={2}>
           {item.name}
         </Text>
+        <Text style={styles.viewBook} numberOfLines={1}>
+          Xem sách
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -116,6 +119,8 @@ const BooksScreen = () => {
           <Text style={styles.introText}>
             Các sách dưới đây đều được tôi dày công nghiên cứu và đúc kết lại
             qua nhiều quá trình thực tiễn.
+            Sách sẽ được tải tự động về điện thoại của bạn, vui lòng chọn sách
+            để xem.
           </Text>
         </View>
 
@@ -220,6 +225,12 @@ const styles = StyleSheet.create({
   bookTitle: {
     fontSize: 14,
     fontWeight: "bold",
+    color: "#553D13",
+    textAlign: "center",
+    marginTop: 8,
+  },
+  viewBook: {
+    fontSize: 14,
     color: "#553D13",
     textAlign: "center",
     marginTop: 8,

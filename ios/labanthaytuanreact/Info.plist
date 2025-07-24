@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Phong Thuy Nguyen Dinh Tuan</string>
+	<string>Master Tuan Edu</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -19,7 +19,7 @@
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.0</string>
+	<string>1.0.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -39,7 +39,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSMinimumSystemVersion</key>
@@ -54,11 +54,11 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Chúng tôi cần quyền truy cập vào camera của bạn để chụp hình ảnh.</string>
+	<string>The app requires camera access to take photos of house layout designs.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Ứng dụng cần quyền truy cập vị trí để xác định hướng nhà một cách chính xác khi bạn sử dụng chức năng la bàn, đồng thời hiển thị vị trí hiện tại trên bản đồ để phục vụ đo đạc phong thủy.</string>
+	<string>The app requires location access to accurately determine house orientation using the compass function, and to show the current location on the map for feng shui analysis.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Chúng tôi cần quyền truy cập vào thư viện hình ảnh của bạn để chọn hình ảnh.</string>
+	<string>The app requires access to the photo library to upload house layout designs.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Roboto Condensed Bold.ttf</string>
@@ -83,13 +83,6 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIUserInterfaceStyle</key>
 	<string>Automatic</string>
