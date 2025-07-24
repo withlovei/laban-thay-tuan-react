@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
@@ -7,6 +7,7 @@ import { getOrCreateAppUniqueId } from "../../shared/device-id";
 const GoodDayScreen = () => {
   const [url, setUrl] = useState("");
   const insets = useSafeAreaInsets();
+  const webViewRef = useRef<WebView>(null);
 
   useEffect(() => {
     const today = new Date().toISOString().split("T")[0];
@@ -36,12 +37,16 @@ const GoodDayScreen = () => {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {url ? (
         <WebView
+          ref={webViewRef}
           source={{ uri: url }}
           style={styles.webview}
           startInLoadingState={true}
           javaScriptEnabled={true}
           injectedJavaScript={INJECTEDJAVASCRIPT}
           domStorageEnabled={true}
+          onContentProcessDidTerminate={() => {
+            webViewRef.current?.reload();
+          }}
         />
       ) : null}
     </View>
