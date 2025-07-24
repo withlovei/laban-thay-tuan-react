@@ -19,3 +19,4 @@ android/app/upload-keystore.jks
 
 credentials.json
 .expo/
+.env.local

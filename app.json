@@ -37,6 +37,14 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
+      ],
+      [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://sentry.io/",
+          "project": "laban-thay-tuan-react",
+          "organization": "personal-op3"
+        }
       ]
     ],
     "experiments": {
