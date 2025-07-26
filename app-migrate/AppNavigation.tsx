@@ -79,7 +79,7 @@ export default function App() {
             tabBarInactiveTintColor: "#1C1B1F",
             tabBarStyle: {
               backgroundColor: "#FEC41F",
-              height: BOTTOM_BAR_HEIGHT,
+              height: BOTTOM_BAR_HEIGHT + insets.bottom,
             },
             tabBarLabelStyle: {
               fontFamily: "Roboto Condensed",
@@ -89,7 +89,10 @@ export default function App() {
               const isMapButton = to === "/map";
               const isFocused = accessibilityState?.selected;
               return (
-                <Pressable {...props}>
+                <Pressable
+                  {...props}
+                  style={[props.style, { justifyContent: "flex-start" }]}
+                >
                   <View
                     style={{
                       width: "70%",
@@ -101,7 +104,7 @@ export default function App() {
                   />
                   {isMapButton ? (
                     <LinearGradient
-                      colors={['#FEC41F', '#ED1C24']}
+                      colors={["#FEC41F", "#ED1C24"]}
                       start={{ x: 0, y: 0.75 }}
                       end={{ x: 0, y: 1 }}
                       style={styles.gradientBorder}
@@ -169,17 +172,17 @@ export const styles = StyleSheet.create({
   },
   gradientBorder: {
     borderRadius: 30, // Should be half of width/height for a circle
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     width: 60,
     height: 60,
   },
   innerCircle: {
-    backgroundColor: '#FEC41F', // Or your background color
+    backgroundColor: "#FEC41F", // Or your background color
     borderRadius: 29, // Slightly less than outer for border effect
     width: 58, // Adjust as needed
     height: 58, // Adjust as needed
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

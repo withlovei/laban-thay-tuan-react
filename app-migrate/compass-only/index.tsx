@@ -13,6 +13,7 @@ import { IconLock } from "@/components/ui/icons/IconLock";
 import { IconLockOpenRight } from "@/components/ui/icons/IconLockOpenRight";
 import { IconRotateRight } from "@/components/ui/icons/IconRotateRight";
 import {
+  BOTTOM_BAR_HEIGHT,
   DEFAULT_COMPASS_SCALE,
   screen,
   SLIDER_HEIGHT,
@@ -294,7 +295,10 @@ export default function CompassOnlyScreen() {
           {
             position: "absolute",
             left: screen.width / 2 - COMPASS_SIZE / 2,
-            top: (screen.height - insets.bottom) / 2 - COMPASS_SIZE / 2,
+            top:
+              (screen.height - insets.bottom + insets.top - BOTTOM_BAR_HEIGHT) /
+                2 -
+              COMPASS_SIZE / 2,
             width: COMPASS_SIZE,
             height: COMPASS_SIZE,
             borderRadius: COMPASS_SIZE / 2,
@@ -320,7 +324,8 @@ export default function CompassOnlyScreen() {
             width: COMPASS_HEADING_SIZE,
             height: COMPASS_HEADING_SIZE * (388 / 380),
             top:
-              (screen.height - insets.bottom) / 2 -
+              (screen.height - insets.bottom + insets.top - BOTTOM_BAR_HEIGHT) /
+                2 -
               (194 / 380) * COMPASS_HEADING_SIZE,
             zIndex: 1,
           },

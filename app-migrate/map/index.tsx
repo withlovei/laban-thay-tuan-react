@@ -14,6 +14,7 @@ import { IconLockOpenRight } from "@/components/ui/icons/IconLockOpenRight";
 import { IconPinDrop } from "@/components/ui/icons/IconPinDrop";
 import { COLORS } from "@/constants/Colors";
 import {
+  BOTTOM_BAR_HEIGHT,
   DEFAULT_COMPASS_SCALE,
   screen,
   SLIDER_HEIGHT,
@@ -339,10 +340,7 @@ export default function MapScreen() {
       {showLoadingScreen && <LoadingScreen />}
 
       <EditUserModal isVisible={isVisible} onClose={onClose} />
-      <View
-        style={styles.safeAreaView}
-        pointerEvents="box-none"
-      >
+      <View style={styles.safeAreaView} pointerEvents="box-none">
         <SearchLocationModal
           isVisible={isSearchModalVisible}
           onClose={onCloseSearchModal}
@@ -435,7 +433,10 @@ export default function MapScreen() {
           {
             position: "absolute",
             left: screen.width / 2 - COMPASS_SIZE / 2,
-            top: (screen.height - insets.bottom) / 2 - COMPASS_SIZE / 2,
+            top:
+              (screen.height - insets.bottom + insets.top - BOTTOM_BAR_HEIGHT) /
+                2 -
+              COMPASS_SIZE / 2,
             width: COMPASS_SIZE,
             height: COMPASS_SIZE,
             borderRadius: COMPASS_SIZE / 2,
@@ -463,7 +464,8 @@ export default function MapScreen() {
             width: COMPASS_HEADING_SIZE,
             height: COMPASS_HEADING_SIZE * (388 / 380),
             top:
-              (screen.height - insets.bottom) / 2 -
+              (screen.height - insets.bottom + insets.top - BOTTOM_BAR_HEIGHT) /
+                2 -
               (194 / 380) * COMPASS_HEADING_SIZE,
           },
           compassHeadingStyle,
@@ -627,7 +629,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingVertical: 8,
     paddingHorizontal: 16,
-    bottom: 32,
+    bottom: 10,
   },
   footerControls: {
     flexDirection: "row",
@@ -683,7 +685,7 @@ const styles = StyleSheet.create({
   },
   homeDirection: {
     position: "absolute",
-    bottom: 125,
+    bottom: 115,
     width: screen.width,
     paddingHorizontal: 20,
   },
