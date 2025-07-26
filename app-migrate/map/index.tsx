@@ -14,7 +14,7 @@ import { IconLockOpenRight } from "@/components/ui/icons/IconLockOpenRight";
 import { IconPinDrop } from "@/components/ui/icons/IconPinDrop";
 import { COLORS } from "@/constants/Colors";
 import {
-  BOTTOM_BAR_HEIGHT,
+  DEFAULT_COMPASS_SCALE,
   screen,
   SLIDER_HEIGHT,
   SLIDER_WIDTH,
@@ -61,11 +61,11 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import LoadingScreen from "./loading-screen";
 import { useFocusEffect } from "@react-navigation/native";
+import CustomHeader from "../../components/ui/CustomHeader";
 
 // Color theme constants to match books section
 const COMPASS_SIZE = screen.width - 26;
 const COMPASS_HEADING_SIZE = screen.width - 10;
-const DIMENSION_GAP = 26;
 const MIN_SCALE = 0.5;
 const MAX_SCALE = 2;
 
@@ -92,7 +92,7 @@ export default function MapScreen() {
     null
   );
   const compassHeading = useSharedValue(0);
-  const compassScale = useSharedValue(1);
+  const compassScale = useSharedValue(DEFAULT_COMPASS_SCALE);
   const mapRef = useRef<MapView>(null);
   const compassOpacity = useSharedValue(1);
   const compassStyle = useAnimatedStyle(() => ({
@@ -121,7 +121,7 @@ export default function MapScreen() {
       requestLocationPermission();
     }, [])
   );
-  
+
   useEffect(() => {
     const callback = compassService.subscribe((heading: number) => {
       updateCompassHeadingFnRef.current(heading);
@@ -286,7 +286,8 @@ export default function MapScreen() {
       });
   };
 
-  const showLoadingScreen = location === undefined && !showPermissionDialog && !locationError;
+  const showLoadingScreen =
+    location === undefined && !showPermissionDialog && !locationError;
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -334,12 +335,12 @@ export default function MapScreen() {
           </Marker>
         )}
       </MapView>
-      
+
       {showLoadingScreen && <LoadingScreen />}
-      
+
       <EditUserModal isVisible={isVisible} onClose={onClose} />
       <View
-        style={[styles.safeAreaView, { marginBottom: BOTTOM_BAR_HEIGHT }]}
+        style={styles.safeAreaView}
         pointerEvents="box-none"
       >
         <SearchLocationModal
@@ -347,6 +348,7 @@ export default function MapScreen() {
           onClose={onCloseSearchModal}
           onConfirm={handleSearchLocationTextChange}
         />
+        <CustomHeader />
         {/* tool bar */}
         <View style={styles.toolBar}>
           <IconContainer
@@ -433,7 +435,7 @@ export default function MapScreen() {
           {
             position: "absolute",
             left: screen.width / 2 - COMPASS_SIZE / 2,
-            top: (screen.height + DIMENSION_GAP) / 2 - COMPASS_SIZE / 2,
+            top: (screen.height - insets.bottom) / 2 - COMPASS_SIZE / 2,
             width: COMPASS_SIZE,
             height: COMPASS_SIZE,
             borderRadius: COMPASS_SIZE / 2,
@@ -461,7 +463,7 @@ export default function MapScreen() {
             width: COMPASS_HEADING_SIZE,
             height: COMPASS_HEADING_SIZE * (388 / 380),
             top:
-              (screen.height + DIMENSION_GAP) / 2 -
+              (screen.height - insets.bottom) / 2 -
               (194 / 380) * COMPASS_HEADING_SIZE,
           },
           compassHeadingStyle,
@@ -477,7 +479,7 @@ export default function MapScreen() {
           style={styles.slider}
           minimumValue={MIN_SCALE}
           maximumValue={MAX_SCALE}
-          value={1}
+          value={DEFAULT_COMPASS_SCALE}
           onValueChange={(value: number) => {
             compassScale.value = value;
           }}

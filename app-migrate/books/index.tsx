@@ -1,4 +1,4 @@
-import { BOTTOM_BAR_HEIGHT, screen } from "@/constants/Dimensions";
+import { screen } from "@/constants/Dimensions";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -150,7 +150,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingBottom: BOTTOM_BAR_HEIGHT,
   },
   scrollView: {
     flex: 1,

@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import { requestPurchase } from "react-native-iap";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { BOTTOM_BAR_HEIGHT } from "../../constants/Dimensions";
 import PromoCodeInputSheet from "./PromoCodeInputSheet";
 
 const productIds =
@@ -90,7 +89,7 @@ export const PaymentBottomSheet = () => {
       <View
         style={[
           styles.bottomSheetContainer,
-          { paddingBottom: bottom + BOTTOM_BAR_HEIGHT },
+          { paddingBottom: bottom },
         ]}
       >
         <View style={styles.header}>

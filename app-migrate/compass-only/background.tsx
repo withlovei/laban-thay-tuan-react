@@ -26,14 +26,14 @@ export const Background = () => {
 const styles = StyleSheet.create({
   leftDragon: {
     position: "absolute",
-    top: 38,
+    top: 108,
     left: 0,
     width: 161,
     height: 125,
   },
   rightDragon: {
     position: "absolute",
-    top: 38,
+    top: 108,
     right: 0,
     width: 161,
     height: 125,

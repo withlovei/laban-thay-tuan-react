@@ -1,9 +1,11 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
-import { Animated, StyleSheet, TouchableOpacity, View } from "react-native";
-import { CurvedBottomBar } from "react-native-curved-bottom-bar";
+import { Pressable, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import SplashScreen from "react-native-splash-screen";
 import BooksNavigator from "./books";
@@ -11,121 +13,140 @@ import CompassOnlyScreen from "./compass-only";
 import ContactScreen from "./contact";
 import GoodDayScreen from "./good-day";
 import MapScreen from "./map";
+import LinearGradient from "react-native-linear-gradient";
+import { BOTTOM_BAR_HEIGHT } from "../constants/Dimensions";
+
+const Tab = createBottomTabNavigator();
 
 export default function App() {
   const insets = useSafeAreaInsets();
-  const _renderIcon = (routeName: string, selectedTab: string) => {
-    let icon = "";
-    switch (routeName) {
-      case "good-day":
-        icon = "calendar-outline";
-        break;
-      case "compass-only":
-        icon = "image-outline";
-        break;
-      case "books":
-        icon = "book-outline";
-        break;
-      case "contact":
-        icon = "information-circle-outline";
-        break;
-    }
-
-    return (
-      <Ionicons
-        name={icon as any}
-        size={25}
-        color={routeName === selectedTab ? "black" : "gray"}
-      />
-    );
-  };
-  const renderTabBar = ({
-    routeName,
-    selectedTab,
-    navigate,
-  }: {
-    routeName: string;
-    selectedTab: string;
-    navigate: (routeName: string) => void;
-  }) => {
-    return (
-      <TouchableOpacity
-        onPress={() => navigate(routeName)}
-        style={styles.tabbarItem}
-      >
-        {_renderIcon(routeName, selectedTab)}
-      </TouchableOpacity>
-    );
-  };
 
   useEffect(() => {
     SplashScreen.hide();
   }, []);
+
   return (
-    <View style={[styles.container, { paddingBottom: insets.bottom }]}>
+    <View style={styles.container}>
       <StatusBar backgroundColor="transparent" />
       <NavigationContainer>
-        <CurvedBottomBar.Navigator
-          type="UP"
-          style={styles.bottomBar}
-          shadowStyle={styles.shawdow}
-          height={55}
-          circleWidth={50}
-          bgColor="white"
+        <Tab.Navigator
           initialRouteName="good-day"
-          borderTopLeftRight
-          renderCircle={({ selectedTab, navigate }) => (
-            <Animated.View
-              style={[
-                styles.btnCircleUp,
-                {
-                  backgroundColor: selectedTab === "map" ? "#FFF8E7" : "white",
-                },
-              ]}
-            >
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigate("map")}
-              >
-                <Ionicons
-                  name={"map-outline"}
-                  color={selectedTab === "map" ? "#7B5C26" : "gray"}
-                  size={25}
-                />
-              </TouchableOpacity>
-            </Animated.View>
-          )}
-          tabBar={renderTabBar}
+          screenOptions={({ route }) => ({
+            headerShown: route.name === "contact",
+            headerTitle:
+              route.name === "contact" ? "Thông tin liên hệ" : undefined,
+            headerTitleStyle:
+              route.name === "contact"
+                ? {
+                    fontFamily: "Roboto Condensed",
+                    fontSize: 16,
+                    color: "#7B5C26",
+                  }
+                : undefined,
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName = "";
+              switch (route.name) {
+                case "good-day":
+                  iconName = "calendar-outline";
+                  break;
+                case "compass-only":
+                  iconName = "burst-mode";
+                  break;
+                case "books":
+                  iconName = "book-outline";
+                  break;
+                case "contact":
+                  iconName = "information-circle-outline";
+                  break;
+                case "map":
+                  iconName = "map-search-outline";
+                  break;
+              }
+              if (route.name === "compass-only") {
+                return (
+                  <MaterialIcons
+                    name={iconName as any}
+                    size={size}
+                    color={color}
+                  />
+                );
+              }
+              return (
+                <Ionicons name={iconName as any} size={size} color={color} />
+              );
+            },
+            tabBarActiveTintColor: "red",
+            tabBarInactiveTintColor: "#1C1B1F",
+            tabBarStyle: {
+              backgroundColor: "#FEC41F",
+              height: BOTTOM_BAR_HEIGHT,
+            },
+            tabBarLabelStyle: {
+              fontFamily: "Roboto Condensed",
+              fontSize: 10,
+            },
+            tabBarButton: ({ children, accessibilityState, to, ...props }) => {
+              const isMapButton = to === "/map";
+              const isFocused = accessibilityState?.selected;
+              return (
+                <Pressable {...props}>
+                  <View
+                    style={{
+                      width: "70%",
+                      height: 4,
+                      backgroundColor: isFocused ? "red" : "transparent",
+                      borderBottomLeftRadius: 16,
+                      borderBottomRightRadius: 16,
+                    }}
+                  />
+                  {isMapButton ? (
+                    <LinearGradient
+                      colors={['#FEC41F', '#ED1C24']}
+                      start={{ x: 0, y: 0.75 }}
+                      end={{ x: 0, y: 1 }}
+                      style={styles.gradientBorder}
+                    >
+                      <View style={styles.innerCircle}>
+                        <MaterialCommunityIcons
+                          name="map-search-outline"
+                          size={32}
+                          color={isFocused ? "red" : "black"}
+                        />
+                      </View>
+                    </LinearGradient>
+                  ) : (
+                    children
+                  )}
+                </Pressable>
+              );
+            },
+          })}
         >
-          <CurvedBottomBar.Screen
+          <Tab.Screen
             name="good-day"
-            position="LEFT"
-            component={() => <GoodDayScreen />}
-            options={{
-              headerShown: false,
-            }}
+            component={GoodDayScreen}
+            options={{ title: "Trang chủ" }}
           />
-          <CurvedBottomBar.Screen
+          <Tab.Screen
             name="compass-only"
-            position="LEFT"
-            component={() => <CompassOnlyScreen />}
-            options={{
-              headerShown: false,
-            }}
+            component={CompassOnlyScreen}
+            options={{ title: "Cá nhân hoá" }}
           />
-          <CurvedBottomBar.Screen
+          <Tab.Screen
+            name="map"
+            component={MapScreen}
+            options={{ title: "Bản đồ" }}
+          />
+          <Tab.Screen
             name="books"
-            component={() => <BooksNavigator />}
-            position="RIGHT"
-            options={{
-              headerShown: false,
-            }}
+            component={BooksNavigator}
+            options={{ title: "Thư viện sách" }}
           />
-          <CurvedBottomBar.Screen
+          <Tab.Screen
             name="contact"
-            component={() => <ContactScreen />}
-            position="RIGHT"
+            component={ContactScreen}
             options={{
+              title: "Thông tin",
               headerShown: true,
               headerTitle: "Thông tin liên hệ",
               headerTitleStyle: {
@@ -135,15 +156,7 @@ export default function App() {
               },
             }}
           />
-          <CurvedBottomBar.Screen
-            name="map"
-            component={() => <MapScreen />}
-            position="CENTER"
-            options={{
-              headerShown: false,
-            }}
-          />
-        </CurvedBottomBar.Navigator>
+        </Tab.Navigator>
       </NavigationContainer>
     </View>
   );
@@ -152,58 +165,21 @@ export default function App() {
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#FEC41F",
   },
-  shawdow: {
-    shadowColor: "#DDDDDD",
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 1,
-    shadowRadius: 5,
-  },
-  button: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  bottomBar: {},
-  btnCircleUp: {
+  gradientBorder: {
+    borderRadius: 30, // Should be half of width/height for a circle
+    alignItems: 'center',
+    justifyContent: 'center',
     width: 60,
     height: 60,
-    borderRadius: 30,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#E8E8E8",
-    bottom: 20,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 1,
   },
-  imgCircle: {
-    width: 30,
-    height: 30,
-    tintColor: "gray",
-  },
-  tabbarItem: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  img: {
-    width: 30,
-    height: 30,
-  },
-  screen1: {
-    flex: 1,
-    backgroundColor: "#BFEFFF",
-  },
-  screen2: {
-    flex: 1,
-    backgroundColor: "#FFEBCD",
+  innerCircle: {
+    backgroundColor: '#FEC41F', // Or your background color
+    borderRadius: 29, // Slightly less than outer for border effect
+    width: 58, // Adjust as needed
+    height: 58, // Adjust as needed
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

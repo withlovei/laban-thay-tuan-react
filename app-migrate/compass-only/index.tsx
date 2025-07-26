@@ -13,7 +13,7 @@ import { IconLock } from "@/components/ui/icons/IconLock";
 import { IconLockOpenRight } from "@/components/ui/icons/IconLockOpenRight";
 import { IconRotateRight } from "@/components/ui/icons/IconRotateRight";
 import {
-  BOTTOM_BAR_HEIGHT,
+  DEFAULT_COMPASS_SCALE,
   screen,
   SLIDER_HEIGHT,
   SLIDER_WIDTH,
@@ -44,12 +44,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { IconRightArrow } from "../../components/ui/icons/IconRightArrow";
 import EditUserV2Modal from "../modals/edit-user";
 import { PaymentBottomSheet } from "@/app-migrate/payment/PaymentBottomSheet";
+import CustomHeader from "../../components/ui/CustomHeader";
 
 const COMPASS_SIZE = screen.width - 26;
 const COMPASS_HEADING_SIZE = screen.width - 10;
 const MIN_SCALE = 0.5;
 const MAX_SCALE = 2;
-const DIMENSION_GAP = 26;
 
 export default function CompassOnlyScreen() {
   const user = useUserStore((state) => state.user);
@@ -59,7 +59,7 @@ export default function CompassOnlyScreen() {
   const compassStarMeaningTextRef = useRef<TextInput>(null);
   const homeDirectionTextRef = useRef<TextInput>(null);
   const compassHeading = useSharedValue(0);
-  const compassScale = useSharedValue(1);
+  const compassScale = useSharedValue(DEFAULT_COMPASS_SCALE);
   const compassOpacity = useSharedValue(1);
   const [uri, setUri] = useState<string | null>(null);
   const sliderRef = useRef<Slider>(null);
@@ -197,7 +197,7 @@ export default function CompassOnlyScreen() {
         onClose={onCloseEditUser}
       />
       <View
-        style={[styles.safeAreaView, { marginBottom: BOTTOM_BAR_HEIGHT }]}
+        style={styles.safeAreaView}
         pointerEvents="box-none"
       >
         <RotateCompassModal
@@ -210,6 +210,7 @@ export default function CompassOnlyScreen() {
           onClose={onCloseImagePicker}
           setUri={setUri}
         />
+        <CustomHeader />
         {/* tool bar */}
         <View style={styles.toolBar}>
           <IconContainer
@@ -293,7 +294,7 @@ export default function CompassOnlyScreen() {
           {
             position: "absolute",
             left: screen.width / 2 - COMPASS_SIZE / 2,
-            top: (screen.height + DIMENSION_GAP) / 2 - COMPASS_SIZE / 2,
+            top: (screen.height - insets.bottom) / 2 - COMPASS_SIZE / 2,
             width: COMPASS_SIZE,
             height: COMPASS_SIZE,
             borderRadius: COMPASS_SIZE / 2,
@@ -319,7 +320,7 @@ export default function CompassOnlyScreen() {
             width: COMPASS_HEADING_SIZE,
             height: COMPASS_HEADING_SIZE * (388 / 380),
             top:
-              (screen.height + DIMENSION_GAP) / 2 -
+              (screen.height - insets.bottom) / 2 -
               (194 / 380) * COMPASS_HEADING_SIZE,
             zIndex: 1,
           },
@@ -335,7 +336,7 @@ export default function CompassOnlyScreen() {
           style={styles.slider}
           minimumValue={MIN_SCALE}
           maximumValue={MAX_SCALE}
-          value={1}
+          value={DEFAULT_COMPASS_SCALE}
           onValueChange={(value: number) => {
             compassScale.value = value;
           }}
